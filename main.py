@@ -1,6 +1,11 @@
 from kivy.app import App
 
 
+class CarbonomixApp(App):
+    def build(self):
+        return
+
+
 if __name__ == '__main__':
-    # Add stuff that should only run once here.
+    CarbonomixApp().run()
     pass
