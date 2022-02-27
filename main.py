@@ -26,11 +26,25 @@ class CarbonomixApp(App):
 
         sm = ScreenManager(transition=fade)
         starting_screen = StartingScreen(name='starting')
+        welcome_screen = WelcomeScreen(name='welcome')
         sm.add_widget(starting_screen)
-        sm.add_widget(WelcomeScreen(name='welcome'))
+        sm.add_widget(welcome_screen)
 
         def start_app(dt=None):
             sm.current = 'welcome'
+            widgets = (welcome_screen.ids.welcome_text, welcome_screen.ids.please_answer_text, welcome_screen.ids.questions)
+            animation = Animation(
+                opacity=1, duration=2
+            )
+            index = 0
+
+            def animate(dt):
+                nonlocal index
+                animation.start(widgets[index])
+                index += 1
+
+            for i in range(len(widgets)):
+                Clock.schedule_once(animate, 1 + i * 0.7)
 
         def fade_in_text(dt=None):
             Animation(

@@ -27,15 +27,21 @@
         orientation: "vertical"
         padding: min(root.width/15, root.height/15)
         Label:
+            id: welcome_text
+            opacity: 0
             text: "Welcome to Carbonomix!"
             font_size: min(root.width/15, root.height/15)
             size_hint: 1, .1
 
         Label:
+            id: please_answer_text
+            opacity: 0
             text: "Please answer the following questions to get started."
             font_size: min(root.width/25, root.height/25)
             size_hint: 1, .1
         Carousel:
+            id: questions
+            opacity: 0
             direction: "right"
 
             QuestionLayout:
