@@ -9,6 +9,9 @@ from kivy.properties import StringProperty, BooleanProperty
 
 DEBUG = True
 
+# Temporary carbon footprint value.
+carbon_footprint = 14378  # TODO: Change to real value.
+
 
 class StartingScreen(Screen):
     pass
