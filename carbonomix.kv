@@ -30,15 +30,22 @@
             id: welcome_text
             opacity: 0
             text: "Welcome to Carbonomix!"
-            font_size: min(root.width/15, root.height/15)
+            font_size: max(min(root.width/15, root.height/15), 20)
             size_hint: 1, .1
+            text_size: self.width, None
+            halign: "center"
+            valign: "middle"
 
         Label:
             id: please_answer_text
             opacity: 0
             text: "Please answer the following questions to get started."
-            font_size: min(root.width/25, root.height/25)
+            font_size: max(min(root.width/25, root.height/25), 15)
+            pos_hint: {"center_x": .5, "center_y": 1}
             size_hint: 1, .1
+            text_size: root.width * .95, None
+            halign: "center"
+            valign: "middle"
         Carousel:
             id: questions
             opacity: 0
@@ -96,8 +103,12 @@
     Label:
         id: question
         text: root.question
-        font_size: min(root.width/20, root.height/20)
+        font_size: max(min(root.width/20, root.height/20), 17)
+        text_size: self.width * .8, None
         pos_hint: {"center_x": .5, "center_y": .8}
+        halign: "center"
+        valign: "middle"
+
     Button:
         text: "Previous"
         size_hint: .3, .07
@@ -114,4 +125,4 @@
         background_normal: ""
         on_release:
             root.parent.parent.load_next()
-
+            if root.is_final: root.parent.parent.parent.parent.submit()

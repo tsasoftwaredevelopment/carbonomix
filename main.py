@@ -15,7 +15,8 @@ class StartingScreen(Screen):
 
 
 class WelcomeScreen(Screen):
-    pass
+    def submit(self):
+        print(self.ids.electric_bill)
 
 
 class QuestionLayout(FloatLayout):
