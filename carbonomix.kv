@@ -66,7 +66,7 @@
         pos_hint: {"center_x": .3, "top": .135}
         background_color: 108/255, 168/255, 124/255, 1
         background_normal: ""
-        on_press:
+        on_release:
             self.parent.parent.parent.load_previous()
     Button:
         text: "Next"
@@ -74,6 +74,6 @@
         pos_hint: {"center_x": .7, "top": .135}
         background_color: 108/255, 168/255, 124/255, 1
         background_normal: ""
-        on_press:
+        on_release:
             self.parent.parent.parent.load_next()
 
