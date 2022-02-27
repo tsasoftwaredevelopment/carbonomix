@@ -4,7 +4,7 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 
 
-DEBUG = False
+DEBUG = True
 
 
 class StartingScreen(Screen):
