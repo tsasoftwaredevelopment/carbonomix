@@ -43,22 +43,48 @@
             id: questions
             opacity: 0
             direction: "right"
+            anim_move_duration: .2
+            anim_cancel_duration: .2
+            ignore_perpendicular_swipes: True
+
+            on_touch_down:
+                if self.opacity != 1: self.opacity = 1
 
             QuestionLayout:
-                Label:
-                    text: "What is your monthly electric bill? "
+                id: electric_bill
+                question: "What is your monthly electric bill?"
 
             QuestionLayout:
-                Label:
-                    text: "kjlsfsljkd"
+                id: gas_bill
+                question: "What is your monthly gas bill?"
 
             QuestionLayout:
-                Label:
-                    text: "kljsdfkljdsf"
+                id: oil_bill
+                question: "What is your monthly oil bill?"
+
+            QuestionLayout:
+                id: mileage
+                question: "What is your total yearly mileage?"
+
+            QuestionLayout:
+                id: flights_below_4
+                question: "How many flights have you taken in the past year that were 4 hours or LESS?"
+
+            QuestionLayout:
+                id: flights_over_4
+                question: "How many flights have you taken in the past year that were 4 hours or MORE?"
+
+            QuestionLayout:
+                id: recycle_newspaper
+                question: "Do you recycle newspapers?"
+
+            QuestionLayout:
+                id: recycle_aluminum_tin
+                is_final: True
+                question: "Do you recycle aluminum and tin?"
 
 
-
-<QuestionLayout@FloatLayout>
+<QuestionLayout>
     orientation: "vertical"
     canvas.before:
         Color:
@@ -67,6 +93,11 @@
             pos: self.x + self.width * .05 / 2, self.y
             size: self.width * .95, self.height
             radius: [12]
+    Label:
+        id: question
+        text: root.question
+        font_size: min(root.width/20, root.height/20)
+        pos_hint: {"center_x": .5, "center_y": .8}
     Button:
         text: "Previous"
         size_hint: .3, .07
@@ -74,13 +105,13 @@
         background_color: 108/255, 168/255, 124/255, 1
         background_normal: ""
         on_release:
-            self.parent.parent.parent.load_previous()
+            root.parent.parent.load_previous()
     Button:
-        text: "Next"
+        text: "Next" if not root.is_final else "Finish"
         size_hint: .3, .07
         pos_hint: {"center_x": .7, "top": .135}
-        background_color: 108/255, 168/255, 124/255, 1
+        background_color: (108/255, 168/255, 124/255, 1) if not root.is_final else (66/255, 135/255, 245/255, 1)
         background_normal: ""
         on_release:
-            self.parent.parent.parent.load_next()
+            root.parent.parent.load_next()
 

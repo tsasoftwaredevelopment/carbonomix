@@ -3,9 +3,11 @@ from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
+from kivy.uix.floatlayout import FloatLayout
+from kivy.properties import StringProperty, BooleanProperty
 
 
-DEBUG = False
+DEBUG = True
 
 
 class StartingScreen(Screen):
@@ -14,6 +16,11 @@ class StartingScreen(Screen):
 
 class WelcomeScreen(Screen):
     pass
+
+
+class QuestionLayout(FloatLayout):
+    question = StringProperty()
+    is_final = BooleanProperty(False)
 
 
 class CarbonomixApp(App):
@@ -34,7 +41,7 @@ class CarbonomixApp(App):
             sm.current = 'welcome'
             widgets = (welcome_screen.ids.welcome_text, welcome_screen.ids.please_answer_text, welcome_screen.ids.questions)
             animation = Animation(
-                opacity=1, duration=2
+                opacity=1, duration=2 if not DEBUG else 0
             )
             index = 0
 
@@ -44,7 +51,7 @@ class CarbonomixApp(App):
                 index += 1
 
             for i in range(len(widgets)):
-                Clock.schedule_once(animate, 1 + i * 0.7)
+                Clock.schedule_once(animate, (1 + i * 0.7) if not DEBUG else 0)
 
         def fade_in_text(dt=None):
             Animation(
