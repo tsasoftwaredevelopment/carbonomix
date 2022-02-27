@@ -4,6 +4,9 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 
 
+DEBUG = False
+
+
 class StartingScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -25,7 +28,7 @@ class CarbonomixApp(App):
         Window.size = (400, 600)
 
         fade = FadeTransition()
-        fade.duration = 0  # TODO: Change this to 1 again.
+        fade.duration = 0 if DEBUG else 1.5
 
         sm = ScreenManager(transition=fade)
         starting_screen = StartingScreen(name='starting')
@@ -38,14 +41,13 @@ class CarbonomixApp(App):
         def fade_in_text(dt=None):
             starting_screen.fade_text(1/20.0)
 
-        # TODO: Uncomment all of this and delete the line below.
-        """
-        for i in range(20):
-            Clock.schedule_once(fade_in_text, 1 + i * 0.1)
+        if not DEBUG:
+            for i in range(20):
+                Clock.schedule_once(fade_in_text, 1 + i * 0.1)
 
-        Clock.schedule_once(start_app, 3.4)
-        """
-        start_app()
+            Clock.schedule_once(start_app, 3.4)
+        else:
+            start_app()
 
         return sm
 
