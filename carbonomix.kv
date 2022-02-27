@@ -1,4 +1,7 @@
-<StartingScreen>:
+<Label>
+    color: 0, 0, 0, 1
+
+<StartingScreen>
     canvas:
         Color:
             rgba: 0, 0, 0, 1
@@ -6,21 +9,71 @@
             pos: self.pos
             size: self.size
     Label:
+        id: title
         text: "Carbonomix"
         font_size: root.width/10
         pos_hint: {"center_x": .5, "center_y": .7}
+        color: 1, 1, 1, 1
 
-<WelcomeScreen>:
+<WelcomeScreen>
     canvas:
         Color:
-            rgba: 189/255., 1, 206/255., 1
+            rgba: 189/255, 1, 206/255, 1
         Rectangle:
-            size: root.size
+            pos: self.pos
+            size: self.size
     BoxLayout:
         orientation: "vertical"
+        padding: min(root.width/15, root.height/15)
+        Label:
+            text: "Welcome to Carbonomix!"
+            font_size: min(root.width/15, root.height/15)
+            size_hint: 1, .1
 
         Label:
-            text: "sdklkjdsfkljdsflkjdsflkj"
-            font_size: root.width/15
-            color: 0, 0, 0, 1
+            text: "Please answer the following questions to get started."
+            font_size: min(root.width/25, root.height/25)
+            size_hint: 1, .1
+        Carousel:
+            direction: "right"
+
+            QuestionLayout:
+                Label:
+                    text: "What is your monthly electric bill? "
+
+            QuestionLayout:
+                Label:
+                    text: "kjlsfsljkd"
+
+            QuestionLayout:
+                Label:
+                    text: "kljsdfkljdsf"
+
+
+
+<QuestionLayout@FloatLayout>
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        RoundedRectangle:
+            pos: self.x + self.width * .05 / 2, self.y
+            size: self.width * .95, self.height
+            radius: [12]
+    Button:
+        text: "Previous"
+        size_hint: .3, .07
+        pos_hint: {"center_x": .3, "top": .135}
+        background_color: 108/255, 168/255, 124/255, 1
+        background_normal: ""
+        on_press:
+            self.parent.parent.parent.load_previous()
+    Button:
+        text: "Next"
+        size_hint: .3, .07
+        pos_hint: {"center_x": .7, "top": .135}
+        background_color: 108/255, 168/255, 124/255, 1
+        background_normal: ""
+        on_press:
+            self.parent.parent.parent.load_next()
 

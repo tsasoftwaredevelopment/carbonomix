@@ -10,13 +10,10 @@ DEBUG = True
 class StartingScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        for child in self.children:
-            if child.__class__.__name__ == 'Label':
-                self.text = child
-                child.opacity = 0
+        self.ids.title.opacity = 0
 
     def fade_text(self, add: float):
-        self.text.opacity += add
+        self.ids.title.opacity += add
 
 
 class WelcomeScreen(Screen):
@@ -26,6 +23,7 @@ class WelcomeScreen(Screen):
 class CarbonomixApp(App):
     def build(self):
         Window.size = (400, 600)
+        Window.clearcolor = (189/255, 1, 206/255, 1)
 
         fade = FadeTransition()
         fade.duration = 0 if DEBUG else 1.5
