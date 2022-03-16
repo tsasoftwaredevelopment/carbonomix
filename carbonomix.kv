@@ -4,7 +4,7 @@
 <StartingScreen>
     canvas:
         Color:
-            rgba: 0, 0, 0, 1
+            rgba: 189/255, 1, 206/255, 1
         Rectangle:
             pos: self.pos
             size: self.size
@@ -60,27 +60,75 @@
             QuestionLayout:
                 id: electric_bill
                 question: "What is your monthly electric bill?"
-
+                MDTextField:
+                    multiline: False
+                    input_filter: 'int'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    size_hint_x: 0.6
+                    required: True
+                    line_color_normal: 108/255, 168/255, 124/255, 1
+                    max_text_length: 10
+    
             QuestionLayout:
                 id: gas_bill
                 question: "What is your monthly gas bill?"
+                MDTextField:
+                    multiline: False
+                    input_filter: 'int'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    size_hint_x: 0.6
+                    required: True
+                    line_color_normal: 108/255, 168/255, 124/255, 1
+                    max_text_length: 10
 
             QuestionLayout:
                 id: oil_bill
                 question: "What is your monthly oil bill?"
+                MDTextField:
+                    multiline: False
+                    input_filter: 'int'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    size_hint_x: 0.6
+                    required: True
+                    line_color_normal: 108/255, 168/255, 124/255, 1
+                    max_text_length: 10
 
             QuestionLayout:
                 id: mileage
                 question: "What is your total yearly mileage?"
+                MDTextField:
+                    multiline: False
+                    input_filter: 'int'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    size_hint_x: 0.6
+                    required: True
+                    line_color_normal: 108/255, 168/255, 124/255, 1
+                    max_text_length: 10
 
             QuestionLayout:
                 id: flights_below_4
                 question: "How many flights have you taken in the past year that were 4 hours or LESS?"
+                MDTextField:
+                    multiline: False
+                    input_filter: 'int'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    size_hint_x: 0.6
+                    required: True
+                    line_color_normal: 108/255, 168/255, 124/255, 1
+                    max_text_length: 10
 
             QuestionLayout:
                 id: flights_over_4
                 question: "How many flights have you taken in the past year that were 4 hours or MORE?"
-
+                MDTextField:
+                    multiline: False
+                    input_filter: 'int'
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    size_hint_x: 0.6
+                    required: True
+                    line_color_normal: 108/255, 168/255, 124/255, 1
+                    max_text_length: 10
+                
             QuestionLayout:
                 id: recycle_newspaper
                 question: "Do you recycle newspapers?"

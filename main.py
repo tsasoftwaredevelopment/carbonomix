@@ -5,9 +5,13 @@ from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
+from kivy.lang import Builder
+from kivymd.app import MDApp
+from kivymd.theming import ThemeManager
 
+    
 
-DEBUG = True
+DEBUG = False
 
 # Temporary values.
 carbon_footprint = 39792.59
@@ -29,7 +33,7 @@ class QuestionLayout(FloatLayout):
     is_final = BooleanProperty(False)
 
 
-class CarbonomixApp(App):
+class CarbonomixApp(MDApp):
     def build(self):
         Window.size = (400, 600)
         Window.clearcolor = (189/255, 1, 206/255, 1)
