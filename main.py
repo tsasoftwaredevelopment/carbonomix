@@ -26,11 +26,9 @@ class WelcomeScreen(Screen):
     def submit(self):
         print(self.ids.electric_bill)
 
-
 class QuestionLayout(FloatLayout):
     question = StringProperty()
     is_final = BooleanProperty(False)
-
 
 class CarbonomixApp(MDApp):
     def build(self):
