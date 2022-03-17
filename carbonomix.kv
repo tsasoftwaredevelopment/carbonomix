@@ -126,39 +126,42 @@
         on_release:
             root.parent.parent.load_next()
             if root.is_final: root.parent.parent.parent.parent.submit()
+            app.root.current = "navbar"
 
-BoxLayout:
-    orientation: 'vertical'
+<Navbar>
+    BoxLayout:
+        orientation: 'vertical'
 
-    MDToolbar:
-        title: "Bottom Navbar"
+        MDToolbar:
+            title: "Bottom Navbar"
+            md_bg_color: .2,.2,.2,1
 
-    MDBottomNavigation:
-        #color stuff
+        MDBottomNavigation:
+            #color stuff
 
-        MDBottomNavigationItem:
-            name: 'screen 1'
-            text: "Placeholder Text"
-            icon: 'language-python'
+            MDBottomNavigationItem:
+                name: 'screen 1'
+                text: "Placeholder Text"
+                icon: 'language-python'
 
-            MDLabel:
-                text: "Placeholder"
-                halign: 'center'
+                MDLabel:
+                    text: "Placeholder"
+                    halign: 'center'
 
-        MDBottomNavigationItem:
-            name: 'screen 2'
-            text: "Placeholder Text"
-            icon: 'youtube'
+            MDBottomNavigationItem:
+                name: 'screen 2'
+                text: "Placeholder Text"
+                icon: 'youtube'
 
-            MDLabel:
-                text: "Placeholder"
-                halign: 'center'
+                MDLabel:
+                    text: "Placeholder"
+                    halign: 'center'
 
-        MDBottomNavigationItem:
-            name: 'screen 3'
-            text: "Placeholder Text"
-            icon: 'instagram'
+            MDBottomNavigationItem:
+                name: 'screen 3'
+                text: "Placeholder Text"
+                icon: 'instagram'
 
-            MDLabel:
-                text: "Placeholder"
-                halign: 'center'
+                MDLabel:
+                    text: "Placeholder"
+                    halign: 'center'
