@@ -125,14 +125,18 @@
         background_normal: ""
         on_release:
             root.parent.parent.load_next()
-            if root.is_final: root.parent.parent.parent.parent.submit()
+            # if root.is_final: root.manager.transition.direction = 'right'
+            if root.is_final: app.root.current = "main"
+            # root.parent.parent.parent.parent.submit()
 
-<Navbar>
+# Icons: http://zavoloklom.github.io/material-design-iconic-font/icons.html
+
+<MainScreen>
     BoxLayout:
         orientation: 'vertical'
 
         MDToolbar:
-            title: "Bottom Navbar"
+            title: "Carbonomix"
             md_bg_color: .2,.2,.2,1
 
         MDBottomNavigation:
@@ -140,7 +144,7 @@
 
             MDBottomNavigationItem:
                 name: 'screen 1'
-                text: "Placeholder Text"
+                text: "Placeholder"
                 icon: 'language-python'
 
                 MDLabel:
@@ -149,18 +153,18 @@
 
             MDBottomNavigationItem:
                 name: 'screen 2'
-                text: "Placeholder Text"
+                text: "Placeholder"
                 icon: 'youtube'
 
                 MDLabel:
-                    text: "Placeholder"
+                    text: "Hello"
                     halign: 'center'
 
             MDBottomNavigationItem:
                 name: 'screen 3'
-                text: "Placeholder Text"
+                text: "Placeholder"
                 icon: 'instagram'
 
                 MDLabel:
-                    text: "Placeholder"
+                    text: "How are you?"
                     halign: 'center'
