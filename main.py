@@ -16,15 +16,15 @@ carbon_footprint = 39792.59
 electric_bill, gas_bill, oil_bill, mileage, flights_below_4, flights_over_4, recycle_newspaper, recycle_aluminum_tin = 101.2, 87.72, 52.4, 9201, 2, 1, True, False
 # TODO: Change these values to match the values from the user.
 
-
-# Icons: http://zavoloklom.github.io/material-design-iconic-font/icons.html
-
 class StartingScreen(Screen):
     pass
 
 class WelcomeScreen(Screen):
     def submit(self):
         print(self.ids.electric_bill)
+
+class MainScreen(Screen):
+    pass
 
 class QuestionLayout(FloatLayout):
     question = StringProperty()
@@ -41,8 +41,10 @@ class CarbonomixApp(MDApp):
         sm = ScreenManager(transition=fade)
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
+        main_screen = MainScreen(name='main')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
+        sm.add_widget(main_screen)
 
         def start_app(dt=None):
             sm.current = 'welcome'
