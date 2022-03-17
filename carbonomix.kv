@@ -126,3 +126,39 @@
         on_release:
             root.parent.parent.load_next()
             if root.is_final: root.parent.parent.parent.parent.submit()
+
+BoxLayout:
+    orientation: 'vertical'
+
+    MDToolbar:
+        title: "Bottom Navbar"
+
+    MDBottomNavigation:
+        #color stuff
+
+        MDBottomNavigationItem:
+            name: 'screen 1'
+            text: "Placeholder Text"
+            icon: 'language-python'
+
+            MDLabel:
+                text: "Placeholder"
+                halign: 'center'
+
+        MDBottomNavigationItem:
+            name: 'screen 2'
+            text: "Placeholder Text"
+            icon: 'youtube'
+
+            MDLabel:
+                text: "Placeholder"
+                halign: 'center'
+
+        MDBottomNavigationItem:
+            name: 'screen 3'
+            text: "Placeholder Text"
+            icon: 'instagram'
+
+            MDLabel:
+                text: "Placeholder"
+                halign: 'center'
