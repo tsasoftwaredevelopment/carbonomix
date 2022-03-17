@@ -7,6 +7,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivy.lang import Builder
 from kivymd.app import MDApp
+from kivy.uix.widget import Widget
 
 DEBUG = True
 
@@ -16,9 +17,10 @@ electric_bill, gas_bill, oil_bill, mileage, flights_below_4, flights_over_4, rec
 # TODO: Change these values to match the values from the user.
 
 
+# Icons: http://zavoloklom.github.io/material-design-iconic-font/icons.html
+
 class StartingScreen(Screen):
     pass
-
 
 class WelcomeScreen(Screen):
     def submit(self):
@@ -30,7 +32,7 @@ class QuestionLayout(FloatLayout):
     is_final = BooleanProperty(False)
 
 
-class CarbonomixApp(App):
+class CarbonomixApp(MDApp):
     def build(self):
         Window.size = (400, 600)
         Window.clearcolor = (189/255, 1, 206/255, 1)
