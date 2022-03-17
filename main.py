@@ -5,7 +5,8 @@ from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
-
+from kivy.lang import Builder
+from kivymd.app import MDApp
 
 DEBUG = True
 
