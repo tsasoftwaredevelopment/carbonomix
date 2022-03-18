@@ -1,3 +1,5 @@
+#:import SlideTransition kivy.uix.screenmanager.SlideTransition
+
 <Label>
     color: 0, 0, 0, 1
 
@@ -125,7 +127,8 @@
         background_normal: ""
         on_release:
             root.parent.parent.load_next()
-            # if root.is_final: root.manager.transition.direction = 'right'
+            #if root.is_final: root.parent.parent.parent.parent.manager.transition.direction = 'right'
+            if root.is_final: app.root.transition = SlideTransition(direction='left')
             if root.is_final: app.root.current = "main"
             # root.parent.parent.parent.parent.submit()
 
