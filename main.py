@@ -1,4 +1,3 @@
-from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -9,7 +8,6 @@ from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.theming import ThemeManager
 
-    
 
 DEBUG = False
 
