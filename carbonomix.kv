@@ -60,10 +60,12 @@
             QuestionLayout:
                 id: electric_bill
                 question: "What is your monthly electric bill?"
+            
     
             QuestionLayout:
                 id: gas_bill
                 question: "What is your monthly gas bill?"
+                
 
             QuestionLayout:
                 id: oil_bill
@@ -72,25 +74,67 @@
             QuestionLayout:
                 id: mileage
                 question: "What is your total yearly mileage?"
+                
 
             QuestionLayout:
                 id: flights_below_4
                 question: "How many flights have you taken in the past year that were 4 hours or LESS?"
+                
 
             QuestionLayout:
                 id: flights_over_4
                 question: "How many flights have you taken in the past year that were 4 hours or MORE?"
                 
+                
             QuestionLayout:
                 id: recycle_newspaper
                 text_input: False
                 question: "Do you recycle newspapers?"
+                MDCheckbox:
+                    group: 'group'
+                    size_hint: None, None
+                    size: dp(40), dp(40)
+                    pos_hint: {'center_x': .4, 'center_y': .5}
+                MDCheckbox:
+                    group: 'group'
+                    size_hint: None, None
+                    size: dp(40), dp(40)
+                    pos_hint: {'center_x': .6, 'center_y': .5}
+                Label: 
+                    id: checkbox_label
+                    text: "Yes"
+                    pos_hint: {'center_x': .4, 'center_y': .55}
+                Label: 
+                    id: checkbox_label
+                    text: "No"
+                    pos_hint: {'center_x': .6, 'center_y': .55}
+                                    
+                            
 
             QuestionLayout:
                 id: recycle_aluminum_tin
                 text_input: False
                 is_final: True
                 question: "Do you recycle aluminum and tin?"
+                MDCheckbox:
+                    group: 'group'
+                    size_hint: None, None
+                    size: dp(40), dp(40)
+                    pos_hint: {'center_x': .4, 'center_y': .5}
+                MDCheckbox:
+                    group: 'group'
+                    size_hint: None, None
+                    size: dp(40), dp(40)
+                    pos_hint: {'center_x': .6, 'center_y': .5}
+                Label: 
+                    id: checkbox_label
+                    text: "Yes"
+                    pos_hint: {'center_x': .4, 'center_y': .55}
+                Label: 
+                    id: checkbox_label
+                    text: "No"
+                    pos_hint: {'center_x': .6, 'center_y': .55}
+
 
 
 <QuestionLayout>
@@ -120,6 +164,9 @@
         required: True
         line_color_normal: 108/255, 168/255, 124/255, 1
         max_text_length: 10
+    
+
+    
 
     Button:
         text: "Previous"
@@ -138,3 +185,4 @@
         on_release:
             root.parent.parent.load_next()
             if root.is_final: root.parent.parent.parent.parent.submit()
+
