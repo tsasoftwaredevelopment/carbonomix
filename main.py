@@ -32,6 +32,7 @@ class QuestionLayout(FloatLayout):
     question = StringProperty()
     is_final = BooleanProperty(False)
     text_input = BooleanProperty(True)
+    is_dollar_value = BooleanProperty(True)
 
 
 class CarbonomixApp(MDApp):

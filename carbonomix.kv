@@ -59,7 +59,8 @@
 
             QuestionLayout:
                 id: electric_bill
-                question: "What is your monthly electric bill?"
+                question: "What is your monthly electric bill?" 
+            
             
     
             QuestionLayout:
@@ -74,17 +75,17 @@
             QuestionLayout:
                 id: mileage
                 question: "What is your total yearly mileage?"
-                
+                is_dollar_value: False
 
             QuestionLayout:
                 id: flights_below_4
                 question: "How many flights have you taken in the past year that were 4 hours or LESS?"
+                is_dollar_value: False
                 
-
             QuestionLayout:
                 id: flights_over_4
                 question: "How many flights have you taken in the past year that were 4 hours or MORE?"
-                
+                is_dollar_value: False
                 
             QuestionLayout:
                 id: recycle_newspaper
@@ -164,6 +165,7 @@
         required: True
         line_color_normal: 108/255, 168/255, 124/255, 1
         max_text_length: 10
+        hint_text: "$" if root.is_dollar_value else "#"
     
 
     
