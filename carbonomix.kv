@@ -60,13 +60,10 @@
             QuestionLayout:
                 id: electric_bill
                 question: "What is your monthly electric bill?" 
-            
-            
-    
+
             QuestionLayout:
                 id: gas_bill
                 question: "What is your monthly gas bill?"
-                
 
             QuestionLayout:
                 id: oil_bill
@@ -109,8 +106,6 @@
                     id: checkbox_label
                     text: "No"
                     pos_hint: {'center_x': .6, 'center_y': .55}
-                                    
-                            
 
             QuestionLayout:
                 id: recycle_aluminum_tin
@@ -135,7 +130,6 @@
                     id: checkbox_label
                     text: "No"
                     pos_hint: {'center_x': .6, 'center_y': .55}
-
 
 
 <QuestionLayout>
@@ -166,9 +160,6 @@
         line_color_normal: 108/255, 168/255, 124/255, 1
         max_text_length: 10
         hint_text: "$" if root.is_dollar_value else "#"
-    
-
-    
 
     Button:
         text: "Previous"
@@ -187,4 +178,3 @@
         on_release:
             root.parent.parent.load_next()
             if root.is_final: root.parent.parent.parent.parent.submit()
-
