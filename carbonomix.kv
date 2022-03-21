@@ -140,13 +140,15 @@
 
         MDToolbar:
             title: "Carbonomix"
-            md_bg_color: .2,.2,.2,1
+            md_bg_color: 108/255, 168/255, 124/255, 1
+            right_action_items: [["dots-vertical", lambda x: app.callback_1()], ["clock", lambda x: app.callback_2()]]
 
         MDBottomNavigation:
-            #color stuff
-            panel_color: (238/255, 234/255, 234/255, 1)
-            selected_color_background: (151/255, 236/255, 248/255, 1)
-            text_color_active: 0, 0, 0, 1
+            #color stuff 238/255, 234/255, 234/255, 1 , 108/255, 168/255, 124/255 , 1, 151/255, 236/255, 248/255, 1
+            panel_color: 201/255, 240/255, 212/255, 1
+            #selected_color_background: 213/255, 242/255, 220/255, 1
+            text_color_active: 108/255, 168/255, 124/255, 1
+            font_name: ""
 
             MDBottomNavigationItem:
                 name: 'screen 1'
