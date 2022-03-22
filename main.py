@@ -6,8 +6,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivy.lang import Builder
 from kivymd.app import MDApp
+from kivy.uix.widget import Widget
 from kivymd.theming import ThemeManager
-
 
 DEBUG = False
 
@@ -16,22 +16,21 @@ carbon_footprint = 39792.59
 electric_bill, gas_bill, oil_bill, mileage, flights_below_4, flights_over_4, recycle_newspaper, recycle_aluminum_tin = 101.2, 87.72, 52.4, 9201, 2, 1, True, False
 # TODO: Change these values to match the values from the user.
 
-
 class StartingScreen(Screen):
     pass
-
 
 class WelcomeScreen(Screen):
     def submit(self):
         print(self.ids.electric_bill)
 
+class MainScreen(Screen):
+    pass
 
 class QuestionLayout(FloatLayout):
     question = StringProperty()
     is_final = BooleanProperty(False)
     text_input = BooleanProperty(True)
     is_dollar_value = BooleanProperty(True)
-
 
 class CarbonomixApp(MDApp):
     def build(self):
@@ -44,8 +43,10 @@ class CarbonomixApp(MDApp):
         sm = ScreenManager(transition=fade)
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
+        main_screen = MainScreen(name='main')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
+        sm.add_widget(main_screen)
 
         def start_app(dt=None):
             sm.current = 'welcome'
