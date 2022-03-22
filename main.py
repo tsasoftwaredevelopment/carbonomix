@@ -1,4 +1,3 @@
-from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -8,8 +7,9 @@ from kivy.properties import StringProperty, BooleanProperty
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.uix.widget import Widget
+from kivymd.theming import ThemeManager
 
-DEBUG = True
+DEBUG = False
 
 # Temporary values.
 carbon_footprint = 39792.59
@@ -29,6 +29,8 @@ class MainScreen(Screen):
 class QuestionLayout(FloatLayout):
     question = StringProperty()
     is_final = BooleanProperty(False)
+    text_input = BooleanProperty(True)
+    is_dollar_value = BooleanProperty(True)
 
 class CarbonomixApp(MDApp):
     def build(self):
