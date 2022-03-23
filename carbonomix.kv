@@ -48,7 +48,7 @@
             text_size: root.width * .95, None
             halign: "center"
             valign: "middle"
-        Carousel:
+        MDCarousel:
             id: questions
             opacity: 0
             direction: "right"
@@ -180,9 +180,7 @@
         on_release:
             root.parent.parent.load_next()
             if root.is_final: root.parent.parent.parent.parent.submit()
-            if root.is_final: app.root.transition = SlideTransition(direction='left')
-            if root.is_final: app.root.current = "main"
-        
+
 
 # Icons: https://materialdesignicons.com/
 
