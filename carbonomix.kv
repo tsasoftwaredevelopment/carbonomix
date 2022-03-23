@@ -179,10 +179,8 @@
         background_normal: ""
         on_release:
             root.parent.parent.load_next()
-            #if root.is_final: root.parent.parent.parent.parent.manager.transition.direction = 'right'
             if root.is_final: app.root.transition = SlideTransition(direction='left')
             if root.is_final: app.root.current = "main"
-            # root.parent.parent.parent.parent.submit()
 
 # Icons: https://materialdesignicons.com/
 
@@ -193,13 +191,12 @@
         MDToolbar:
             title: "Carbonomix"
             md_bg_color: 108/255, 168/255, 124/255, 1
-            right_action_items: [["dots-vertical", lambda x: app.callback_1()], ["email", lambda x: app.callback_2()]]
+            right_action_items: [["menu", lambda x: app.callback_1()]]
 
         MDBottomNavigation:
-            #color stuff 238/255, 234/255, 234/255, 1 , 108/255, 168/255, 124/255 , 1, 151/255, 236/255, 248/255, 1
+            #color stuff 
             panel_color: 201/255, 240/255, 212/255, 1
-            #selected_color_background: 213/255, 242/255, 220/255, 1
-            text_color_active: 24/255, 110/255, 37/255, 1 # FIX COLORS, ADD FONT, FIX ICONS,
+            text_color_active: 24/255, 110/255, 37/255, 1
             font_style: ""
 
             MDBottomNavigationItem:
