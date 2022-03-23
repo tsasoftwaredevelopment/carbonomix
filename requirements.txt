@@ -1,3 +1,5 @@
 kivy[base]
 kivy_examples
 kivymd
+psycopg2
+python-dotenv

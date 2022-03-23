@@ -9,6 +9,9 @@ from kivymd.app import MDApp
 from kivy.uix.widget import Widget
 from kivymd.theming import ThemeManager
 
+from database import update, query
+
+
 DEBUG = False
 
 # Temporary values.
