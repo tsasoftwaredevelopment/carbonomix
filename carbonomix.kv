@@ -182,6 +182,24 @@
             if root.is_final: app.root.transition = SlideTransition(direction='left')
             if root.is_final: app.root.current = "main"
 
+<MenuHeader>
+    orientation: "vertical"
+    adaptive_size: True
+    padding: "4dp"
+
+    MDBoxLayout:
+        spacing: "12dp"
+        adaptive_size: True
+
+        MDIconButton:
+            icon: "gesture-tap-button"
+            pos_hint: {"center_y": .5}
+
+        MDLabel:
+            text: "Actions"
+            adaptive_size: True
+            pos_hint: {"center_y": .5}
+
 # Icons: https://materialdesignicons.com/
 
 <MainScreen>
