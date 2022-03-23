@@ -24,6 +24,8 @@ class StartingScreen(Screen):
 class WelcomeScreen(Screen):
     def submit(self):
         print(self.ids.electric_bill)
+        footprint = 
+    
 
 
 class MainScreen(Screen):
