@@ -182,7 +182,8 @@
             #if root.is_final: root.parent.parent.parent.parent.manager.transition.direction = 'right'
             if root.is_final: app.root.transition = SlideTransition(direction='left')
             if root.is_final: app.root.current = "main"
-            # root.parent.parent.parent.parent.submit()
+            if root.is_final: root.parent.parent.parent.parent.submit()
+        
 
 # Icons: https://materialdesignicons.com/
 
