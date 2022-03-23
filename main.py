@@ -16,21 +16,26 @@ carbon_footprint = 39792.59
 electric_bill, gas_bill, oil_bill, mileage, flights_below_4, flights_over_4, recycle_newspaper, recycle_aluminum_tin = 101.2, 87.72, 52.4, 9201, 2, 1, True, False
 # TODO: Change these values to match the values from the user.
 
+
 class StartingScreen(Screen):
     pass
+
 
 class WelcomeScreen(Screen):
     def submit(self):
         print(self.ids.electric_bill)
 
+
 class MainScreen(Screen):
     pass
+
 
 class QuestionLayout(FloatLayout):
     question = StringProperty()
     is_final = BooleanProperty(False)
     text_input = BooleanProperty(True)
     is_dollar_value = BooleanProperty(True)
+
 
 class CarbonomixApp(MDApp):
     def build(self):
