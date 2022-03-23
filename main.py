@@ -5,7 +5,10 @@ from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
-
+from kivymd.theming import ThemeManager
+from kivy.lang import Builder
+from kivy.factory import Factory
+from kivymd.uix.menu import MDDropdownMenu
 from database import update, query
 
 
@@ -81,6 +84,11 @@ class CarbonomixApp(MDApp):
             start_app()
 
         return sm
+    
+    def presser(self):
+        #self.items = [f"Item {i}" for i in range(50)]
+        #return Factory.MyRoot()
+        pass
 
 
 if __name__ == '__main__':
