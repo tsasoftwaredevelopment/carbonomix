@@ -78,8 +78,10 @@ class CarbonomixApp(MDApp):
              }
         ]
         self.menu = MDDropdownMenu(
-            header_cls = MenuHeader(),
+            position = "bottom",
             hor_growth = "left",
+            # background_color = self.theme_cls.primary_color,
+            header_cls = MenuHeader(),
             items = menu_items,
             width_mult = 4,
         )
