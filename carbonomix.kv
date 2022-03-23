@@ -91,12 +91,12 @@
                 text_input: False
                 question: "Do you recycle newspapers?"
                 MDCheckbox:
-                    group: 'group'
+                    group: 'newspaper'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .4, 'center_y': .5}
                 MDCheckbox:
-                    group: 'group'
+                    group: 'newspaper'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .6, 'center_y': .5}
@@ -115,12 +115,12 @@
                 is_final: True
                 question: "Do you recycle aluminum and tin?"
                 MDCheckbox:
-                    group: 'group'
+                    group: 'aluminum_tin'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .4, 'center_y': .5}
                 MDCheckbox:
-                    group: 'group'
+                    group: 'aluminum_tin'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .6, 'center_y': .5}
@@ -155,7 +155,7 @@
     MDTextField:
         opacity: 1 if root.text_input else 0
         multiline: False
-        input_filter: 'int'
+        input_filter: 'float'
         pos_hint: {"center_x": .5, "center_y": .5}
         size_hint_x: 0.6
         required: True
@@ -179,10 +179,9 @@
         background_normal: ""
         on_release:
             root.parent.parent.load_next()
-            #if root.is_final: root.parent.parent.parent.parent.manager.transition.direction = 'right'
+            if root.is_final: root.parent.parent.parent.parent.submit()
             if root.is_final: app.root.transition = SlideTransition(direction='left')
             if root.is_final: app.root.current = "main"
-            if root.is_final: root.parent.parent.parent.parent.submit()
         
 
 # Icons: https://materialdesignicons.com/

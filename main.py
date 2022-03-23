@@ -9,7 +9,7 @@ from kivymd.app import MDApp
 from database import update, query, calculate_footprint
 
 
-DEBUG = False
+DEBUG = True
 
 # Temporary values.
 carbon_footprint = 39792.59
@@ -23,9 +23,12 @@ class StartingScreen(Screen):
 
 class WelcomeScreen(Screen):
     def submit(self):
-        print(self.ids.electric_bill)
-        footprint = 
-    
+        values = []
+        for value in (self.ids.electric_bill, self.ids.gas_bill, self.ids.oil_bill, self.ids.mileage, self.ids.flights_below_4, self.ids.flights_over_4):
+            values.append(float(value.children[2].text))
+        for value in (self.ids.recycle_newspaper, self.ids.recycle_aluminum_tin):
+            values.append(value.children[3].state == 'down')
+        footprint = calculate_footprint(*values)
 
 
 class MainScreen(Screen):
