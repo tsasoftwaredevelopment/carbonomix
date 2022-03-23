@@ -66,13 +66,20 @@ class CarbonomixApp(MDApp):
         menu_items = [
             {
                 "viewclass": "OneLineListItem",
-                "text": f"Item {i}",
+                "text": "Exit App",
                 "height": dp(40),
-                "on_release": lambda x=f"Item {i}": self.menu_callback(x),
-             } for i in range(2)
+                "on_release": lambda x="Exit App": self.menu_callback(x),
+             }, 
+             {
+                "viewclass": "OneLineListItem",
+                "text": "Placeholder",
+                "height": dp(40),
+                "on_release": lambda x="Placeholder": self.menu_callback(x),
+             }
         ]
         self.menu = MDDropdownMenu(
             header_cls = MenuHeader(),
+            hor_growth = "left",
             items = menu_items,
             width_mult = 4,
         )
