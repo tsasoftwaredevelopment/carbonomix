@@ -6,7 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
 
-from database import update, query
+from database import update, query, calculate_footprint
 
 
 DEBUG = False
