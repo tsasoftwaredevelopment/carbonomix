@@ -9,6 +9,9 @@ from kivymd.theming import ThemeManager
 from kivy.lang import Builder
 from kivy.factory import Factory
 from kivymd.uix.menu import MDDropdownMenu
+from kivy.metrics import dp
+from kivymd.uix.snackbar import Snackbar
+from kivymd.uix.boxlayout import MDBoxLayout
 from database import update, query
 
 
@@ -40,6 +43,10 @@ class QuestionLayout(FloatLayout):
     is_dollar_value = BooleanProperty(True)
 
 
+class MenuHeader(MDBoxLayout):
+    pass
+
+
 class CarbonomixApp(MDApp):
     def build(self):
         Window.size = (400, 600)
@@ -55,6 +62,20 @@ class CarbonomixApp(MDApp):
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
+
+        menu_items = [
+            {
+                "viewclass": "OneLineListItem",
+                "text": f"Item {i}",
+                "height": dp(40),
+                "on_release": lambda x=f"Item {i}": self.menu_callback(x),
+             } for i in range(2)
+        ]
+        self.menu = MDDropdownMenu(
+            header_cls = MenuHeader(),
+            items = menu_items,
+            width_mult = 4,
+        )
 
         def start_app(dt=None):
             sm.current = 'welcome'
@@ -85,10 +106,14 @@ class CarbonomixApp(MDApp):
 
         return sm
     
-    def presser(self):
-        #self.items = [f"Item {i}" for i in range(50)]
-        #return Factory.MyRoot()
-        pass
+    def callback(self, button):
+        self.menu.caller = button
+        self.menu.open()
+
+    def menu_callback(self, text_item):
+        self.menu.dismiss()
+        Snackbar(text=text_item).open()
+
 
 
 if __name__ == '__main__':
