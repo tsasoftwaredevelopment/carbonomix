@@ -1,3 +1,5 @@
+#:import SlideTransition kivy.uix.screenmanager.SlideTransition
+
 <Label>
     color: 0, 0, 0, 1
 
@@ -177,4 +179,52 @@
         background_normal: ""
         on_release:
             root.parent.parent.load_next()
-            if root.is_final: root.parent.parent.parent.parent.submit()
+            #if root.is_final: root.parent.parent.parent.parent.manager.transition.direction = 'right'
+            if root.is_final: app.root.transition = SlideTransition(direction='left')
+            if root.is_final: app.root.current = "main"
+            # root.parent.parent.parent.parent.submit()
+
+# Icons: https://materialdesignicons.com/
+
+<MainScreen>
+    BoxLayout:
+        orientation: 'vertical'
+
+        MDToolbar:
+            title: "Carbonomix"
+            md_bg_color: 108/255, 168/255, 124/255, 1
+            right_action_items: [["dots-vertical", lambda x: app.callback_1()], ["email", lambda x: app.callback_2()]]
+
+        MDBottomNavigation:
+            #color stuff 238/255, 234/255, 234/255, 1 , 108/255, 168/255, 124/255 , 1, 151/255, 236/255, 248/255, 1
+            panel_color: 201/255, 240/255, 212/255, 1
+            #selected_color_background: 213/255, 242/255, 220/255, 1
+            text_color_active: 24/255, 110/255, 37/255, 1 # FIX COLORS, ADD FONT, FIX ICONS,
+            font_style: ""
+
+            MDBottomNavigationItem:
+                name: 'screen 1'
+                text: "Carbon"
+                icon: 'earth' 
+
+                MDLabel:
+                    text: "Tab to see current carbon footprint. Maybe also display the most recent inputted values here. This will probably be the main tab that the app opens up on."
+                    halign: 'center'
+
+            MDBottomNavigationItem:
+                name: 'screen 2'
+                text: "Your Info"
+                icon: 'cellphone-information'
+
+                MDLabel:
+                    text: "Tab to enter new values for the questions that were on the welcome screen (used for carbon footprint calculation). Maybe make it look like a form (like those that you scroll down to the next question and submit at the very bottom). Probably direct user to percent change tab after inputting values."
+                    halign: 'center'
+
+            MDBottomNavigationItem:
+                name: 'screen 3'
+                text: "Statistics"
+                icon: 'chart-bar-stacked'
+
+                MDLabel:
+                    text: 'Tab to see percent change since last input of values (could also add statistics like average electric bill over the past year or percent change since last year). '
+                    halign: 'center'
