@@ -127,6 +127,7 @@ class CarbonomixApp(MDApp):
 
     def menu_callback(self, text_item):
         self.menu.dismiss()
+        # ADD THE CODE FOR THE EXIT FUNCTION HERE (AZ)
         Snackbar(text=text_item).open()
 
 
