@@ -126,8 +126,13 @@ class CarbonomixApp(MDApp):
         self.menu.open()
 
     def menu_callback(self, text_item):
+        #fade = FadeTransition()
+        #fade.duration = 0 if DEBUG else 1.5
+        #sm = ScreenManager(transition = "fade")
+        #sm.add_widget(exit_screen)
         self.menu.dismiss()
-        # ADD THE CODE FOR THE EXIT FUNCTION HERE (AZ)
+        #ADD THE CODE FOR THE EXIT FUNCTION HERE
+        sm.switch_to(ExitScreen)
         Snackbar(text=text_item).open()
 
 
