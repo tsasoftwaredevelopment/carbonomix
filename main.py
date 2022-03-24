@@ -36,6 +36,10 @@ class MainScreen(Screen):
     pass
 
 
+class ExitScreen(Screen):
+    pass
+
+
 class QuestionLayout(FloatLayout):
     question = StringProperty()
     is_final = BooleanProperty(False)
@@ -59,9 +63,11 @@ class CarbonomixApp(MDApp):
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
+        exit_screen = ExitScreen(name = 'end')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
+        sm.add_widget(exit_screen)
 
         menu_items = [
             {
