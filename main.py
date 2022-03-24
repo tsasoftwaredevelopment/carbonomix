@@ -131,7 +131,7 @@ class CarbonomixApp(MDApp):
         #sm = ScreenManager(transition = "fade")
         #sm.add_widget(exit_screen)
         self.menu.dismiss()
-        #ADD THE CODE FOR THE EXIT FUNCTION HERE
+        #ADD THE CODE FOR THE EXIT FUNCTION HERE, potentially test an extra indent into build()
         sm.switch_to(ExitScreen)
         Snackbar(text=text_item).open()
 
