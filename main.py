@@ -9,7 +9,8 @@ from kivymd.app import MDApp
 from database import update, query, create_tables, update_footprint, get_footprint
 
 
-DEBUG = True
+# DEBUG = True means you're testing.
+DEBUG = False
 sm: ScreenManager
 
 # Temporary values.
