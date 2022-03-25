@@ -73,7 +73,14 @@ class CarbonomixApp(MDApp):
         sm.add_widget(main_screen)
 
         def start_app(dt=None):
-            sm.current = 'welcome'
+            sm.current = 'welcome' if not query(
+                """
+                SELECT value
+                FROM input_values
+                WHERE user_id = %s
+                """,
+                (1,)
+            ).fetchone() else 'main'
             widgets = (welcome_screen.ids.welcome_text, welcome_screen.ids.please_answer_text, welcome_screen.ids.questions)
             animation = Animation(
                 opacity=1, duration=2 if not DEBUG else 0
