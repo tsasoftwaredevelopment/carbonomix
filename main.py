@@ -90,7 +90,7 @@ class CarbonomixApp(MDApp):
 
         def fade_in_text(dt=None):
             Animation(
-                opacity=1, duration=2.4
+                opacity=1, duration=0.75
             ).start(starting_screen.ids.title)
 
         if not DEBUG:
