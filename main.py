@@ -63,11 +63,11 @@ class CarbonomixApp(MDApp):
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
-        exit_screen = ExitScreen(name = 'end')
+        #exit_screen = ExitScreen(name = 'end')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
-        sm.add_widget(exit_screen)
+        #sm.add_widget(exit_screen)
 
         menu_items = [
             {
@@ -83,6 +83,7 @@ class CarbonomixApp(MDApp):
                 "on_release": lambda x="Placeholder": self.menu_callback(x),
              }
         ]
+
         self.menu = MDDropdownMenu(
             position = "bottom",
             hor_growth = "left",
@@ -126,14 +127,19 @@ class CarbonomixApp(MDApp):
         self.menu.open()
 
     def menu_callback(self, text_item):
-        #fade = FadeTransition()
-        #fade.duration = 0 if DEBUG else 1.5
-        #sm = ScreenManager(transition = "fade")
-        #sm.add_widget(exit_screen)
+        fade = FadeTransition()
+        fade.duration = 0 if DEBUG else 1.5
+
+        sm = ScreenManager(transition=FadeTransition())
+        exit_screen = ExitScreen(name = 'end')
+        sm.add_widget(exit_screen)
+
+        sm.switch_to = 'end'
         self.menu.dismiss()
         #ADD THE CODE FOR THE EXIT FUNCTION HERE, potentially test an extra indent into build()
-        sm.switch_to(ExitScreen)
         Snackbar(text=text_item).open()
+
+        #return sm
 
 
 
