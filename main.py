@@ -5,6 +5,7 @@ from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
+from kivy.properties import NumericProperty
 
 from database import update, query
 
@@ -29,7 +30,7 @@ class WelcomeScreen(Screen):
 class MainScreen(Screen):
     carbon_footprint = StringProperty()
     def footprint(self):
-        carbon_footprint = 39792.59
+        self.carbon_footprint = 39792.59
 
 
 
