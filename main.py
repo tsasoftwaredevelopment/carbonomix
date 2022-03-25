@@ -36,6 +36,8 @@ class WelcomeScreen(Screen):
                 self.ids.questions.load_slide(value)
                 return
             values.append(value.children[3].state == 'down')
+
+        # TODO: Add some loading indicator here so the user knows something is happening.
         update_footprint(values=values)
 
         sm.transition = SlideTransition(direction='left')
