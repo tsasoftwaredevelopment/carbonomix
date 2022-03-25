@@ -113,7 +113,7 @@ weights = {
 def get_footprint(index=0, user_id=1):
     # If index = 0, it returns the current footprint.
     # index = 1 is the first previous footprint, et cetera.
-    return query(
+    values = query(
         """
         SELECT footprint
         FROM footprints
@@ -122,7 +122,8 @@ def get_footprint(index=0, user_id=1):
         LIMIT 1 OFFSET %s
         """,
         (user_id, index)
-    ).fetchone()[0]
+    ).fetchone()
+    return values[0] if values else None
 
 
 def _calculate_footprint(electric_bill=0, gas_bill=0, oil_bill=0, mileage=0, flights_under_4=0, flights_over_4=0, recycles_newspaper=True, recycles_aluminum_tin=True):
