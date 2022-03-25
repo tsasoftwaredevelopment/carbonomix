@@ -46,9 +46,10 @@ def create_tables():
         """,
         """
         CREATE TABLE IF NOT EXISTS input_values (
+            user_id INTEGER NOT NULL,
             submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             category_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
+            value BIGINT NOT NULL,
             FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
@@ -63,6 +64,19 @@ def create_tables():
         INSERT INTO users (id, name)
         VALUES (1, 'Test User')
         ON CONFLICT (id) DO NOTHING
+        """,
+        """
+        INSERT INTO categories (name)
+        VALUES
+            ('electric_bill'),
+            ('gas_bill'),
+            ('oil_bill'),
+            ('mileage'),
+            ('flights_under_4'),
+            ('flights_over_4'),
+            ('recycles_newspaper'),
+            ('recycles_aluminum_tin')
+        ON CONFLICT (name) DO NOTHING
         """,
     )
     for statement in statements:
