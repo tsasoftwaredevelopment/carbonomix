@@ -6,7 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
 
-from database import update, query, calculate_footprint
+from database import update, query, calculate_footprint, create_tables
 
 
 DEBUG = True
@@ -101,5 +101,6 @@ class CarbonomixApp(MDApp):
 
 
 if __name__ == '__main__':
+    create_tables()
     CarbonomixApp().run()
     pass
