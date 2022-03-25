@@ -48,8 +48,8 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS input_values (
             user_id INTEGER NOT NULL,
             submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            category_id INTEGER NOT NULL,
-            value BIGINT NOT NULL,
+            category_id SMALLINT NOT NULL,
+            value DECIMAL NOT NULL,
             FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
@@ -57,6 +57,15 @@ def create_tables():
         """
         CREATE INDEX IF NOT EXISTS index_newest
         ON input_values (submitted_at DESC)
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS footprints (
+            user_id INTEGER NOT NULL,
+            submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            footprint DECIMAL NOT NULL,
+            PRIMARY KEY (user_id, submitted_at),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
         """,
     )
     upsert_statements = (
