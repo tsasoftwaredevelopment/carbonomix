@@ -11,6 +11,9 @@ from database import update, query, create_tables, update_footprint, get_footpri
 
 # DEBUG = True means you're testing.
 DEBUG = False
+# Set this to True if you want to see the questions again on the welcome screen.
+always_show_questions = True
+
 sm: ScreenManager
 
 # Temporary values.
@@ -74,7 +77,7 @@ class CarbonomixApp(MDApp):
         sm.add_widget(main_screen)
 
         def start_app(dt=None):
-            sm.current = 'welcome' if not query(
+            sm.current = 'welcome' if always_show_questions or not query(
                 """
                 SELECT value
                 FROM input_values
