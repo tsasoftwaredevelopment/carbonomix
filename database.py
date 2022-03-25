@@ -20,13 +20,13 @@ connection = connect(environ.get('DATABASE_URL'), sslmode='require')
 c = connection.cursor()
 
 
-def update(text):
-    c.execute(text)
+def update(*args):
+    c.execute(*args)
     connection.commit()
 
 
-def query(text):
-    c.execute(text)
+def query(*args):
+    c.execute(*args)
     return c
 
 
@@ -67,6 +67,10 @@ def create_tables():
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
         """,
+        """
+        CREATE INDEX IF NOT EXISTS index_newest
+        ON footprints (submitted_at DESC)
+        """,
     )
     upsert_statements = (
         """
@@ -106,7 +110,22 @@ weights = {
 }
 
 
-def calculate_footprint(electric_bill=0, gas_bill=0, oil_bill=0, mileage=0, flights_under_4=0, flights_over_4=0, recycles_newspaper=True, recycles_aluminum_tin=True):
+def get_footprint(index=0, user_id=1):
+    # If index = 0, it returns the current footprint.
+    # index = 1 is the first previous footprint, et cetera.
+    return query(
+        """
+        SELECT footprint
+        FROM footprints
+        WHERE user_id = %s
+        ORDER BY submitted_at DESC
+        LIMIT 1 OFFSET %s
+        """,
+        (user_id, index)
+    ).fetchone()[0]
+
+
+def _calculate_footprint(electric_bill=0, gas_bill=0, oil_bill=0, mileage=0, flights_under_4=0, flights_over_4=0, recycles_newspaper=True, recycles_aluminum_tin=True):
     footprint = 0
     for value in categories[:-2]:
         footprint += eval(value) * weights[value]
@@ -115,3 +134,41 @@ def calculate_footprint(electric_bill=0, gas_bill=0, oil_bill=0, mileage=0, flig
     if not recycles_aluminum_tin:
         footprint += weights["recycles_aluminum_tin"]
     return footprint
+
+
+def _get_new_footprint(user_id=1):
+    h = query(
+        """
+        SELECT value
+        FROM (
+            SELECT value,
+                ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY category_id, submitted_at DESC) AS row_number
+            FROM input_values
+        ) split
+        WHERE row_number = 1
+        """
+    ).fetchall()
+    return _calculate_footprint(*(float(h[i][0]) for i in range(len(h))))
+
+
+def update_footprint(values, categories_list=categories, user_id=1):
+    for i in range(len(categories_list)):
+        assert len(categories_list) == len(values) and categories_list[i] in categories
+
+        category_id = categories.index(categories_list[i]) + 1
+        update(
+            """
+            INSERT INTO input_values (user_id, category_id, value)
+            VALUES (%s, %s, %s)
+            """,
+            (user_id, category_id, values[i] if type(values[i]) is not bool else int(values[i]))
+        )
+
+    new_footprint = _get_new_footprint(user_id)
+    update(
+        """
+        INSERT INTO footprints (user_id, footprint)
+        VALUES (%s, %s)
+        """,
+        (user_id, new_footprint)
+    )

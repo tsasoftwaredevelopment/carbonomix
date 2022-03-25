@@ -6,7 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
 
-from database import update, query, calculate_footprint, create_tables
+from database import update, query, create_tables, update_footprint, get_footprint
 
 
 DEBUG = True
@@ -36,7 +36,7 @@ class WelcomeScreen(Screen):
                 self.ids.questions.load_slide(value)
                 return
             values.append(value.children[3].state == 'down')
-        footprint = calculate_footprint(*values)
+        update_footprint(values=values)
 
         sm.transition = SlideTransition(direction='left')
         sm.current = 'main'
