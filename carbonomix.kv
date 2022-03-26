@@ -1,5 +1,5 @@
 #:import SlideTransition kivy.uix.screenmanager.SlideTransition
-
+#:import Factory kivy.factory.Factory
 <Label>
     color: 0, 0, 0, 1
 
@@ -180,7 +180,7 @@
         on_release:
             root.parent.parent.load_next()
             if root.is_final: app.root.transition = SlideTransition(direction='left')
-            if root.is_final: app.root.current = "main"
+            if root.is_final: Factory.MyPopup().open()
 
 # Icons: https://materialdesignicons.com/
 
@@ -205,9 +205,7 @@
                 icon: 'earth' 
             
                 MDLabel: 
-                    text: root.carbon_footprint
-                    halign: "center"
-                    text_color: 1, 1, 1, 1 
+                    text: "This is the carbon workspace; sorry I lost the previous text"
             MDBottomNavigationItem:
                 name: 'screen 2'
                 text: "Your Info"
@@ -225,3 +223,16 @@
                 MDLabel:
                     text: 'Tab to see percent change since last input of values (could also add statistics like average electric bill over the past year or percent change since last year). '
                     halign: 'center'
+<MyPopup@Popup>
+    auto_dismiss: False
+    size_hint: 1, 1
+    halign: "center"
+    title: "Your Carbon Footprint:"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        Label: 
+            text: "insert carbon footprint value"
+        Button:
+            text: "Let's get to work!"
+            font_size: 24
