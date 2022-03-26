@@ -206,6 +206,7 @@
             
                 MDLabel: 
                     text: "This is the carbon workspace; sorry I lost the previous text"
+                    halign: "center"
             MDBottomNavigationItem:
                 name: 'screen 2'
                 text: "Your Info"
@@ -225,14 +226,19 @@
                     halign: 'center'
 <MyPopup@Popup>
     auto_dismiss: False
-    size_hint: 1, 1
+    size_hint: 0.85, 0.85
     halign: "center"
     title: "Your Carbon Footprint:"
+    background_color: 5, 5, 5, 5
     BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
-        Label: 
-            text: "insert carbon footprint value"
+        MDLabel: 
+            text: root.get_footprint()
         Button:
             text: "Let's get to work!"
             font_size: 24
+            background_color: 189/255, 1, 206/255, 1
+            on_release: 
+                app.root.current = "main"
+                root.dismiss()

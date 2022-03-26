@@ -1,3 +1,5 @@
+from multiprocessing.sharedctypes import Value
+from unittest.loader import VALID_MODULE_NAME
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -6,16 +8,16 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
 from kivy.properties import NumericProperty
-
 from database import update, query
+from kivy.uix.popup import Popup
 
 
 DEBUG = False
 
 # Temporary values.
+carbon_footprint = 39792.59
 electric_bill, gas_bill, oil_bill, mileage, flights_below_4, flights_over_4, recycle_newspaper, recycle_aluminum_tin = 101.2, 87.72, 52.4, 9201, 2, 1, True, False
 # TODO: Change these values to match the values from the user.
-
 
 class StartingScreen(Screen):
     pass
@@ -26,11 +28,14 @@ class WelcomeScreen(Screen):
         print(self.ids.electric_bill)
     
 
+class MyPopup(Popup):
+    def get_footprint(self):
+        return str(carbon_footprint)
+
 
 class MainScreen(Screen):
-    carbon_footprint = StringProperty()
-    def footprint(self):
-        self.carbon_footprint = 39792.59
+    pass
+
 
 
 
