@@ -38,7 +38,9 @@ class MainScreen(Screen):
 
 class ExitScreen(Screen):
     pass
-
+def callback(self, button):
+            self.menu.caller = button
+            self.menu.open()
 
 class QuestionLayout(FloatLayout):
     question = StringProperty()
@@ -63,11 +65,28 @@ class CarbonomixApp(MDApp):
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
-        #exit_screen = ExitScreen(name = 'end')
+        exit_screen = ExitScreen(name = 'end')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
-        #sm.add_widget(exit_screen)
+        sm.add_widget(exit_screen)
+
+        
+
+        def menu_callback(self, text_item):
+            #fade = FadeTransition()
+            #fade.duration = 0 if DEBUG else 1.5
+
+            #sm = ScreenManager(transition=FadeTransition())
+            #exit_screen = ExitScreen(name = 'end')
+            #sm.add_widget(exit_screen)
+
+            sm.switch_to(exit_screen)
+            self.menu.dismiss()
+            Snackbar(text = text_item).open()
+            #Add exit function here
+            
+            #return sm
 
         menu_items = [
             {
@@ -121,7 +140,7 @@ class CarbonomixApp(MDApp):
             start_app()
 
         return sm
-    
+    '''
     def callback(self, button):
         self.menu.caller = button
         self.menu.open()
@@ -134,11 +153,13 @@ class CarbonomixApp(MDApp):
         exit_screen = ExitScreen(name = 'end')
         sm.add_widget(exit_screen)
 
-        sm.switch_to = 'end'
+        sm.switch_to(exit_screen)
         self.menu.dismiss()
-        #ADD THE CODE FOR THE EXIT FUNCTION HERE, potentially test an extra indent into build()
-        Snackbar(text=text_item).open()
-
+        Snackbar(text = text_item).open()
+        #Add exit function here
+        
+        return sm
+    '''
         #return sm
 
 
