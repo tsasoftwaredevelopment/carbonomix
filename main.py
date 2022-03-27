@@ -12,7 +12,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
-from database import update, query, create_tables, update_footprint, get_footprint
+#from database import update, query, create_tables, update_footprint, get_footprint
 
 
 
@@ -49,7 +49,7 @@ class WelcomeScreen(Screen):
             values.append(value.children[3].state == 'down')
 
         # TODO: Add some loading indicator here so the user knows something is happening.
-        update_footprint(values=values)
+        #update_footprint(values=values)
 
         sm.transition = SlideTransition(direction='left')
         sm.current = 'main'
@@ -87,11 +87,11 @@ class CarbonomixApp(MDApp):
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
-        exit_screen = ExitScreen(name = 'end')
+        #exit_screen = ExitScreen(name = 'end')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
-        sm.add_widget(exit_screen)
+        #sm.add_widget(exit_screen)
 
         menu_items = [
             {
@@ -118,14 +118,16 @@ class CarbonomixApp(MDApp):
         )
 
         def start_app(dt=None):
-            sm.current = 'welcome' if always_show_questions or not query(
-                """
-                SELECT value
-                FROM input_values
-                WHERE user_id = %s
-                """,
-                (1,)
-            ).fetchone() else 'main'
+            sm.current = 'welcome' 
+            #if always_show_questions or not query(
+            """
+            SELECT value
+            FROM input_values
+            WHERE user_id = %s
+            """
+                #,
+                #(1,)
+            #).fetchone() else 'main'
             widgets = (welcome_screen.ids.welcome_text, welcome_screen.ids.please_answer_text, welcome_screen.ids.questions)
             animation = Animation(
                 opacity=1, duration=2 if not DEBUG else 0
@@ -161,14 +163,30 @@ class CarbonomixApp(MDApp):
         exit_screen = ExitScreen(name = 'end')
         sm.add_widget(exit_screen)
 
-        sm.transition(FadeTransition())
+        def my_callback(dt):
+
+            def close_application(self):
+                CarbonomixApp.get_running_app().stop()
+                Window.close()
+
+            close_application(self)
+            pass
+
+        def fade_text(self):
+            fade_in = Animation(opacity = 1, duration = 1.5)
+            fade_in.start(exit_screen.ids.ending_text)
+            #fade_out = Animation(opacity = 0, duration = 1)
+            #fade_out.start(exit_screen.ids.ending_text)
+
         sm.switch_to(exit_screen)
+        fade_text(self)
         self.menu.dismiss()
         Snackbar(text = text_item).open()
-        #Add exit function here
+
+        Clock.schedule_once(my_callback, 3)
 
 
 if __name__ == '__main__':
-    create_tables()
+    #create_tables()
     CarbonomixApp().run()
     pass
