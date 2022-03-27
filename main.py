@@ -1,4 +1,4 @@
-from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
@@ -12,10 +12,16 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
-from database import update, query
+from database import update, query, create_tables, update_footprint, get_footprint
 
 
+
+# DEBUG = True means you're testing.
 DEBUG = False
+# Set this to True if you want to see the questions again on the welcome screen.
+always_show_questions = True
+
+sm: ScreenManager
 
 # Temporary values.
 carbon_footprint = 39792.59
@@ -29,7 +35,24 @@ class StartingScreen(Screen):
 
 class WelcomeScreen(Screen):
     def submit(self):
-        print(self.ids.electric_bill)
+        values = []
+        for value in (self.ids.electric_bill, self.ids.gas_bill, self.ids.oil_bill, self.ids.mileage, self.ids.flights_below_4, self.ids.flights_over_4):
+            try:
+                values.append(float(value.children[2].text))
+            except ValueError:
+                self.ids.questions.load_slide(value)
+                return
+        for value in (self.ids.recycle_newspaper, self.ids.recycle_aluminum_tin):
+            if value.children[3].state == value.children[2].state:
+                self.ids.questions.load_slide(value)
+                return
+            values.append(value.children[3].state == 'down')
+
+        # TODO: Add some loading indicator here so the user knows something is happening.
+        update_footprint(values=values)
+
+        sm.transition = SlideTransition(direction='left')
+        sm.current = 'main'
 
 
 class MainScreen(Screen):
@@ -55,6 +78,7 @@ class MenuHeader(MDBoxLayout):
 
 class CarbonomixApp(MDApp):
     def build(self):
+        global sm
         Window.size = (400, 600)
         Window.clearcolor = (189/255, 1, 206/255, 1)
 
@@ -113,7 +137,14 @@ class CarbonomixApp(MDApp):
         )
 
         def start_app(dt=None):
-            sm.current = 'welcome'
+            sm.current = 'welcome' if always_show_questions or not query(
+                """
+                SELECT value
+                FROM input_values
+                WHERE user_id = %s
+                """,
+                (1,)
+            ).fetchone() else 'main'
             widgets = (welcome_screen.ids.welcome_text, welcome_screen.ids.please_answer_text, welcome_screen.ids.questions)
             animation = Animation(
                 opacity=1, duration=2 if not DEBUG else 0
@@ -165,5 +196,6 @@ class CarbonomixApp(MDApp):
 
 
 if __name__ == '__main__':
+    create_tables()
     CarbonomixApp().run()
     pass
