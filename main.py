@@ -5,16 +5,11 @@ from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
-from kivymd.theming import ThemeManager
-from kivy.lang import Builder
-from kivy.factory import Factory
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
 from database import update, query, create_tables, update_footprint, get_footprint
-
-
 
 # DEBUG = True means you're testing.
 DEBUG = False
@@ -22,11 +17,6 @@ DEBUG = False
 always_show_questions = True
 
 sm: ScreenManager
-
-# Temporary values.
-carbon_footprint = 39792.59
-electric_bill, gas_bill, oil_bill, mileage, flights_below_4, flights_over_4, recycle_newspaper, recycle_aluminum_tin = 101.2, 87.72, 52.4, 9201, 2, 1, True, False
-# TODO: Change these values to match the values from the user.
 
 
 class StartingScreen(Screen):
@@ -36,7 +26,10 @@ class StartingScreen(Screen):
 class WelcomeScreen(Screen):
     def submit(self):
         values = []
-        for value in (self.ids.electric_bill, self.ids.gas_bill, self.ids.oil_bill, self.ids.mileage, self.ids.flights_below_4, self.ids.flights_over_4):
+        for value in (
+                self.ids.electric_bill, self.ids.gas_bill, self.ids.oil_bill, self.ids.mileage,
+                self.ids.flights_below_4,
+                self.ids.flights_over_4):
             try:
                 values.append(float(value.children[2].text))
             except ValueError:
@@ -78,7 +71,7 @@ class CarbonomixApp(MDApp):
     def build(self):
         global sm
         Window.size = (400, 600)
-        Window.clearcolor = (189/255, 1, 206/255, 1)
+        Window.clearcolor = (189 / 255, 1, 206 / 255, 1)
 
         fade = FadeTransition()
         fade.duration = 0 if DEBUG else 1.5
@@ -97,26 +90,25 @@ class CarbonomixApp(MDApp):
                 "text": "Exit App",
                 "height": dp(40),
                 "on_release": lambda x="Exit App": self.menu_callback(x),
-             }, 
-             {
+            },
+            {
                 "viewclass": "OneLineListItem",
                 "text": "Placeholder",
                 "height": dp(40),
                 "on_release": lambda x="Placeholder": self.menu_callback(x),
-             }
+            }
         ]
 
         self.menu = MDDropdownMenu(
-            position = "bottom",
-            hor_growth = "left",
-            #background_color = self.theme_cls.primary_color,
-            header_cls = MenuHeader(),
-            items = menu_items,
-            width_mult = 4,
+            position="bottom",
+            hor_growth="left",
+            # background_color = self.theme_cls.primary_color,
+            header_cls=MenuHeader(),
+            items=menu_items,
+            width_mult=4,
         )
 
         def start_app(dt=None):
-            sm.current = 'welcome' 
             sm.current = 'welcome' if always_show_questions or not query(
                 """
                 SELECT value
@@ -125,7 +117,8 @@ class CarbonomixApp(MDApp):
                 """,
                 (1,)
             ).fetchone() else 'main'
-            widgets = (welcome_screen.ids.welcome_text, welcome_screen.ids.please_answer_text, welcome_screen.ids.questions)
+            widgets = (
+                welcome_screen.ids.welcome_text, welcome_screen.ids.please_answer_text, welcome_screen.ids.questions)
             animation = Animation(
                 opacity=1, duration=2 if not DEBUG else 0
             )
@@ -151,37 +144,31 @@ class CarbonomixApp(MDApp):
             start_app()
 
         return sm
-    
+
     def callback(self, button):
         self.menu.caller = button
         self.menu.open()
 
     def menu_callback(self, text_item):
-        exit_screen = ExitScreen(name = 'end')
+        exit_screen = ExitScreen(name='end')
         sm.add_widget(exit_screen)
 
-        def my_callback(dt):
+        def close_application(dt=None):
+            CarbonomixApp.get_running_app().stop()
+            Window.close()
 
-            def close_application(self):
-                CarbonomixApp.get_running_app().stop()
-                Window.close()
-
-            close_application(self)
-            pass
-
-        def fade_text(self):
-            fade = Animation(opacity = 1, duration = 2) + Animation(opacity = 0, duration = 1)
+        def fade_text():
+            fade = Animation(opacity=1, duration=2) + Animation(opacity=0, duration=1)
             fade.start(exit_screen.ids.ending_text)
 
-        sm.switch_to(exit_screen, transition = FadeTransition(), duration = 0.75)
-        fade_text(self)
+        sm.switch_to(exit_screen, transition=FadeTransition(), duration=0.75)
+        fade_text()
         self.menu.dismiss()
-        Snackbar(text = text_item).open()
+        Snackbar(text=text_item).open()
 
-        Clock.schedule_once(my_callback, 4)
+        Clock.schedule_once(close_application, 4)
 
 
 if __name__ == '__main__':
     create_tables()
     CarbonomixApp().run()
-    pass
