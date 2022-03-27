@@ -109,7 +109,6 @@ class CarbonomixApp(MDApp):
         )
 
         def start_app(dt=None):
-            sm.current = 'welcome'
             sm.current = 'welcome' if always_show_questions or not query(
                 """
                 SELECT value
