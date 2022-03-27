@@ -153,7 +153,7 @@ class CarbonomixApp(MDApp):
         exit_screen = ExitScreen(name='end')
         sm.add_widget(exit_screen)
 
-        def close_application():
+        def close_application(dt=None):
             CarbonomixApp.get_running_app().stop()
             Window.close()
 
