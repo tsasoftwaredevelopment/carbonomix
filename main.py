@@ -87,11 +87,9 @@ class CarbonomixApp(MDApp):
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
-        exit_screen = ExitScreen(name = 'end')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
-        sm.add_widget(exit_screen)
 
         menu_items = [
             {
@@ -111,13 +109,14 @@ class CarbonomixApp(MDApp):
         self.menu = MDDropdownMenu(
             position = "bottom",
             hor_growth = "left",
-            # background_color = self.theme_cls.primary_color,
+            #background_color = self.theme_cls.primary_color,
             header_cls = MenuHeader(),
             items = menu_items,
             width_mult = 4,
         )
 
         def start_app(dt=None):
+            sm.current = 'welcome' 
             sm.current = 'welcome' if always_show_questions or not query(
                 """
                 SELECT value
@@ -158,17 +157,28 @@ class CarbonomixApp(MDApp):
         self.menu.open()
 
     def menu_callback(self, text_item):
-        fade = FadeTransition()
-        fade.duration = 0 if DEBUG else 1.5
-
-        sm = ScreenManager(transition=FadeTransition())
         exit_screen = ExitScreen(name = 'end')
         sm.add_widget(exit_screen)
 
-        sm.switch_to(exit_screen)
+        def my_callback(dt):
+
+            def close_application(self):
+                CarbonomixApp.get_running_app().stop()
+                Window.close()
+
+            close_application(self)
+            pass
+
+        def fade_text(self):
+            fade = Animation(opacity = 1, duration = 2) + Animation(opacity = 0, duration = 1)
+            fade.start(exit_screen.ids.ending_text)
+
+        sm.switch_to(exit_screen, transition = FadeTransition(), duration = 0.75)
+        fade_text(self)
         self.menu.dismiss()
         Snackbar(text = text_item).open()
-        #Add exit function here
+
+        Clock.schedule_once(my_callback, 4)
 
 
 if __name__ == '__main__':
