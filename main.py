@@ -173,17 +173,17 @@ class CarbonomixApp(MDApp):
             pass
 
         def fade_text(self):
-            fade_in = Animation(opacity = 1, duration = 1.5)
+            fade_in = Animation(opacity = 1, duration = 2)
             fade_in.start(exit_screen.ids.ending_text)
             #fade_out = Animation(opacity = 0, duration = 1)
             #fade_out.start(exit_screen.ids.ending_text)
 
-        sm.switch_to(exit_screen)
+        sm.switch_to(exit_screen, transition = FadeTransition(), duration = 0.75)
         fade_text(self)
         self.menu.dismiss()
         Snackbar(text = text_item).open()
 
-        Clock.schedule_once(my_callback, 3)
+        Clock.schedule_once(my_callback, 5)
 
 
 if __name__ == '__main__':
