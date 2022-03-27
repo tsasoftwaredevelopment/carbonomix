@@ -172,4 +172,3 @@ class CarbonomixApp(MDApp):
 if __name__ == '__main__':
     create_tables()
     CarbonomixApp().run()
-    pass
