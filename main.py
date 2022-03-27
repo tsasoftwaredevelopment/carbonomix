@@ -61,9 +61,7 @@ class MainScreen(Screen):
 
 class ExitScreen(Screen):
     pass
-def callback(self, button):
-            self.menu.caller = button
-            self.menu.open()
+
 
 class QuestionLayout(FloatLayout):
     question = StringProperty()
@@ -94,23 +92,6 @@ class CarbonomixApp(MDApp):
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
         sm.add_widget(exit_screen)
-
-        
-
-        def menu_callback(self, text_item):
-            #fade = FadeTransition()
-            #fade.duration = 0 if DEBUG else 1.5
-
-            #sm = ScreenManager(transition=FadeTransition())
-            #exit_screen = ExitScreen(name = 'end')
-            #sm.add_widget(exit_screen)
-
-            sm.switch_to(exit_screen)
-            self.menu.dismiss()
-            Snackbar(text = text_item).open()
-            #Add exit function here
-            
-            #return sm
 
         menu_items = [
             {
@@ -171,7 +152,7 @@ class CarbonomixApp(MDApp):
             start_app()
 
         return sm
-    '''
+    
     def callback(self, button):
         self.menu.caller = button
         self.menu.open()
@@ -188,11 +169,6 @@ class CarbonomixApp(MDApp):
         self.menu.dismiss()
         Snackbar(text = text_item).open()
         #Add exit function here
-        
-        return sm
-    '''
-        #return sm
-
 
 
 if __name__ == '__main__':
