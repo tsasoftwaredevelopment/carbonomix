@@ -5,8 +5,15 @@ from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
-
+from kivymd.theming import ThemeManager
+from kivy.lang import Builder
+from kivy.factory import Factory
+from kivymd.uix.menu import MDDropdownMenu
+from kivy.metrics import dp
+from kivymd.uix.snackbar import Snackbar
+from kivymd.uix.boxlayout import MDBoxLayout
 from database import update, query, create_tables, update_footprint, get_footprint
+
 
 
 # DEBUG = True means you're testing.
@@ -52,11 +59,21 @@ class MainScreen(Screen):
     pass
 
 
+class ExitScreen(Screen):
+    pass
+def callback(self, button):
+            self.menu.caller = button
+            self.menu.open()
+
 class QuestionLayout(FloatLayout):
     question = StringProperty()
     is_final = BooleanProperty(False)
     text_input = BooleanProperty(True)
     is_dollar_value = BooleanProperty(True)
+
+
+class MenuHeader(MDBoxLayout):
+    pass
 
 
 class CarbonomixApp(MDApp):
@@ -72,9 +89,52 @@ class CarbonomixApp(MDApp):
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
+        exit_screen = ExitScreen(name = 'end')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
+        sm.add_widget(exit_screen)
+
+        
+
+        def menu_callback(self, text_item):
+            #fade = FadeTransition()
+            #fade.duration = 0 if DEBUG else 1.5
+
+            #sm = ScreenManager(transition=FadeTransition())
+            #exit_screen = ExitScreen(name = 'end')
+            #sm.add_widget(exit_screen)
+
+            sm.switch_to(exit_screen)
+            self.menu.dismiss()
+            Snackbar(text = text_item).open()
+            #Add exit function here
+            
+            #return sm
+
+        menu_items = [
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Exit App",
+                "height": dp(40),
+                "on_release": lambda x="Exit App": self.menu_callback(x),
+             }, 
+             {
+                "viewclass": "OneLineListItem",
+                "text": "Placeholder",
+                "height": dp(40),
+                "on_release": lambda x="Placeholder": self.menu_callback(x),
+             }
+        ]
+
+        self.menu = MDDropdownMenu(
+            position = "bottom",
+            hor_growth = "left",
+            # background_color = self.theme_cls.primary_color,
+            header_cls = MenuHeader(),
+            items = menu_items,
+            width_mult = 4,
+        )
 
         def start_app(dt=None):
             sm.current = 'welcome' if always_show_questions or not query(
@@ -111,6 +171,28 @@ class CarbonomixApp(MDApp):
             start_app()
 
         return sm
+    '''
+    def callback(self, button):
+        self.menu.caller = button
+        self.menu.open()
+
+    def menu_callback(self, text_item):
+        fade = FadeTransition()
+        fade.duration = 0 if DEBUG else 1.5
+
+        sm = ScreenManager(transition=FadeTransition())
+        exit_screen = ExitScreen(name = 'end')
+        sm.add_widget(exit_screen)
+
+        sm.switch_to(exit_screen)
+        self.menu.dismiss()
+        Snackbar(text = text_item).open()
+        #Add exit function here
+        
+        return sm
+    '''
+        #return sm
+
 
 
 if __name__ == '__main__':

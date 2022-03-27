@@ -181,6 +181,24 @@
             root.parent.parent.load_next()
             if root.is_final: root.parent.parent.parent.parent.submit()
 
+<MenuHeader>
+    orientation: "vertical"
+    adaptive_size: True
+    padding: "4dp"
+
+    MDBoxLayout:
+        spacing: "12dp"
+        adaptive_size: True
+
+        MDIconButton:
+            icon: "gesture-tap-button"
+            pos_hint: {"center_y": .5}
+
+        MDLabel:
+            text: "Actions"
+            adaptive_size: True
+            pos_hint: {"center_y": .5}
+
 # Icons: https://materialdesignicons.com/
 
 <MainScreen>
@@ -190,13 +208,13 @@
         MDToolbar:
             title: "Carbonomix"
             md_bg_color: 108/255, 168/255, 124/255, 1
-            right_action_items: [["menu", lambda x: app.callback_1()]]
+            right_action_items: [["menu", lambda x: app.callback(x)]]
 
         MDBottomNavigation:
             #color stuff 
             panel_color: 201/255, 240/255, 212/255, 1
             text_color_active: 24/255, 110/255, 37/255, 1
-            font_style: ""
+            font_style: "" # Add font
 
             MDBottomNavigationItem:
                 name: 'screen 1'
@@ -224,3 +242,18 @@
                 MDLabel:
                     text: 'Tab to see percent change since last input of values (could also add statistics like average electric bill over the past year or percent change since last year). '
                     halign: 'center'
+
+<ExitScreen>
+    canvas:
+        Color:
+            rgba: 189/255, 1, 206/255, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        id: title
+        text: "Thank you for using\nCarbonomix!"
+        font_size: root.width/10
+        pos_hint: {"center_x": .5, "center_y": .5}
+        color: 1, 1, 1, 1
+        opacity: 0
