@@ -18,13 +18,6 @@ always_show_questions = True
 
 sm: ScreenManager
 
-# Temporary values.
-carbon_footprint = 39792.59
-electric_bill, gas_bill, oil_bill, mileage, flights_below_4, flights_over_4, recycle_newspaper, recycle_aluminum_tin = 101.2, 87.72, 52.4, 9201, 2, 1, True, False
-
-
-# TODO: Change these values to match the values from the user.
-
 
 class StartingScreen(Screen):
     pass
