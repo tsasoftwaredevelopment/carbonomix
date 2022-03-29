@@ -3,19 +3,21 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty, BooleanProperty
+from kivy.properties import StringProperty, BooleanProperty, NumericProperty
 from kivymd.app import MDApp
 from kivy.uix.popup import Popup
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.snackbar import BaseSnackbar
 from database import update, query, create_tables, update_footprint, get_footprint
 
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 
 sm: ScreenManager
 
@@ -70,6 +72,12 @@ class QuestionLayout(FloatLayout):
 
 class MenuHeader(MDBoxLayout):
     pass
+
+
+class CustomSnackbar(BaseSnackbar):
+    text = StringProperty(None)
+    icon = StringProperty(None)
+    font_size = NumericProperty("15sp")
 
 
 class CarbonomixApp(MDApp):
@@ -169,7 +177,15 @@ class CarbonomixApp(MDApp):
         sm.switch_to(exit_screen, transition=FadeTransition(), duration=0.75)
         fade_text()
         self.menu.dismiss()
-        Snackbar(text=text_item).open()
+
+        snackbar = CustomSnackbar(
+            text = text_item,
+            icon = "information-outline",
+            snackbar_x = "10dp",
+            snackbar_y = "10dp",
+            buttons = [MDFlatButton(text="Ok")]
+            )
+        snackbar.open()
 
         Clock.schedule_once(close_application, 4)
 
