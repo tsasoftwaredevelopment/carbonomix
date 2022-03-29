@@ -50,7 +50,7 @@ class WelcomeScreen(Screen):
         
 class FootprintPopup(Popup):
     def get_footprint(self):
-        return str(carbon_footprint)
+        return str(get_footprint())
 
 
 class MainScreen(Screen):
