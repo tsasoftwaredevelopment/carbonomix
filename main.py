@@ -4,15 +4,12 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty, BooleanProperty, NumericProperty
-from kivymd.app import MDApp
+from kivy.properties import StringProperty, BooleanProperty
 from kivy.uix.popup import Popup
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.snackbar import BaseSnackbar
 from database import update, query, create_tables, update_footprint, get_footprint
 
 # DEBUG = True means you're testing.
