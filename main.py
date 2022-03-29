@@ -5,6 +5,7 @@ from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty
 from kivymd.app import MDApp
+from kivy.uix.popup import Popup
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
@@ -17,7 +18,6 @@ DEBUG = False
 always_show_questions = True
 
 sm: ScreenManager
-
 
 class StartingScreen(Screen):
     pass
@@ -46,6 +46,11 @@ class WelcomeScreen(Screen):
 
         sm.transition = SlideTransition(direction='left')
         sm.current = 'main'
+
+        
+class FootprintPopup(Popup):
+    def get_footprint(self):
+        return str(carbon_footprint)
 
 
 class MainScreen(Screen):
