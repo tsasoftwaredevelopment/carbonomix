@@ -1,5 +1,5 @@
-#:import SlideTransition kivy.uix.screenmanager.SlideTransition
 #:import Factory kivy.factory.Factory
+
 <Label>
     color: 0, 0, 0, 1
 
@@ -15,8 +15,9 @@
         text: "Carbonomix"
         font_size: root.width/10
         pos_hint: {"center_x": .5, "center_y": .7}
-        color: 1, 1, 1, 1
+        color: 0, 0, 0, 1
         opacity: 0
+
 
 <WelcomeScreen>
     canvas:
@@ -48,7 +49,8 @@
             text_size: root.width * .95, None
             halign: "center"
             valign: "middle"
-        Carousel:
+
+        MDCarousel:
             id: questions
             opacity: 0
             direction: "right"
@@ -91,12 +93,12 @@
                 text_input: False
                 question: "Do you recycle newspapers?"
                 MDCheckbox:
-                    group: 'group'
+                    group: 'newspaper'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .4, 'center_y': .5}
                 MDCheckbox:
-                    group: 'group'
+                    group: 'newspaper'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .6, 'center_y': .5}
@@ -115,12 +117,12 @@
                 is_final: True
                 question: "Do you recycle aluminum and tin?"
                 MDCheckbox:
-                    group: 'group'
+                    group: 'aluminum_tin'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .4, 'center_y': .5}
                 MDCheckbox:
-                    group: 'group'
+                    group: 'aluminum_tin'
                     size_hint: None, None
                     size: dp(40), dp(40)
                     pos_hint: {'center_x': .6, 'center_y': .5}
@@ -155,7 +157,7 @@
     MDTextField:
         opacity: 1 if root.text_input else 0
         multiline: False
-        input_filter: 'int'
+        input_filter: 'float'
         pos_hint: {"center_x": .5, "center_y": .5}
         size_hint_x: 0.6
         required: True
@@ -179,8 +181,28 @@
         background_normal: ""
         on_release:
             root.parent.parent.load_next()
-            if root.is_final: app.root.transition = SlideTransition(direction='left')
-            if root.is_final: Factory.MyPopup().open()
+            if root.is_final: root.parent.parent.parent.parent.submit()
+            if root.is_final: Factory.FootprintPopup().open()
+
+
+<MenuHeader>
+    orientation: "vertical"
+    adaptive_size: True
+    padding: "4dp"
+
+    MDBoxLayout:
+        spacing: "12dp"
+        adaptive_size: True
+
+        MDIconButton:
+            icon: "gesture-tap-button"
+            pos_hint: {"center_y": .5}
+
+        MDLabel:
+            text: "Actions"
+            adaptive_size: True
+            pos_hint: {"center_y": .5}
+
 
 # Icons: https://materialdesignicons.com/
 
@@ -191,13 +213,13 @@
         MDToolbar:
             title: "Carbonomix"
             md_bg_color: 108/255, 168/255, 124/255, 1
-            right_action_items: [["menu", lambda x: app.callback_1()]]
+            right_action_items: [["menu", lambda x: app.callback(x)]]
 
         MDBottomNavigation:
             #color stuff 
             panel_color: 201/255, 240/255, 212/255, 1
             text_color_active: 24/255, 110/255, 37/255, 1
-            font_style: ""
+            font_style: "" # Add font
 
             MDBottomNavigationItem:
                 name: 'screen 1'
@@ -224,7 +246,9 @@
                 MDLabel:
                     text: 'Tab to see percent change since last input of values (could also add statistics like average electric bill over the past year or percent change since last year). '
                     halign: 'center'
-<MyPopup@Popup>
+                    
+                    
+<FootprintPopup@Popup>
     auto_dismiss: False
     size_hint: 0.9, 0.9
     halign: "center"
@@ -250,3 +274,20 @@
             on_release: 
                 app.root.current = "main"
                 root.dismiss()
+
+
+<ExitScreen>
+    canvas:
+        Color:
+            rgba: 189/255, 1, 206/255, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        id: ending_text
+        text: "Thank you for using\nCarbonomix!"
+        font_size: root.width/10
+        halign: "center"
+        pos_hint: {"center_x": .5, "center_y": .5}
+        color: 0, 0, 0, 1
+        opacity: 0
