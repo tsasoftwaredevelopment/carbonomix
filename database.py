@@ -153,18 +153,18 @@ def _get_new_footprint(user_id=1):
 
 
 def update_footprint(values, categories_list=categories, user_id=1):
+    insert_values = """
+        INSERT INTO input_values (user_id, category_id, value)
+        VALUES """
+
     for i in range(len(categories_list)):
         assert len(categories_list) == len(values) and categories_list[i] in categories
 
         category_id = categories.index(categories_list[i]) + 1
-        update(
-            """
-            INSERT INTO input_values (user_id, category_id, value)
-            VALUES (%s, %s, %s)
-            """,
-            (user_id, category_id, values[i] if type(values[i]) is not bool else int(values[i]))
-        )
 
+        insert_values += f"({user_id}, {category_id}, {values[i] if type(values[i]) is not bool else int(values[i])}), "
+
+    update(insert_values[:-2])
     new_footprint = _get_new_footprint(user_id)
     update(
         """
