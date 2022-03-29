@@ -1,3 +1,4 @@
+from cgitb import text
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -72,12 +73,6 @@ class QuestionLayout(FloatLayout):
 
 class MenuHeader(MDBoxLayout):
     pass
-
-
-class CustomSnackbar(BaseSnackbar):
-    text = StringProperty(None)
-    icon = StringProperty(None)
-    font_size = NumericProperty("15sp")
 
 
 class CarbonomixApp(MDApp):
@@ -177,15 +172,7 @@ class CarbonomixApp(MDApp):
         sm.switch_to(exit_screen, transition=FadeTransition(), duration=0.75)
         fade_text()
         self.menu.dismiss()
-
-        snackbar = CustomSnackbar(
-            text = text_item,
-            icon = "information-outline",
-            snackbar_x = "10dp",
-            snackbar_y = "10dp",
-            buttons = [MDFlatButton(text="Ok")]
-            )
-        snackbar.open()
+        Snackbar(text=text_item).open()
 
         Clock.schedule_once(close_application, 4)
 
