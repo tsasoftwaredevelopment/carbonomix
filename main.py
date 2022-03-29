@@ -43,9 +43,8 @@ class WelcomeScreen(Screen):
 
         # TODO: Add some loading indicator here so the user knows something is happening.
         update_footprint(values=values)
-
+        FootprintPopup().open()
         sm.transition = SlideTransition(direction='left')
-        sm.current = 'main'
 
         
 class FootprintPopup(Popup):
