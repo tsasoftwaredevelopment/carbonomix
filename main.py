@@ -177,7 +177,7 @@ class CarbonomixApp(MDApp):
         sm.switch_to(exit_screen, transition=FadeTransition(), duration=0.75)
         fade_text()
         self.menu.dismiss()
-        
+
         snackbar = CustomSnackbar(
             text = text_item,
             icon = "information-outline",
@@ -185,6 +185,10 @@ class CarbonomixApp(MDApp):
             snackbar_y = "10dp",
             buttons = [MDFlatButton(text="Ok")]
             )
+        snackbar.size_hint_x = (
+            Window.width - (snackbar.snackbar_x * 2)
+        ) / Window.width
+        
         snackbar.open()
 
         Clock.schedule_once(close_application, 4)
