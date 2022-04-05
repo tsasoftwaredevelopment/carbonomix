@@ -10,7 +10,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
-from database import update, query, create_tables, update_footprint, get_footprint
+from database import update, query, create_tables, update_footprint, get_footprint, get_current_values
 from kivymd.app import MDApp
 
 # DEBUG = True means you're testing.
