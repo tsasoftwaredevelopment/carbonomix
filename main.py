@@ -50,12 +50,14 @@ class WelcomeScreen(Screen):
 
         
 class FootprintPopup(Popup):
-    def get_footprint(self):
+    def display_footprint(self):
         return str(get_footprint())
 
 
 class MainScreen(Screen):
-    pass
+    def display_electric_bill(self):
+            return query
+    
 
 
 class ExitScreen(Screen):

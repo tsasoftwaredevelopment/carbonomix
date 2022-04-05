@@ -233,10 +233,11 @@
                 text: "Your Info"
                 icon: 'cellphone-information'
 
-                MDLabel:
-                    text: "Tab to enter new values for the questions that were on the welcome screen (used for carbon footprint calculation). Maybe make it look like a form (like those that you scroll down to the next question and submit at the very bottom). Probably direct user to percent change tab after inputting values."
-                    halign: 'center'
-
+                MDList: 
+                    OneLineListItem: 
+                        text: str(root.display_electric_bill())
+                    OneLineListItem:
+                        text: "test 2" 
             MDBottomNavigationItem:
                 name: 'screen 3'
                 text: "Statistics"
@@ -262,7 +263,7 @@
         orientation: "vertical"
         size: root.width, root.height
         MDLabel: 
-            text: root.get_footprint() + " Metric Tons CO2"
+            text: root.display_footprint() + " Metric Tons CO2"
             font_size: 40
             halign: "center"
             text_color_active: 1, 1, 1, 1
