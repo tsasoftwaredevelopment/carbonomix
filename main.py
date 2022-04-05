@@ -59,31 +59,31 @@ class ElectricBillEditPopup(Popup):
 
 class MainScreen(Screen):
     def display_electric_bill(self):
-        first_val = str(get_current_values()[1])
+        first_val = str(get_current_values()[0])
         return first_val
     def display_gas_bill(self):
-        second_val = str(get_current_values()[2])
+        second_val = str(get_current_values()[1])
         return second_val
     def display_oil_bill(self):
-        third_val = str(get_current_values()[3])
+        third_val = str(get_current_values()[2])
         return third_val
     def display_mileage(self):
-        fourth_val = str(get_current_values()[4])
+        fourth_val = str(get_current_values()[3])
         return fourth_val
     def display_flights_under_4(self):
-        fifth_val = str(get_current_values()[5])
+        fifth_val = str(get_current_values()[4])
         return fifth_val
     def display_flights_over_4(self):
-        sixth_val = str(get_current_values()[6])
+        sixth_val = str(get_current_values()[5])
         return sixth_val
     def display_recycle_newspaper(self):
-        seventh_val = get_current_values()[7]
+        seventh_val = get_current_values()[6]
         if seventh_val == 1: 
             return str("Yes")
         else: 
             return str("No")
-    def display_recycle_aluminum_and_tin(self):
-        eight_value = get_current_values()[8]
+    def display_recycle_a_and_t(self):
+        eight_value = get_current_values()[7]
         if eight_value == 1: 
             return str("Yes")
         else: 

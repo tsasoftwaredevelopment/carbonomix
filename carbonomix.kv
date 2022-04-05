@@ -232,16 +232,15 @@
                 name: 'screen 2'
                 text: "Your Info"
                 icon: 'cellphone-information'
-
                 MDList: 
                     OneLineListItem: 
                         text: "Electric Bill: $ " + root.display_electric_bill()
                     OneLineListItem:
                         text: "Gas Bill: $ " + root.display_gas_bill()
-                      #  MDIconButton: 
-                       #     icon: "pencil"
+                    #  MDIconButton: 
+                    #     icon: "pencil"
                         #    on_release: 
-                         #       Factory.ElectricBillEditPopup().open()
+                        #       Factory.ElectricBillEditPopup().open()
                     OneLineListItem: 
                         text: "Oil Bill: $ " + root.display_oil_bill()
                     OneLineListItem: 
@@ -253,7 +252,7 @@
                     OneLineListItem: 
                         text: "Recycle Newspaper:  " + root.display_recycle_newspaper()
                     OneLineListItem: 
-                        text: "Recycle Aluminum: " + root.display_recycle_aluminum_and_tin()
+                        text: "Recycle Aluminum: " + root.display_recycle_a_and_t()
 
             MDBottomNavigationItem:
                 name: 'screen 3'
