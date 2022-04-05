@@ -53,10 +53,21 @@ class FootprintPopup(Popup):
     def display_footprint(self):
         return str(get_footprint())
 
+class ElectricBillEditPopup(Popup):
+    pass
 
 class MainScreen(Screen):
     def display_electric_bill(self):
-            return query
+            return query(
+                """
+                SELECT value
+                FROM input_values
+                WHERE category_id = %s
+                """,
+                (1,)
+            ).fetchone()
+            
+            
     
 
 

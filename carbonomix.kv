@@ -238,6 +238,10 @@
                         text: str(root.display_electric_bill())
                     OneLineListItem:
                         text: "test 2" 
+                        MDIconButton: 
+                            icon: "pencil"
+                            on_release: 
+                                Factory.ElectricBillEditPopup().open()
             MDBottomNavigationItem:
                 name: 'screen 3'
                 text: "Statistics"
@@ -275,6 +279,34 @@
                 app.root.current = "main"
                 root.dismiss()
 
+<ElectricBillEditPopup>
+    auto_dismiss: False
+    size_hint: 0.6, 0.4
+    halign: "center"
+    title: "Electric Bill"
+    title_align: "center"
+    title_size: 30
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        MDTextField:
+            multiline: False
+            input_filter: 'float'
+            size_hint_x: 0.5
+            required: True
+            line_color_normal: 108/255, 168/255, 124/255, 1
+            max_text_length: 10
+            hint_text: "$"
+            halign: "center" 
+        Button:
+            text: "Update"
+            font_size: 24
+            background_color: 189/255, 1, 206/255, 1
+            on_release: 
+                root.dismiss()
+                #TODO: update footprint function
+            size_hint: 0.6, 0.05
+        
 
 <ExitScreen>
     canvas:
