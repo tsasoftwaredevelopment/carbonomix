@@ -235,13 +235,26 @@
 
                 MDList: 
                     OneLineListItem: 
-                        text: str(root.display_electric_bill())
+                        text: "Electric Bill: $ " + root.display_electric_bill()
                     OneLineListItem:
-                        text: "test 2" 
-                        MDIconButton: 
-                            icon: "pencil"
-                            on_release: 
-                                Factory.ElectricBillEditPopup().open()
+                        text: "Gas Bill: $ " + root.display_gas_bill()
+                      #  MDIconButton: 
+                       #     icon: "pencil"
+                        #    on_release: 
+                         #       Factory.ElectricBillEditPopup().open()
+                    OneLineListItem: 
+                        text: "Oil Bill: $ " + root.display_oil_bill()
+                    OneLineListItem: 
+                        text: "Yearly Mileage: " + root.display_mileage() + " Miles"
+                    OneLineListItem: 
+                        text: "Yearly Flights Under 4 Hours:  " + root.display_flights_under_4()
+                    OneLineListItem: 
+                        text: "Yearly Flights Over 4 Hours:  " + root.display_flights_over_4()
+                    OneLineListItem: 
+                        text: "Recycle Newspaper:  " + root.display_recycle_newspaper()
+                    OneLineListItem: 
+                        text: "Recycle Aluminum: " + root.display_recycle_aluminum_and_tin()
+
             MDBottomNavigationItem:
                 name: 'screen 3'
                 text: "Statistics"
