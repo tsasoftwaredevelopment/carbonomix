@@ -57,15 +57,11 @@ class ElectricBillEditPopup(Popup):
     pass
 
 class MainScreen(Screen):
+    pass
     def display_electric_bill(self):
-            return query(
-                """
-                SELECT value
-                FROM input_values
-                WHERE category_id = %s
-                """,
-                (1,)
-            ).fetchone()
+        #placeholder text
+        return "value"
+         
             
             
     
