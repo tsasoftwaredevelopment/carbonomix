@@ -281,7 +281,7 @@
 
 <ElectricBillEditPopup>
     auto_dismiss: False
-    size_hint: 0.6, 0.4
+    size_hint: 0.7, 0.5
     halign: "center"
     title: "Electric Bill"
     title_align: "center"
@@ -297,7 +297,8 @@
             line_color_normal: 108/255, 168/255, 124/255, 1
             max_text_length: 10
             hint_text: "$"
-            halign: "center" 
+            pos_hint: {"center_x": .35, "center_y": .2}
+        
         Button:
             text: "Update"
             font_size: 24
