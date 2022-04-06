@@ -236,11 +236,10 @@
                 MDList:
                     id: info_list
                     OneLineListItem:
+                        MDIconButton: 
+                            icon: "pencil" 
+                            on_release: Factory.ElectricBillEditPopup().open()
                     OneLineListItem:
-                    #  MDIconButton: 
-                    #     icon: "pencil"
-                        #    on_release: 
-                        #       Factory.ElectricBillEditPopup().open()
                     OneLineListItem:
                     OneLineListItem:
                     OneLineListItem:
@@ -291,19 +290,19 @@
     halign: "center"
     title: "Electric Bill"
     title_align: "center"
-    title_size: 30
+    title_size: 20
     BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
         MDTextField:
             multiline: False
             input_filter: 'float'
-            size_hint_x: 0.5
+            size_hint_x: 1
             required: True
             line_color_normal: 108/255, 168/255, 124/255, 1
             max_text_length: 10
             hint_text: "$"
-            pos_hint: {"center_x": .35, "center_y": .2}
+
         
         Button:
             text: "Update"
@@ -312,8 +311,8 @@
             on_release: 
                 root.dismiss()
                 #TODO: update footprint function
-            size_hint: 0.6, 0.05
-        
+            size_hint_x: 1
+            size_hint_y: 0.02
 
 <ExitScreen>
     canvas:
