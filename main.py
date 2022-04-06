@@ -1,3 +1,4 @@
+from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -197,14 +198,12 @@ class CarbonomixApp(MDApp):
     def menu_callback2(self, text_item):
         snackbar = CustomSnackbar(
             text = text_item,
-            opposite_colors = True,
             bg_color = (50/255, 100/255, 50/255, 1),
             icon = "information",
-            line_color = (1, 1, 1, 1),
             snackbar_x = "10dp",
             snackbar_y = "10dp",
             duration = 2,
-            buttons = [MDFlatButton(text="Ok", text_color=(1, 1, 1, 1))]
+            buttons = [MDFlatButton(text="Ok", text_color=(1,1,1,1))]
             )
         snackbar.size_hint_x = (
             Window.width - (snackbar.snackbar_x * 2)
