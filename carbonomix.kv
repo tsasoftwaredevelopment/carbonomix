@@ -1,4 +1,5 @@
 #:import Factory kivy.factory.Factory
+#:import utils kivy.utils
 
 <Label>
     color: 0, 0, 0, 1
@@ -236,16 +237,24 @@
                 MDList:
                     id: info_list
                     OneLineListItem:
+                        elec_bill_edit_label: True
                         MDIconButton: 
                             icon: "pencil" 
-                            on_release: Factory.ElectricBillEditPopup().open()
+                            on_release: Factory.EditPopup().open()
                     OneLineListItem:
+                        gas_bill_edit_label: True
                     OneLineListItem:
+                        oil_bill_edit_label: True
                     OneLineListItem:
+                        mileage_edit_label: True
                     OneLineListItem:
+                        fb4_edit_label: True
                     OneLineListItem:
+                        fa4_edit_label: True
                     OneLineListItem:
+                        recycles_np_edit_label: True
                     OneLineListItem:
+                        recycles_a_and_t_edit_label: True
 
             MDBottomNavigationItem:
                 name: 'screen 3'
@@ -266,7 +275,7 @@
     title_size: 30
     separator_height: 3
     separator_color: 1, 1, 1, 1
-    background_color: 1, 182/255, 193/255, 1
+    background_color: utils.get_colors_from_hex('FFB6C1')
     background_normal: ""
     BoxLayout:
         orientation: "vertical"
@@ -275,7 +284,7 @@
             text: root.display_footprint() + " Metric Tons CO2"
             font_size: 40
             halign: "center"
-            text_color_active: 1, 1, 1, 1
+            text_color_active: 5, 5, 5, 5
         Button:
             text: "Go to Home Screen"
             font_size: 24
@@ -284,13 +293,15 @@
                 app.root.current = "main"
                 root.dismiss()
 
-<ElectricBillEditPopup>
+<EditPopup>
     auto_dismiss: False
     size_hint: 0.7, 0.5
     halign: "center"
-    title: "Electric Bill"
+    title: root.edit_label()
     title_align: "center"
     title_size: 20
+    title_color: 1, 1, 1, 1
+    background_color: 189/255, 1, 206/255, 1
     BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
@@ -302,6 +313,7 @@
             line_color_normal: 108/255, 168/255, 124/255, 1
             max_text_length: 10
             hint_text: "$"
+        
 
         
         Button:
@@ -310,7 +322,7 @@
             background_color: 189/255, 1, 206/255, 1
             on_release: 
                 root.dismiss()
-                #TODO: update footprint function
+                root.update_values()
             size_hint_x: 1
             size_hint_y: 0.02
 
