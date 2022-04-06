@@ -232,27 +232,21 @@
                 name: 'screen 2'
                 text: "Your Info"
                 icon: 'cellphone-information'
-                MDList: 
-                    OneLineListItem: 
-                        text: "Electric Bill: $ " + root.display_electric_bill()
+                on_tab_release: root.update_values()
+                MDList:
+                    id: info_list
                     OneLineListItem:
-                        text: "Gas Bill: $ " + root.display_gas_bill()
+                    OneLineListItem:
                     #  MDIconButton: 
                     #     icon: "pencil"
                         #    on_release: 
                         #       Factory.ElectricBillEditPopup().open()
-                    OneLineListItem: 
-                        text: "Oil Bill: $ " + root.display_oil_bill()
-                    OneLineListItem: 
-                        text: "Yearly Mileage: " + root.display_mileage() + " Miles"
-                    OneLineListItem: 
-                        text: "Yearly Flights Under 4 Hours:  " + root.display_flights_under_4()
-                    OneLineListItem: 
-                        text: "Yearly Flights Over 4 Hours:  " + root.display_flights_over_4()
-                    OneLineListItem: 
-                        text: "Recycle Newspaper:  " + root.display_recycle_newspaper()
-                    OneLineListItem: 
-                        text: "Recycle Aluminum: " + root.display_recycle_a_and_t()
+                    OneLineListItem:
+                    OneLineListItem:
+                    OneLineListItem:
+                    OneLineListItem:
+                    OneLineListItem:
+                    OneLineListItem:
 
             MDBottomNavigationItem:
                 name: 'screen 3'

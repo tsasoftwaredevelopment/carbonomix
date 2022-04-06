@@ -1,5 +1,3 @@
-from cgitb import text
-from click import pass_context
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -17,7 +15,7 @@ from kivymd.app import MDApp
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 
 sm: ScreenManager
 
@@ -54,44 +52,27 @@ class FootprintPopup(Popup):
     def display_footprint(self):
         return str(get_footprint())
 
+
 class ElectricBillEditPopup(Popup):
     pass
 
-class MainScreen(Screen):
-    def display_electric_bill(self):
-        first_val = str(get_current_values()[0])
-        return first_val
-    def display_gas_bill(self):
-        second_val = str(get_current_values()[1])
-        return second_val
-    def display_oil_bill(self):
-        third_val = str(get_current_values()[2])
-        return third_val
-    def display_mileage(self):
-        fourth_val = str(get_current_values()[3])
-        return fourth_val
-    def display_flights_under_4(self):
-        fifth_val = str(get_current_values()[4])
-        return fifth_val
-    def display_flights_over_4(self):
-        sixth_val = str(get_current_values()[5])
-        return sixth_val
-    def display_recycle_newspaper(self):
-        seventh_val = get_current_values()[6]
-        if seventh_val == 1: 
-            return str("Yes")
-        else: 
-            return str("No")
-    def display_recycle_a_and_t(self):
-        eight_value = get_current_values()[7]
-        if eight_value == 1: 
-            return str("Yes")
-        else: 
-            return str("No")
 
-            
-            
-    
+class MainScreen(Screen):
+    def update_values(self):
+        values = get_current_values()
+        format = (
+            "Electric Bill: ${:.2f}",
+            "Gas Bill: ${:.2f}",
+            "Oil Bill: ${:.2f}",
+            "Yearly Mileage: {:.2f} mpg",
+            "Yearly Flights Under 4 Hours: {:.0f}",
+            "Yearly Flights Over 4 Hours: {:.0f}",
+            "Recycles Newspaper: {:s}",
+            "Recycles Aluminum and Tin: {:s}"
+        )
+
+        for i in range(len(values)):
+            self.ids.info_list.children[-(i + 1)].text = format[i].format(values[i] if i <= 5 else "Yes" if values[i] == 1 else "No")
 
 
 class ExitScreen(Screen):
