@@ -11,6 +11,7 @@ from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
 from database import update, query, create_tables, update_footprint, get_footprint, get_current_values
 from kivymd.app import MDApp
+from kivymd.uix.list import OneLineListItem
 
 # DEBUG = True means you're testing.
 DEBUG = False
@@ -53,34 +54,12 @@ class FootprintPopup(Popup):
     def display_footprint(self):
         return str(get_footprint())
     
+class EditListItem(OneLineListItem):
+    def 
+
 
 class EditPopup(Popup):
-    def edit_label(self):
-        elec_bill_edit_label = BooleanProperty(False)
-        gas_bill_edit_label = BooleanProperty(False)
-        oil_bill_edit_label = BooleanProperty(False)
-        mileage_edit_label = BooleanProperty(False)
-        fb4_edit_label = BooleanProperty(False)
-        fa4_edit_label = BooleanProperty(False)
-        recycle_np_edit_label = BooleanProperty(False)
-        recycle_a_and_t_edit_label = BooleanProperty(False)
-        if not elec_bill_edit_label: 
-            return "Electric Bill: "
-        elif not gas_bill_edit_label: 
-            return "Gas Bill: "
-        elif not oil_bill_edit_label: 
-            return "Oil Bill: "
-        elif not mileage_edit_label: 
-            return "Mileage: "
-        elif not fb4_edit_label:
-            return "Flights Under 4 Hours: "
-        elif not fa4_edit_label: 
-            return "Flights Above 4 Hours: "
-        elif not recycle_np_edit_label: 
-            return "Recycles Newspaper: "
-        elif not recycle_a_and_t_edit_label: 
-            return "Recycles Aluminum and Tin: "
-    
+    pass
         
 
 class MainScreen(Screen):

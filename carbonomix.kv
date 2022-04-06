@@ -236,24 +236,22 @@
                 on_tab_release: root.update_values()
                 MDList:
                     id: info_list
-                    OneLineListItem:
+                    EditListItem:
                         elec_bill_edit_label: True
-                        MDIconButton: 
-                            icon: "pencil" 
-                            on_release: Factory.EditPopup().open()
-                    OneLineListItem:
+                        
+                    EditListItem:
                         gas_bill_edit_label: True
-                    OneLineListItem:
+                    EditListItem:
                         oil_bill_edit_label: True
-                    OneLineListItem:
+                    EditListItem:
                         mileage_edit_label: True
-                    OneLineListItem:
+                    EditListItem:
                         fb4_edit_label: True
-                    OneLineListItem:
+                    EditListItem:
                         fa4_edit_label: True
-                    OneLineListItem:
+                    EditListItem:
                         recycles_np_edit_label: True
-                    OneLineListItem:
+                    EditListItem:
                         recycles_a_and_t_edit_label: True
 
             MDBottomNavigationItem:
@@ -297,6 +295,7 @@
     auto_dismiss: False
     size_hint: 0.7, 0.5
     halign: "center"
+    
     title: root.edit_label()
     title_align: "center"
     title_size: 20
@@ -325,6 +324,12 @@
                 root.update_values()
             size_hint_x: 1
             size_hint_y: 0.02
+
+<EditListItem>
+    MDIconButton: 
+        icon: "pencil" 
+        on_release: Factory.EditPopup().open()
+
 
 <ExitScreen>
     canvas:
