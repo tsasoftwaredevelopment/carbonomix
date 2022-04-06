@@ -3,3 +3,4 @@ kivy_examples
 kivymd
 psycopg2
 python-dotenv
+matplotlib
