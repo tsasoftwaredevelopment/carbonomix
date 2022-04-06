@@ -108,7 +108,7 @@ class CarbonomixApp(MDApp):
                 "viewclass": "OneLineListItem",
                 "text": "Placeholder",
                 "height": dp(40),
-                "on_release": lambda x="Placeholder": self.menu_callback(x),
+                "on_release": lambda x="Placeholder": self.menu_callback2(x),
             }
         ]
 
@@ -180,9 +180,10 @@ class CarbonomixApp(MDApp):
 
         snackbar = CustomSnackbar(
             text = text_item,
-            icon = "information-outline",
+            icon = "information",
             snackbar_x = "10dp",
             snackbar_y = "10dp",
+            duration = 2,
             buttons = [MDFlatButton(text="Ok", text_color=(1, 1, 1, 1))]
             )
         snackbar.size_hint_x = (
@@ -192,6 +193,24 @@ class CarbonomixApp(MDApp):
         snackbar.open()
 
         Clock.schedule_once(close_application, 4)
+
+    def menu_callback2(self, text_item):
+        snackbar = CustomSnackbar(
+            text = text_item,
+            opposite_colors = True,
+            bg_color = (50/255, 100/255, 50/255, 1),
+            icon = "information",
+            line_color = (1, 1, 1, 1),
+            snackbar_x = "10dp",
+            snackbar_y = "10dp",
+            duration = 2,
+            buttons = [MDFlatButton(text="Ok", text_color=(1, 1, 1, 1))]
+            )
+        snackbar.size_hint_x = (
+            Window.width - (snackbar.snackbar_x * 2)
+        ) / Window.width
+        
+        snackbar.open()
 
 
 if __name__ == '__main__':
