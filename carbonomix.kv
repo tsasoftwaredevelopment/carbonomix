@@ -271,7 +271,7 @@
     height: Window.size[1] / 1.5
     TwoLineIconListItem:
         text: str(root.category)
-        secondary_text: str(root.increase) + "% " + ("increase" if root.increase > 0 else "decrease") + " from last entry."
+        secondary_text: str(abs(root.increase)) + "% " + ("increase" if root.increase >= 0 else "decrease") + " from last entry."
         IconLeftWidget:
             icon: "arrow-up-bold-circle" if root.increase > 0 else "arrow-down-bold-circle"
             theme_text_color: "Custom"
