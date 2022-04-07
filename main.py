@@ -85,7 +85,6 @@ class MainScreen(Screen):
             WHERE row_number <= 100
             """
         ).fetchall()
-        print(data)
         index = 0
         for i in range(len(categories) - 2):
             fig, ax = plt.subplots()
@@ -97,10 +96,10 @@ class MainScreen(Screen):
                 if data[index][0] == i + 1:
                     dates.append(data[index][1])
                     values.append(data[index][2])
-                    if last_value is None:
-                        last_value = data[index][2]
                     if last_value and increase is None:
                         increase = (last_value - data[index][2]) / data[index][2] * 100
+                    if last_value is None:
+                        last_value = data[index][2]
                     index += 1
                 else:
                     break
