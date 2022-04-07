@@ -11,7 +11,7 @@ from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
 from database import update, query, create_tables, update_footprint, get_footprint, get_current_values
 from kivymd.app import MDApp
-from kivymd.uix.list import OneLineIconListItem
+from kivymd.uix.list import OneLineAvatarIconListItem
 
 # DEBUG = True means you're testing.
 DEBUG = False
@@ -54,7 +54,7 @@ class FootprintPopup(Popup):
     def display_footprint(self):
         return str(get_footprint())
     
-class EditListItem(OneLineIconListItem):
+class EditListItem(OneLineAvatarIconListItem):
     def open_edit_popup(self):
         EditPopup().open()
 

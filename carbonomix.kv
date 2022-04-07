@@ -320,9 +320,9 @@
             size_hint_y: 0.02
 
 <EditListItem>
-    on_release: root.parent.parent.parent.parent.parent.parent.edit_title()
     IconRightWidget:  
         icon: "pencil"
+        on_release: root.parent.parent.parent.parent.parent.parent.edit_title(root.text.split(":")[0])
             
 
 
