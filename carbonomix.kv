@@ -237,22 +237,21 @@
                 MDList:
                     id: info_list
                     EditListItem:
-                        elec_bill_edit_label: True
+                        id: elec_bill
+                    EditListItem:
                         
                     EditListItem:
-                        gas_bill_edit_label: True
+                        
                     EditListItem:
-                        oil_bill_edit_label: True
+                        
                     EditListItem:
-                        mileage_edit_label: True
+                        
                     EditListItem:
-                        fb4_edit_label: True
+                        
                     EditListItem:
-                        fa4_edit_label: True
+                        
                     EditListItem:
-                        recycles_np_edit_label: True
-                    EditListItem:
-                        recycles_a_and_t_edit_label: True
+                        
 
             MDBottomNavigationItem:
                 name: 'screen 3'
@@ -295,7 +294,7 @@
     auto_dismiss: False
     size_hint: 0.7, 0.5
     halign: "center"
-    title: root.edit_label()
+    title: root.edit_title()
     title_align: "center"
     title_size: 20
     title_color: 1, 1, 1, 1
@@ -311,7 +310,6 @@
             line_color_normal: 108/255, 168/255, 124/255, 1
             max_text_length: 10
             hint_text: "$"
-    
         Button:
             text: "Update"
             font_size: 24
@@ -322,9 +320,10 @@
             size_hint_y: 0.02
 
 <EditListItem>
-    MDIconButton: 
-        icon: "pencil" 
-        on_release: Factory.EditPopup().open()
+    on_release: root.parent.parent.parent.parent.parent.parent.edit_title()
+    IconRightWidget:  
+        icon: "pencil"
+            
 
 
 <ExitScreen>
