@@ -14,6 +14,17 @@ categories = (
     'recycles_aluminum_tin'
 )
 
+category_names = (
+    'Monthly Electric Bill',
+    'Monthly Gas Bill',
+    'Monthly Oil Bill',
+    'Yearly Mileage',
+    'Yearly Flights Under 4 Hours',
+    'Yearly Flights Over 4 Hours',
+    'Recycles Newspaper',
+    'Recycles Aluminum and Tin'
+)
+
 load_dotenv(".env")
 
 connection = connect(environ.get('DATABASE_URL'), sslmode='require')

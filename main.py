@@ -3,14 +3,15 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty, BooleanProperty
+from kivy.properties import StringProperty, BooleanProperty, NumericProperty
 from kivy.uix.popup import Popup
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
 from kivymd.app import MDApp
-from database import update, query, create_tables, update_footprint, get_footprint, get_current_values
+from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
@@ -64,22 +65,60 @@ class ElectricBillEditPopup(Popup):
 class MainScreen(Screen):
     def update_values(self):
         values = get_current_values()
-        format = (
-            "Electric Bill: ${:.2f}",
-            "Gas Bill: ${:.2f}",
-            "Oil Bill: ${:.2f}",
-            "Yearly Mileage: {:.2f} mpg",
-            "Yearly Flights Under 4 Hours: {:.0f}",
-            "Yearly Flights Over 4 Hours: {:.0f}",
-            "Recycles Newspaper: {:s}",
-            "Recycles Aluminum and Tin: {:s}"
-        )
+        format = tuple(category_names[i] + ": " + ("${:.2f}", "${:.2f}", "${:.2f}", "{:.2f} mpg", "{:.0f}", "{:.0f}", "{:s}", "{:s}")[i] for i in range(len(categories)))
 
         for i in range(len(values)):
             self.ids.info_list.children[-(i + 1)].text = format[i].format(values[i] if i <= 5 else "Yes" if values[i] == 1 else "No")
 
     def display_values(self):
-        print("hi.")
+        self.ids.statistics.bind(minimum_height=self.ids.statistics.setter('height'))
+        data = query(
+            """
+            SELECT category_id, submitted_at, value
+            FROM (
+                SELECT category_id, submitted_at, value,
+                    ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY category_id, submitted_at DESC) AS row_number
+                FROM input_values
+                WHERE category_id <= 6
+            ) split
+            WHERE row_number <= 5
+            """
+        ).fetchall()
+        index = 0
+        for i in range(len(categories) - 2):
+            fig, ax = plt.subplots()
+            last_value = None
+            increase = 0
+            dates = []
+            values = []
+            for k in range(index, min(index + 5, len(data))):
+                if data[index][0] == i + 1:
+                    dates.append(data[index][1])
+                    values.append(data[index][2])
+                    if last_value:
+                        increase = (data[index][2] - last_value) / last_value * 100
+                    last_value = data[index][2]
+                    index += 1
+                else:
+                    break
+            ax.plot(dates, values)
+            ax.set_ylim(bottom=0)
+            plt.xticks(rotation=45)
+            plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
+            plt.xlabel("Date")
+            plt.gcf().autofmt_xdate()
+            self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase, 2), category_names[i]))
+
+
+class GraphItem(MDBoxLayout):
+    increase = NumericProperty(0)
+    category = StringProperty()
+
+    def __init__(self, graph, increase, category, **kwargs):
+        super().__init__(**kwargs)
+        self.increase = float(increase)
+        self.category = category
+        self.add_widget(graph)
 
 
 class ExitScreen(Screen):

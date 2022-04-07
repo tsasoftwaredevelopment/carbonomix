@@ -253,10 +253,29 @@
                 text: "Statistics"
                 icon: 'chart-bar-stacked'
                 on_tab_release: root.display_values()
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
 
-                MDLabel:
-                    text: 'Tab to see percent change since last input of values (could also add statistics like average electric bill over the past year or percent change since last year). '
-                    halign: 'center'
+                    GridLayout:
+                        id: statistics
+                        cols: 1
+                        padding: "20dp"
+                        spacing: "30dp"
+                        size_hint_y: None
+
+
+<GraphItem>
+    orientation: "vertical"
+    size_hint_y: None
+    height: Window.size[1] / 1.5
+    TwoLineIconListItem:
+        text: str(root.category)
+        secondary_text: str(root.increase) + "% " + ("increase" if root.increase > 0 else "decrease") + " from last entry."
+        IconLeftWidget:
+            icon: "arrow-up-bold-circle" if root.increase > 0 else "arrow-down-bold-circle"
+            theme_text_color: "Custom"
+            text_color: (1, 0, 0, 1) if root.increase > 0 else (0, 1, 0, 1)
                     
                     
 <FootprintPopup>
