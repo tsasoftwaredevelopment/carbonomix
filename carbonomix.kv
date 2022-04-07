@@ -226,7 +226,7 @@
                 icon: 'earth' 
             
                 MDLabel: 
-                    text: "This is the carbon workspace; sorry I lost the previous text"
+                    text: "Tab to see current carbon footprint. Maybe also display the most recent inputted values here. This will probably be the main tab that the app opens up on."
                     halign: "center"
 
             MDBottomNavigationItem:
@@ -295,9 +295,10 @@
 <CustomSnackbar>
 
     MDIconButton:
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
         pos_hint: {'center_y': .5}
         icon: root.icon
-        opposite_colors: True
 
     MDLabel:
         id: text_bar
