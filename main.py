@@ -18,7 +18,7 @@ from database import update, query, create_tables, update_footprint, get_footpri
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = False
+always_show_questions = True
 
 sm: ScreenManager
 
@@ -181,11 +181,12 @@ class CarbonomixApp(MDApp):
 
         snackbar = CustomSnackbar(
             text = text_item,
+            bg_color = (50/255, 100/255, 50/255, 1),
             icon = "information",
             snackbar_x = "10dp",
             snackbar_y = "10dp",
             duration = 2,
-            buttons = [MDFlatButton(text="Ok", text_color=(1, 1, 1, 1))]
+            buttons = [MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1,1,1,1))]
             )
         snackbar.size_hint_x = (
             Window.width - (snackbar.snackbar_x * 2)
