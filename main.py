@@ -80,25 +80,27 @@ class MainScreen(Screen):
                 SELECT category_id, submitted_at, value,
                     ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY category_id, submitted_at DESC) AS row_number
                 FROM input_values
-                WHERE category_id <= 6
+                WHERE category_id <= 6 AND submitted_at > NOW() - interval '1 year'
             ) split
-            WHERE row_number <= 5
+            WHERE row_number <= 100
             """
         ).fetchall()
+        print(data)
         index = 0
         for i in range(len(categories) - 2):
             fig, ax = plt.subplots()
             last_value = None
-            increase = 0
+            increase = None
             dates = []
             values = []
-            for k in range(index, min(index + 5, len(data))):
+            for k in range(index, len(data)):
                 if data[index][0] == i + 1:
                     dates.append(data[index][1])
                     values.append(data[index][2])
-                    if last_value:
-                        increase = (data[index][2] - last_value) / last_value * 100
-                    last_value = data[index][2]
+                    if last_value is None:
+                        last_value = data[index][2]
+                    if last_value and increase is None:
+                        increase = (last_value - data[index][2]) / data[index][2] * 100
                     index += 1
                 else:
                     break

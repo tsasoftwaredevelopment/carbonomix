@@ -273,9 +273,9 @@
         text: str(root.category)
         secondary_text: str(abs(root.increase)) + "% " + ("increase" if root.increase >= 0 else "decrease") + " from last entry."
         IconLeftWidget:
-            icon: "arrow-up-bold-circle" if root.increase > 0 else "arrow-down-bold-circle"
+            icon: "arrow-up-bold-circle-outline" if root.increase > 0 else "arrow-down-bold-circle-outline" if root.increase < 0 else "minus-circle-outline"
             theme_text_color: "Custom"
-            text_color: (1, 0, 0, 1) if root.increase > 0 else (0, 1, 0, 1)
+            text_color: (1, 0, 0, 1) if root.increase > 0 else (0, 1, 0, 1) if root.increase < 0 else (0.5, 0.5, 0.5, 1)
                     
                     
 <FootprintPopup>
