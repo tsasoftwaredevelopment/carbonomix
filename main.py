@@ -55,29 +55,11 @@ class FootprintPopup(Popup):
         return str(get_footprint())
     
 class EditListItem(OneLineListItem):
-    def 
-
-
-class EditPopup(Popup):
     pass
-        
+   # def edit_value(self): 
 
-class MainScreen(Screen):
-    def update_values(self): 
-        values = get_current_values()
-        format = (
-            "Electric Bill: ${:.2f}",
-            "Gas Bill: ${:.2f}",
-            "Oil Bill: ${:.2f}",
-            "Yearly Mileage: {:.2f} mpg",
-            "Yearly Flights Under 4 Hours: {:.0f}",
-            "Yearly Flights Over 4 Hours: {:.0f}",
-            "Recycles Newspaper: {:s}",
-            "Recycles Aluminum and Tin: {:s}"
-        )
 
-        for i in range(len(values)):
-            self.ids.info_list.children[-(i + 1)].text = format[i].format(values[i] if i <= 5 else "Yes" if values[i] == 1 else "No")
+
 
 
 class ExitScreen(Screen):
