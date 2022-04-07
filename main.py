@@ -9,12 +9,12 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.label import MDLabel
 from kivymd.app import MDApp
 from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 
 # DEBUG = True means you're testing.
@@ -23,6 +23,7 @@ DEBUG = False
 always_show_questions = False
 
 sm: ScreenManager
+plt.rcParams.update({'font.size': 8})
 
 
 class StartingScreen(Screen):
@@ -101,12 +102,13 @@ class MainScreen(Screen):
                     index += 1
                 else:
                     break
-            ax.plot(dates, values)
+            ax.plot(dates, values, '-o', color='#2e43ff', markersize=2)
             ax.set_ylim(bottom=0)
-            plt.xticks(rotation=45)
             plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
             plt.xlabel("Date")
-            plt.gcf().autofmt_xdate()
+            plt.subplots_adjust(left=0.2, right=0.9, top=0.9, bottom=0.3)
+            ax.set_xticklabels(dates, rotation=45, ha='right')
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
             self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase, 2), category_names[i]))
 
 
@@ -116,6 +118,7 @@ class GraphItem(MDBoxLayout):
 
     def __init__(self, graph, increase, category, **kwargs):
         super().__init__(**kwargs)
+        graph.stretch_to_fit = True
         self.increase = float(increase)
         self.category = category
         self.add_widget(graph)
