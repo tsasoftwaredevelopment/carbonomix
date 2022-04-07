@@ -12,7 +12,9 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.app import MDApp
 from database import update, query, create_tables, update_footprint, get_footprint, get_current_values
 
-from matplotlib.pyplot import *
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+import matplotlib.pyplot as plt
+
 
 # DEBUG = True means you're testing.
 DEBUG = False
@@ -75,6 +77,9 @@ class MainScreen(Screen):
 
         for i in range(len(values)):
             self.ids.info_list.children[-(i + 1)].text = format[i].format(values[i] if i <= 5 else "Yes" if values[i] == 1 else "No")
+
+    def display_values(self):
+        print("hi.")
 
 
 class ExitScreen(Screen):
