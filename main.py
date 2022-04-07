@@ -1,3 +1,4 @@
+from turtle import title
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -12,6 +13,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from database import update, query, create_tables, update_footprint, get_footprint, get_current_values
 from kivymd.app import MDApp
 from kivymd.uix.list import OneLineAvatarIconListItem
+from kivy.factory import Factory
 
 # DEBUG = True means you're testing.
 DEBUG = False
@@ -55,8 +57,8 @@ class FootprintPopup(Popup):
         return str(get_footprint())
     
 class EditListItem(OneLineAvatarIconListItem):
-    def open_edit_popup(self):
-        EditPopup().open()
+    pass
+        
 
 
 class EditPopup(Popup):
@@ -72,6 +74,7 @@ class ExitScreen(Screen):
     pass
 
 class MainScreen(Screen):
+
     def update_values(self):
         values = get_current_values()
         format = (
@@ -89,7 +92,15 @@ class MainScreen(Screen):
             self.ids.info_list.children[-(i + 1)].text = format[i].format(values[i] if i <= 5 else "Yes" if values[i] == 1 else "No")
     @staticmethod
     def edit_title(category):
-        print(category)
+        EditPopup(title=category).open()
+    def display_footprint(self):
+        return str(get_footprint())
+
+        
+        
+        
+        
+
         
 
 class QuestionLayout(FloatLayout):
