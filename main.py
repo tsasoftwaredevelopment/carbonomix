@@ -1,22 +1,25 @@
-from kivy.lang import Builder
-from cgitb import text
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
-
 from kivy.properties import StringProperty, BooleanProperty, NumericProperty
-from kivymd.app import MDApp
 from kivy.uix.popup import Popup
-from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
+
+from kivymd.app import MDApp
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
-from database import update, query, create_tables, update_footprint, get_footprint
-from kivymd.app import MDApp
+
+from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
+
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
 
 # DEBUG = True means you're testing.
 DEBUG = False
@@ -24,6 +27,7 @@ DEBUG = False
 always_show_questions = False
 
 sm: ScreenManager
+plt.rcParams.update({'font.size': 8})
 
 
 class StartingScreen(Screen):
@@ -55,12 +59,74 @@ class WelcomeScreen(Screen):
 
         
 class FootprintPopup(Popup):
-    def get_footprint(self):
+    def display_footprint(self):
         return str(get_footprint())
 
 
-class MainScreen(Screen):
+class ElectricBillEditPopup(Popup):
     pass
+
+
+class MainScreen(Screen):
+    def update_values(self):
+        values = get_current_values()
+        format = tuple(category_names[i] + ": " + ("${:.2f}", "${:.2f}", "${:.2f}", "{:.2f} mpg", "{:.0f}", "{:.0f}", "{:s}", "{:s}")[i] for i in range(len(categories)))
+
+        for i in range(len(values)):
+            self.ids.info_list.children[-(i + 1)].text = format[i].format(values[i] if i <= 5 else "Yes" if values[i] == 1 else "No")
+
+    def display_values(self):
+        self.ids.statistics.bind(minimum_height=self.ids.statistics.setter('height'))
+        data = query(
+            """
+            SELECT category_id, submitted_at, value
+            FROM (
+                SELECT category_id, submitted_at, value,
+                    ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY category_id, submitted_at DESC) AS row_number
+                FROM input_values
+                WHERE category_id <= 6 AND submitted_at > NOW() - interval '1 year'
+            ) split
+            WHERE row_number <= 100
+            """
+        ).fetchall()
+        index = 0
+        for i in range(len(categories) - 2):
+            fig, ax = plt.subplots()
+            last_value = None
+            increase = None
+            dates = []
+            values = []
+            for k in range(index, len(data)):
+                if data[index][0] == i + 1:
+                    dates.append(data[index][1])
+                    values.append(data[index][2])
+                    if last_value and increase is None:
+                        increase = (last_value - data[index][2]) / data[index][2] * 100
+                    if last_value is None:
+                        last_value = data[index][2]
+                    index += 1
+                else:
+                    break
+            ax.plot(dates, values, '-o', color='#2e43ff', markersize=2)
+            ax.set_ylim(bottom=0)
+            plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
+            plt.xlabel("Date")
+            plt.subplots_adjust(left=0.2, right=0.9, top=0.9, bottom=0.3)
+            ax.set_xticklabels(dates, rotation=45, ha='right')
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
+            self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase, 2), category_names[i]))
+
+
+class GraphItem(MDBoxLayout):
+    increase = NumericProperty(0)
+    category = StringProperty()
+
+    def __init__(self, graph, increase, category, **kwargs):
+        super().__init__(**kwargs)
+        graph.stretch_to_fit = True
+        self.increase = float(increase)
+        self.category = category
+        self.add_widget(graph)
 
 
 class ExitScreen(Screen):

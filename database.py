@@ -14,6 +14,17 @@ categories = (
     'recycles_aluminum_tin'
 )
 
+category_names = (
+    'Monthly Electric Bill',
+    'Monthly Gas Bill',
+    'Monthly Oil Bill',
+    'Yearly Mileage',
+    'Yearly Flights Under 4 Hours',
+    'Yearly Flights Over 4 Hours',
+    'Recycles Newspaper',
+    'Recycles Aluminum and Tin'
+)
+
 load_dotenv(".env")
 
 connection = connect(environ.get('DATABASE_URL'), sslmode='require')
@@ -137,7 +148,7 @@ def _calculate_footprint(electric_bill=0, gas_bill=0, oil_bill=0, mileage=0, fli
     return footprint
 
 
-def _get_new_footprint(user_id=1):
+def get_current_values(user_id=1):
     h = query(
         """
         SELECT value
@@ -149,7 +160,11 @@ def _get_new_footprint(user_id=1):
         WHERE row_number = 1
         """
     ).fetchall()
-    return _calculate_footprint(*(float(h[i][0]) for i in range(len(h))))
+    return tuple(float(h[i][0]) for i in range(len(h)))
+
+
+def _get_new_footprint(user_id=1):
+    return _calculate_footprint(*get_current_values(user_id))
 
 
 def update_footprint(values, categories_list=categories, user_id=1):
