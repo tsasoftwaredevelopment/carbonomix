@@ -1,9 +1,11 @@
 from kivy.lang import Builder
+from cgitb import text
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
+
 from kivy.properties import StringProperty, BooleanProperty, NumericProperty
 from kivymd.app import MDApp
 from kivy.uix.popup import Popup
@@ -14,11 +16,12 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
 from database import update, query, create_tables, update_footprint, get_footprint
+from kivymd.app import MDApp
 
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 
 sm: ScreenManager
 
