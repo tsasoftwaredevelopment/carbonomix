@@ -224,17 +224,16 @@
             font_style: "" # Add font
 
             MDBottomNavigationItem:
-                name: 'screen 1'
+                name: 'home'
                 text: "Carbon"
                 icon: 'earth' 
             
                 MDLabel: 
-                    text: "This is the carbon workspace; sorry I lost the previous text"
+                    text: "Tab to see current carbon footprint. Maybe also display the most recent inputted values here. This will probably be the main tab that the app opens up on."
                     halign: "center"
 
-
             MDBottomNavigationItem:
-                name: 'screen 2'
+                name: 'edit'
                 text: "Your Info"
                 icon: 'cellphone-information'
                 on_tab_release: root.update_values()
@@ -258,14 +257,54 @@
                                 
 
             MDBottomNavigationItem:
-                name: 'screen 3'
+                name: 'statistics'
                 text: "Statistics"
                 icon: 'chart-bar-stacked'
+                on_tab_release: root.display_values()
+                ScrollView:
+                    do_scroll_x: False
+                    do_scroll_y: True
 
-                MDLabel:
-                    text: 'Tab to see percent change since last input of values (could also add statistics like average electric bill over the past year or percent change since last year). '
-                    halign: 'center'
-                        
+                    GridLayout:
+                        id: statistics
+                        cols: 1
+                        padding: "20dp"
+                        spacing: "30dp"
+                        size_hint_y: None
+
+                        MDBoxLayout:
+                            id: change_constraint
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: "30dp"
+
+                            MDLabel:
+                                text: "Show: "
+                                font_size: "17sp"
+                                size_hint: .5, 1
+                                halign: "right"
+
+                            MDDropDownItem:
+                                id: constraint
+                                font_size: "17sp"
+                                text: "All"
+                                on_release: root.display_menu.open()
+
+                            MDLabel:
+
+
+<GraphItem>
+    orientation: "vertical"
+    size_hint_y: None
+    height: Window.size[1] / 1.5
+    TwoLineIconListItem:
+        text: str(root.category)
+        secondary_text: str(abs(root.increase)) + "% " + ("increase" if root.increase >= 0 else "decrease") + " from last entry."
+        IconLeftWidget:
+            icon: "arrow-up-bold-circle-outline" if root.increase > 0 else "arrow-down-bold-circle-outline" if root.increase < 0 else "minus-circle-outline"
+            theme_text_color: "Custom"
+            text_color: (1, 0, 0, 1) if root.increase > 0 else (0, 1, 0, 1) if root.increase < 0 else (0.5, 0.5, 0.5, 1)
+
                     
 <FootprintPopup>
     auto_dismiss: False
@@ -318,7 +357,7 @@
             text: "Update"
             font_size: 24
             background_color: 189/255, 1, 206/255, 1
-            on_release: 
+            on_release:
                 root.dismiss()
             size_hint_x: 1
             size_hint_y: 0.02
@@ -371,3 +410,23 @@
         pos_hint: {"center_x": .5, "center_y": .5}
         color: 0, 0, 0, 1
         opacity: 0
+
+<CustomSnackbar>
+
+    MDIconButton:
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
+        pos_hint: {'center_y': .5}
+        icon: root.icon
+
+    MDLabel:
+        id: text_bar
+        size_hint_y: None
+        height: self.texture_size[1]
+        text: root.text
+        font_size: root.font_size
+        theme_text_color: 'Custom'
+        text_color: 1, 1, 1, 1
+        shorten: True
+        shorten_from: 'right'
+        pos_hint: {'center_y': .5}
