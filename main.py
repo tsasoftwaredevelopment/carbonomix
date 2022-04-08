@@ -75,7 +75,7 @@ class MainScreen(Screen):
                     "text": option,
                     "viewclass": "OneLineListItem",
                     "on_release": lambda x=option: self.choose_constraint(x)
-                } for option in ("Recent Month", "Recent Year", "All")
+                } for option in ("Past Month", "Past Year", "All")
             ],
             width_mult=2,
             max_height=dp(150),
@@ -95,12 +95,12 @@ class MainScreen(Screen):
 
     def display_values(self):
         self.ids.statistics.bind(minimum_height=self.ids.statistics.setter('height'))
-        first_constraint = "AND submitted_at > NOW() - interval '1 "
+        first_constraint = "AND submitted_at > NOW() - INTERVAL '1 "
         if self.ids.constraint.text == "All":
             first_constraint = ""
-        elif self.ids.constraint.text == "Last Month":
+        elif self.ids.constraint.text == "Past Month":
             first_constraint += "month'"
-        elif self.ids.constraint.text == "Last Year":
+        elif self.ids.constraint.text == "Past Year":
             first_constraint += "year'"
 
         footprint_data = query(
