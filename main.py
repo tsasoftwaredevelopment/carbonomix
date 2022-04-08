@@ -5,13 +5,16 @@ from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty, NumericProperty
 from kivy.uix.popup import Popup
-from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
+
+from kivymd.app import MDApp
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.app import MDApp
-from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, \
-    category_names
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.snackbar import BaseSnackbar
+
+from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
@@ -218,6 +221,12 @@ class MenuHeader(MDBoxLayout):
     pass
 
 
+class CustomSnackbar(BaseSnackbar):
+    text = StringProperty(None)
+    icon = StringProperty(None)
+    font_size = NumericProperty("15sp")
+
+
 class CarbonomixApp(MDApp):
     def build(self):
         global sm
@@ -246,7 +255,7 @@ class CarbonomixApp(MDApp):
                 "viewclass": "OneLineListItem",
                 "text": "Placeholder",
                 "height": dp(40),
-                "on_release": lambda x="Placeholder": self.menu_callback(x),
+                "on_release": lambda x="Placeholder": self.menu_callback2(x),
             }
         ]
 
@@ -315,9 +324,39 @@ class CarbonomixApp(MDApp):
         sm.switch_to(exit_screen, transition=FadeTransition(), duration=0.75)
         fade_text()
         self.menu.dismiss()
-        Snackbar(text=text_item).open()
+
+        snackbar = CustomSnackbar(
+            text = text_item,
+            bg_color = (50/255, 100/255, 50/255, 1),
+            icon = "information",
+            snackbar_x = "10dp",
+            snackbar_y = "10dp",
+            duration = 2,
+            buttons = [MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1,1,1,1))]
+            )
+        snackbar.size_hint_x = (
+            Window.width - (snackbar.snackbar_x * 2)
+        ) / Window.width
+        
+        snackbar.open()
 
         Clock.schedule_once(close_application, 4)
+
+    def menu_callback2(self, text_item):
+        snackbar = CustomSnackbar(
+            text = text_item,
+            bg_color = (50/255, 100/255, 50/255, 1),
+            icon = "information",
+            snackbar_x = "10dp",
+            snackbar_y = "10dp",
+            duration = 2,
+            buttons = [MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1,1,1,1))]
+            )
+        snackbar.size_hint_x = (
+            Window.width - (snackbar.snackbar_x * 2)
+        ) / Window.width
+        
+        snackbar.open()
 
 
 if __name__ == '__main__':
