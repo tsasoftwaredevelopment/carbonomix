@@ -156,9 +156,11 @@ def get_current_values(user_id=1):
             SELECT value,
                 ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY category_id, submitted_at DESC) AS row_number
             FROM input_values
+            WHERE user_id = %s
         ) split
         WHERE row_number = 1
-        """
+        """,
+        (user_id,)
     ).fetchall()
     return tuple(float(h[i][0]) for i in range(len(h)))
 

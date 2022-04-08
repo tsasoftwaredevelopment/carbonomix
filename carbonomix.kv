@@ -265,6 +265,26 @@
                         spacing: "30dp"
                         size_hint_y: None
 
+                        MDBoxLayout:
+                            id: change_constraint
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: "30dp"
+
+                            MDLabel:
+                                text: "Show: "
+                                font_size: "17sp"
+                                size_hint: .5, 1
+                                halign: "right"
+
+                            MDDropDownItem:
+                                id: constraint
+                                font_size: "17sp"
+                                text: "All"
+                                on_release: root.display_menu.open()
+
+                            MDLabel:
+
 
 <GraphItem>
     orientation: "vertical"
