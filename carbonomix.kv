@@ -238,8 +238,6 @@
                 text: "Your Info"
                 icon: 'cellphone-information'
                 on_tab_release: root.update_values()
-                MDLabel: 
-                    text: "Carbon Footprint" + root.display_footprint()
                 MDList:
                     id: info_list
                     EditListItem:
@@ -297,7 +295,6 @@
                 root.dismiss()
 
 <EditPopup>
-    id: popup_to_edit 
     auto_dismiss: False
     size_hint: 0.7, 0.5
     halign: "center"
@@ -326,8 +323,7 @@
             size_hint_x: 1
             size_hint_y: 0.02
            
-<EditPopupCheckbox>
-id: popup_to_edit 
+<EditPopupCheckbox> 
     auto_dismiss: False
     size_hint: 0.7, 0.5
     halign: "center"
@@ -336,26 +332,20 @@ id: popup_to_edit
     title_color: 1, 1, 1, 1
     background_color: 189/255, 1, 206/255, 1
     BoxLayout: 
-     MDCheckbox:
-                group: 'yn_edit'
-                size_hint: None, None
-                size: dp(40), dp(40)
-                pos: self.pos
-                opacity: 1 if not Factory.MainScreen.yes_or_no_edit else 0
-            MDCheckbox:
-                group: 'yn_edit'
-                size_hint: None, None
-                size: dp(40), dp(40)
-                pos: self.pos
-                opacity: 1 if not Factory.MainScreen.yes_or_no_edit else 0
-            Label: 
-                text: "Yes"
-                opacity: 1 if not Factory.MainScreen.yes_or_no_edit else 0
-
-            Label: 
-                text: "No"
-                opacity: 1 if not Factory.MainScreen.yes_or_no_edit else 0                        
-        
+        MDCheckbox:
+            group: 'yn_edit'
+            size_hint: None, None
+            size: dp(40), dp(40)
+            pos: self.pos
+        MDCheckbox:
+            group: 'yn_edit'
+            size_hint: None, None
+            size: dp(40), dp(40)
+            pos: self.pos
+        Label: 
+            text: "Yes"
+        Label: 
+            text: "No"
 <EditListItem>
     IconRightWidget:  
         icon: "pencil"
