@@ -15,6 +15,7 @@ from database import update, query, create_tables, update_footprint, get_footpri
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+from datetime import datetime
 
 
 # DEBUG = True means you're testing.
@@ -73,17 +74,45 @@ class MainScreen(Screen):
 
     def display_values(self):
         self.ids.statistics.bind(minimum_height=self.ids.statistics.setter('height'))
+        first_constraint = "AND submitted_at > NOW() - interval '1 year'"
+        footprint_data = query(
+            f"""
+            SELECT submitted_at, footprint
+            FROM footprints
+            WHERE user_id = %s {first_constraint}
+            ORDER BY submitted_at DESC
+            """,
+            (1,)
+        ).fetchall()
+        fig, ax = plt.subplots()
+        dates, values = [], []
+        end_index, increase = None, None
+        for i in range(len(footprint_data)):
+            dates.append(footprint_data[i][0])
+            values.append(footprint_data[i][1])
+            if end_index is None and dates[-1].month == datetime.now().month - 1:
+                end_index = i  # Exclusive.
+            if end_index is not None and (dates[-1].month == datetime.now().month - 2 or i == len(footprint_data) - 1):
+                this_month = sum(values[:end_index]) / end_index
+                last_month = sum(values[end_index:i]) / (end_index - i) if i != len(footprint_data) - 1 else sum(values[end_index:i+1]) / (end_index - i + 1)
+                increase = (this_month - last_month) / last_month * 100
+        ax.plot(dates, values, '-o', color='#2e43ff', markersize=2)
+        ax.set_ylim(bottom=0)
+        plt.ylabel('Carbon Footprint')
+        plt.xlabel("Date")
+        plt.subplots_adjust(left=0.2, right=0.9, top=0.9, bottom=0.3)
+        ax.set_xticklabels(dates, rotation=45, ha='right')
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
+        self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0), "Carbon Footprint"))
+
         data = query(
-            """
+            f"""
             SELECT category_id, submitted_at, value
-            FROM (
-                SELECT category_id, submitted_at, value,
-                    ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY category_id, submitted_at DESC) AS row_number
-                FROM input_values
-                WHERE category_id <= 6 AND submitted_at > NOW() - interval '1 year'
-            ) split
-            WHERE row_number <= 100
-            """
+            FROM input_values
+            WHERE user_id = %s AND category_id <= 6 {first_constraint}
+            ORDER BY category_id, submitted_at DESC
+            """,
+            (1,)
         ).fetchall()
         index = 0
         for i in range(len(categories) - 2):
@@ -110,7 +139,7 @@ class MainScreen(Screen):
             plt.subplots_adjust(left=0.2, right=0.9, top=0.9, bottom=0.3)
             ax.set_xticklabels(dates, rotation=45, ha='right')
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
-            self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase, 2), category_names[i]))
+            self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
 
 
 class GraphItem(MDBoxLayout):
@@ -123,6 +152,8 @@ class GraphItem(MDBoxLayout):
         self.increase = float(increase)
         self.category = category
         self.add_widget(graph)
+        if category == "Carbon Footprint":
+            self.children[1].secondary_text = self.children[1].secondary_text[:-6] + "month."
 
 
 class ExitScreen(Screen):
