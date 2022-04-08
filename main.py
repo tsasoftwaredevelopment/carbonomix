@@ -65,6 +65,27 @@ class ElectricBillEditPopup(Popup):
 
 
 class MainScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.update_values()
+        self.display_menu = MDDropdownMenu(
+            caller=self.ids.constraint,
+            items=[
+                {
+                    "text": option,
+                    "viewclass": "OneLineListItem",
+                    "on_release": lambda x=option: self.choose_constraint(x)
+                } for option in ("Recent Month", "Recent Year", "All")
+            ],
+            width_mult=2,
+            max_height=dp(150),
+        )
+
+    def choose_constraint(self, option):
+        self.display_menu.dismiss()
+        self.ids.constraint.text = option
+        self.display_values()
+
     def update_values(self):
         values = get_current_values()
         format = tuple(category_names[i] + ": " + ("${:.2f}", "${:.2f}", "${:.2f}", "{:.2f} mpg", "{:.0f}", "{:.0f}", "{:s}", "{:s}")[i] for i in range(len(categories)))
@@ -74,7 +95,14 @@ class MainScreen(Screen):
 
     def display_values(self):
         self.ids.statistics.bind(minimum_height=self.ids.statistics.setter('height'))
-        first_constraint = "AND submitted_at > NOW() - interval '1 year'"
+        first_constraint = "AND submitted_at > NOW() - interval '1 "
+        if self.ids.constraint.text == "All":
+            first_constraint = ""
+        elif self.ids.constraint.text == "Last Month":
+            first_constraint += "month'"
+        elif self.ids.constraint.text == "Last Year":
+            first_constraint += "year'"
+
         footprint_data = query(
             f"""
             SELECT submitted_at, footprint
@@ -104,6 +132,7 @@ class MainScreen(Screen):
         ax.set_xticklabels(dates, rotation=45, ha='right')
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
         self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0), "Carbon Footprint"))
+        plt.close(fig)
 
         data = query(
             f"""
@@ -140,6 +169,7 @@ class MainScreen(Screen):
             ax.set_xticklabels(dates, rotation=45, ha='right')
             ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
             self.ids.statistics.add_widget(GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
+            plt.close(fig)
 
 
 class GraphItem(MDBoxLayout):
