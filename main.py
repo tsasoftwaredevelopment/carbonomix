@@ -60,21 +60,16 @@ class EditListItem(OneLineAvatarIconListItem):
     pass
         
 
-
 class EditPopup(Popup):
     pass
-        #title_tuple = ('Electric Bill', 'Gas Bill', 'Oil Bill', 'Mileage', 'Flights Below 4 Hrs', 'Flights Above 4 Hrs', 'Recycles Newspaper', 'Recycles Aluminum and Tin')
-        #a, b, c, d, e, f, g, h= title_tuple[0], title_tuple[1], title_tuple[2], title_tuple[3], title_tuple[4], title_tuple[5], title_tuple[6], title_tuple[7]
     
-  
-        
-    
+class EditPopupCheckbox(Popup):
+    pass
 
 class ExitScreen(Screen):
     pass
 
 class MainScreen(Screen):
-
     def update_values(self):
         values = get_current_values()
         format = (
@@ -87,7 +82,6 @@ class MainScreen(Screen):
             "Recycles Newspaper: {:s}",
             "Recycles Aluminum and Tin: {:s}"
         )
-
         for i in range(len(values)):
             self.ids.info_list.children[-(i + 1)].text = format[i].format(values[i] if i <= 5 else "Yes" if values[i] == 1 else "No")
     @staticmethod
