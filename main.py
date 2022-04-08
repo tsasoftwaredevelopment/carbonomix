@@ -107,7 +107,7 @@ class MainScreen(Screen):
             delta_time = timedelta(days=(date.today().replace(day=1) - timedelta(days=1)).day)
         elif self.ids.constraint.text == "Past Year":
             first_constraint += "year'"
-            delta_time = timedelta(days=(date.today().replace(day=1, month=1) - timedelta(days=1)).day)
+            delta_time = timedelta(days=365 if date.today().year % 4 != 0 and date.today().year % 400 != 0 else 366)
 
         for i in range(len(self.ids.statistics.children) - 1, -1, -1):
             if self.ids.statistics.children[i] == self.ids.change_constraint:
