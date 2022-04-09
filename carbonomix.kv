@@ -370,21 +370,28 @@
     title_size: 20
     title_color: 1, 1, 1, 1
     background_color: 189/255, 1, 206/255, 1
-    BoxLayout: 
+    BoxLayout:
         MDCheckbox:
             group: 'yn_edit'
             size_hint: None, None
             size: dp(40), dp(40)
-            pos: self.pos
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         MDCheckbox:
             group: 'yn_edit'
             size_hint: None, None
             size: dp(40), dp(40)
-            pos: self.pos
         Label: 
             text: "Yes"
         Label: 
             text: "No"
+        Button:
+            text: "Update"
+            font_size: 24
+            background_color: 189/255, 1, 206/255, 1
+            on_release:
+                root.dismiss()
+            size_hint_x: 1
+            size_hint_y: 0.02
 <EditListItem>
     IconRightWidget:  
         icon: "pencil"

@@ -103,7 +103,10 @@ class MainScreen(Screen):
     
     @staticmethod
     def edit_title(category):
-        EditPopup(title=category).open()
+        if category_names.index(category) > 5:
+            EditPopupCheckbox(title=category).open()
+        else:
+            EditPopup(title=category).open()
         
     def display_footprint(self):
         return str(get_footprint())
