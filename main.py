@@ -1,3 +1,4 @@
+from turtle import title
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -11,6 +12,8 @@ from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.list import OneLineAvatarIconListItem
+from kivy.factory import Factory
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
 
@@ -59,13 +62,22 @@ class WelcomeScreen(Screen):
 
 
 class FootprintPopup(Popup):
+    
     def display_footprint(self):
         return str(get_footprint())
+    
+class EditListItem(OneLineAvatarIconListItem):
+    pass
+        
 
-
-class ElectricBillEditPopup(Popup):
+class EditPopup(Popup):
+    pass
+    
+class EditPopupCheckbox(Popup):
     pass
 
+class ExitScreen(Screen):
+    pass
 
 class MainScreen(Screen):
     def __init__(self, **kwargs):
@@ -88,6 +100,13 @@ class MainScreen(Screen):
         self.display_menu.dismiss()
         self.ids.constraint.text = option
         self.display_values()
+    
+    @staticmethod
+    def edit_title(category):
+        EditPopup(title=category).open()
+        
+    def display_footprint(self):
+        return str(get_footprint())
 
     def update_values(self):
         values = get_current_values()
@@ -205,10 +224,12 @@ class GraphItem(MDBoxLayout):
         if category == "Carbon Footprint":
             self.children[1].secondary_text = self.children[1].secondary_text[:-6] + "month."
 
+        
+        
+        
+        
 
-class ExitScreen(Screen):
-    pass
-
+        
 
 class QuestionLayout(FloatLayout):
     question = StringProperty()
