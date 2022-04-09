@@ -4,4 +4,4 @@ kivymd
 psycopg2
 python-dotenv
 kivy-garden
-matplotlib<3.3.0
+matplotlib==3.2.2
