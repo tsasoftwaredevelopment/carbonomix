@@ -332,6 +332,7 @@
         orientation: "vertical"
         size: root.width, root.height
         MDTextField:
+            id: new_value
             multiline: False
             input_filter: 'float'
             size_hint_x: 1
@@ -345,7 +346,7 @@
             font_size: 24
             background_color: 189/255, 1, 206/255, 1
             on_release:
-                root.dismiss()
+                root.update_values()
             size_hint_x: 1
             size_hint_y: 0.02
            
@@ -359,11 +360,13 @@
     background_color: 189/255, 1, 206/255, 1
     BoxLayout:
         MDCheckbox:
+            id: edit_yes
             group: 'yn_edit'
             size_hint: None, None
             size: dp(40), dp(40)
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         MDCheckbox:
+            id: edit_no
             group: 'yn_edit'
             size_hint: None, None
             size: dp(40), dp(40)
@@ -376,7 +379,7 @@
             font_size: 24
             background_color: 189/255, 1, 206/255, 1
             on_release:
-                root.dismiss()
+                root.update_values()
             size_hint_x: 1
             size_hint_y: 0.02
 
