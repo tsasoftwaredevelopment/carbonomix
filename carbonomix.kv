@@ -1,10 +1,6 @@
-#:import Factory kivy.factory.Factory
-#:import utils kivy.utils
-#:import ScrollView kivy.uix.scrollview
-
-
 <Label>
     color: 0, 0, 0, 1
+
 
 <StartingScreen>
     canvas:
@@ -215,7 +211,7 @@
         MDToolbar:
             title: "Carbonomix"
             md_bg_color: 108/255, 168/255, 124/255, 1
-            right_action_items: [["menu", lambda x: app.callback(x)]]
+            right_action_items: [["menu", lambda x: app.open_menu(x)]]
 
         MDBottomNavigation:
             #color stuff 
@@ -240,21 +236,13 @@
                 MDList:
                     id: info_list
                     EditListItem:
-                        id: eb_edit
                     EditListItem:
-                        
                     EditListItem:
-                        
                     EditListItem:
-                        
                     EditListItem:
-                        
                     EditListItem:
-                        
                     EditListItem:
-                        
                     EditListItem:
-                                
 
             MDBottomNavigationItem:
                 name: 'statistics'
@@ -316,12 +304,11 @@
     separator_height: 3
     separator_color: 1, 1, 1, 1
     background_color: utils.get_colors_from_hex('FFB6C1')
-    background_normal: ""
     BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
         MDLabel: 
-            text: root.display_footprint() + " Metric Tons CO2"
+            text: root.display_footprint() + " lbs CO2 per year."
             font_size: 40
             halign: "center"
             text_color_active: 5, 5, 5, 5
@@ -392,14 +379,13 @@
                 root.dismiss()
             size_hint_x: 1
             size_hint_y: 0.02
+
+
 <EditListItem>
     IconRightWidget:  
         icon: "pencil"
         on_release: 
             root.parent.parent.parent.parent.parent.parent.edit_title(root.text.split(":")[0])
-        
-        
-            
 
 
 <ExitScreen>
@@ -418,8 +404,8 @@
         color: 0, 0, 0, 1
         opacity: 0
 
-<CustomSnackbar>
 
+<CustomSnackbar>
     MDIconButton:
         theme_text_color: "Custom"
         text_color: 1, 1, 1, 1
