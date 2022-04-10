@@ -14,7 +14,7 @@ from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
 
-from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
+from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
