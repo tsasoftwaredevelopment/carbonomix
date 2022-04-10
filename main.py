@@ -4,7 +4,7 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty, BooleanProperty, NumericProperty
+from kivy.properties import StringProperty, BooleanProperty, NumericProperty, ListProperty
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
 
@@ -27,7 +27,7 @@ from datetime import datetime, timedelta, date
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = False
+always_show_questions = True
 
 sm: ScreenManager
 plt.rcParams.update({'font.size': 8})

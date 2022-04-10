@@ -1,5 +1,4 @@
 #:import Factory kivy.factory.Factory
-#:import utils kivy.utils
 #:import ScrollView kivy.uix.scrollview
 
 
@@ -315,8 +314,9 @@
     title_size: 30
     separator_height: 3
     separator_color: 1, 1, 1, 1
-    background_color: utils.get_colors_from_hex('FFB6C1')
     background_normal: ""
+    background_color: 189/255, 1, 206/255, 1
+        
     BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
