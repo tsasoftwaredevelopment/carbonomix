@@ -68,11 +68,21 @@ class EditListItem(OneLineAvatarIconListItem):
         
 
 class EditPopup(Popup):
-    pass
+    def update_values(self):
+        if not self.ids.new_value.text:
+            return
+        self.dismiss()
+        update_footprint((float(self.ids.new_value.text),), (categories[category_names.index(self.title)],))
+        sm.get_screen("main").update_values()
 
 
 class EditPopupCheckbox(Popup):
-    pass
+    def update_values(self):
+        if self.ids.edit_yes.state == self.ids.edit_no.state:
+            return
+        self.dismiss()
+        update_footprint((self.ids.edit_yes.state == 'down',), (categories[category_names.index(self.title)],))
+        sm.get_screen("main").update_values()
 
 
 class ExitScreen(Screen):
@@ -103,10 +113,13 @@ class MainScreen(Screen):
     
     @staticmethod
     def edit_title(category):
+        pop_up = None
         if category_names.index(category) > 5:
-            EditPopupCheckbox(title=category).open()
+            pop_up = EditPopupCheckbox()
         else:
-            EditPopup(title=category).open()
+            pop_up = EditPopup()
+        pop_up.title = category
+        pop_up.open()
         
     def display_footprint(self):
         return str(get_footprint())
@@ -114,7 +127,7 @@ class MainScreen(Screen):
     def update_values(self):
         values = get_current_values()
         format = tuple(category_names[i] + ": " +
-                       ("${:.2f}", "${:.2f}", "${:.2f}", "{:.2f} mpg", "{:.0f}", "{:.0f}", "{:s}", "{:s}")[i] for i in
+                       ("${:,.2f}", "${:,.2f}", "${:,.2f}", "{:,.2f} mpg", "{:,.0f}", "{:,.0f}", "{:s}", "{:s}")[i] for i in
                        range(len(categories)))
 
         for i in range(len(values)):
