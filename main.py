@@ -113,11 +113,12 @@ class MainScreen(Screen):
     
     @staticmethod
     def edit_title(category):
-        pop_up = None
         if category_names.index(category) > 5:
             pop_up = EditPopupCheckbox()
         else:
             pop_up = EditPopup()
+            if category_names.index(category) > 2:
+                pop_up.ids.new_value.hint_text = "#"
         pop_up.title = category
         pop_up.open()
         
