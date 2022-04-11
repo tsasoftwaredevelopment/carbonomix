@@ -1,4 +1,3 @@
-from turtle import title
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -10,14 +9,12 @@ from kivy.metrics import dp
 
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import OneLineAvatarIconListItem
-from kivy.factory import Factory
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
 
-from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
+from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
@@ -62,23 +59,35 @@ class WelcomeScreen(Screen):
 
 
 class FootprintPopup(Popup):
-    
     def display_footprint(self):
         return str(get_footprint())
-    
+
+
 class EditListItem(OneLineAvatarIconListItem):
     pass
         
 
 class EditPopup(Popup):
-    pass
-        
-    
+    def update_values(self):
+        if not self.ids.new_value.text:
+            return
+        self.dismiss()
+        update_footprint((float(self.ids.new_value.text),), (categories[category_names.index(self.title)],))
+        sm.get_screen("main").update_values()
+
+
 class EditPopupCheckbox(Popup):
-    pass
+    def update_values(self):
+        if self.ids.edit_yes.state == self.ids.edit_no.state:
+            return
+        self.dismiss()
+        update_footprint((self.ids.edit_yes.state == 'down',), (categories[category_names.index(self.title)],))
+        sm.get_screen("main").update_values()
+
 
 class ExitScreen(Screen):
     pass
+
 
 class MainScreen(Screen):
     def __init__(self, **kwargs):
@@ -105,9 +114,13 @@ class MainScreen(Screen):
     @staticmethod
     def edit_title(category):
         if category_names.index(category) > 5:
-            EditPopupCheckbox(title=category).open()
+            pop_up = EditPopupCheckbox()
         else:
-            EditPopup(title=category).open()
+            pop_up = EditPopup()
+            if category_names.index(category) > 2:
+                pop_up.ids.new_value.hint_text = "#"
+        pop_up.title = category
+        pop_up.open()
         
     def display_footprint(self):
         return str(get_footprint())
@@ -115,7 +128,7 @@ class MainScreen(Screen):
     def update_values(self):
         values = get_current_values()
         format = tuple(category_names[i] + ": " +
-                       ("${:.2f}", "${:.2f}", "${:.2f}", "{:.2f} mpg", "{:.0f}", "{:.0f}", "{:s}", "{:s}")[i] for i in
+                       ("${:,.2f}", "${:,.2f}", "${:,.2f}", "{:,.2f} mpg", "{:,.0f}", "{:,.0f}", "{:s}", "{:s}")[i] for i in
                        range(len(categories)))
 
         for i in range(len(values)):
@@ -168,7 +181,7 @@ class MainScreen(Screen):
                     values[end_index:i + 1]) / (end_index - i + 1)
                 increase = (this_month - last_month) / last_month * 100
         ax.plot(plot_dates, plot_values, '-o', color='#2e43ff', markersize=2)
-        plt.ylabel('Carbon Footprint')
+        plt.ylabel("Carbon Footprint (lbs CO2 / year)")
         plt.xlabel("Date")
         plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
         ax.set_xticklabels(dates, rotation=45, ha='right')
@@ -228,12 +241,6 @@ class GraphItem(MDBoxLayout):
         if category == "Carbon Footprint":
             self.children[1].secondary_text = self.children[1].secondary_text[:-6] + "month."
 
-        
-        
-        
-        
-
-        
 
 class QuestionLayout(FloatLayout):
     question = StringProperty()
@@ -274,7 +281,7 @@ class CarbonomixApp(MDApp):
                 "viewclass": "OneLineListItem",
                 "text": "Exit App",
                 "height": dp(40),
-                "on_release": lambda x="Exit App": self.menu_callback(x),
+                "on_release": lambda x="Exit App": self.exit_app(x),
             },
             {
                 "viewclass": "OneLineListItem",
@@ -292,6 +299,17 @@ class CarbonomixApp(MDApp):
             items=menu_items,
             width_mult=4,
         )
+
+        self.snackbar = CustomSnackbar(
+            text="",
+            bg_color=(50 / 255, 100 / 255, 50 / 255, 1),
+            icon="information",
+            snackbar_x="10dp",
+            snackbar_y="10dp",
+            duration=2,
+            buttons=[MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1, 1, 1, 1))]
+        )
+        self.snackbar.size_hint_x = (Window.width - (self.snackbar.snackbar_x * 2)) / Window.width
 
         def start_app(dt=None):
             sm.current = 'welcome' if always_show_questions or not query(
@@ -330,11 +348,11 @@ class CarbonomixApp(MDApp):
 
         return sm
 
-    def callback(self, button):
+    def open_menu(self, button):
         self.menu.caller = button
         self.menu.open()
 
-    def menu_callback(self, text_item):
+    def exit_app(self, text_item):
         exit_screen = ExitScreen(name='end')
         sm.add_widget(exit_screen)
 
@@ -350,38 +368,14 @@ class CarbonomixApp(MDApp):
         fade_text()
         self.menu.dismiss()
 
-        snackbar = CustomSnackbar(
-            text = text_item,
-            bg_color = (50/255, 100/255, 50/255, 1),
-            icon = "information",
-            snackbar_x = "10dp",
-            snackbar_y = "10dp",
-            duration = 2,
-            buttons = [MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1,1,1,1))]
-            )
-        snackbar.size_hint_x = (
-            Window.width - (snackbar.snackbar_x * 2)
-        ) / Window.width
-        
-        snackbar.open()
+        self.snackbar.text = text_item
+        self.snackbar.open()
 
         Clock.schedule_once(close_application, 4)
 
     def menu_callback2(self, text_item):
-        snackbar = CustomSnackbar(
-            text = text_item,
-            bg_color = (50/255, 100/255, 50/255, 1),
-            icon = "information",
-            snackbar_x = "10dp",
-            snackbar_y = "10dp",
-            duration = 2,
-            buttons = [MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1,1,1,1))]
-            )
-        snackbar.size_hint_x = (
-            Window.width - (snackbar.snackbar_x * 2)
-        ) / Window.width
-        
-        snackbar.open()
+        self.snackbar.text = text_item
+        self.snackbar.open()
 
 
 if __name__ == '__main__':
