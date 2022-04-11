@@ -27,7 +27,7 @@ from datetime import datetime, timedelta, date
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 
 sm: ScreenManager
 plt.rcParams.update({'font.size': 8})
@@ -72,6 +72,7 @@ class EditListItem(OneLineAvatarIconListItem):
 
 class EditPopup(Popup):
     pass
+        
     
 class EditPopupCheckbox(Popup):
     pass
