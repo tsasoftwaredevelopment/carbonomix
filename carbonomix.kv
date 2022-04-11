@@ -330,11 +330,13 @@
     background_normal: ""
     background_color: 189/255, 1, 206/255, 1
 
-    RelativeLayout:
+    FloatLayout:
         orientation: "vertical"
         size: root.width, root.height
         MDTextField:
             id: new_value
+            color_mode: "custom"
+            current_hint_text_color: 1, 1, 1, 1
             multiline: False
             input_filter: 'float'
             size_hint_x: 0.9
@@ -343,16 +345,17 @@
             line_color_normal: 108/255, 168/255, 124/255, 1
             max_text_length: 10
             hint_text: "$"
-            pos_hint: {'center_x': 0.5, 'center_y': 0.75}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
             
         Button:
             text: "Update"
             font_size: 24
-            background_color: 189/255, 1, 206/255, 1
+            background_normal: ""
+            background_color: 113/255, 201/255, 135/255, 1
             on_release:
                 root.update_values()
             size_hint: 0.8, 0.02
-            pos_hint: {"center_x": 0.5}
+            pos_hint: {"center_x": 0.5, "center_y": 0.18}
 
 <EditPopupCheckbox>
     size_hint: 0.75, 0.28
@@ -365,25 +368,30 @@
         MDCheckbox:
             id: edit_yes
             group: 'yn_edit'
+            color: 1, 1, 1, 1
             size_hint: None, None
             size: dp(40), dp(40)
             pos_hint: {'center_x': .4, 'center_y': .57}
         MDCheckbox:
             id: edit_no
             group: 'yn_edit'
+            color: 1, 1, 1, 1
             size_hint: None, None
             size: dp(40), dp(40)
             pos_hint: {'center_x': .6, 'center_y': .57}
         Label:
             text: "Yes"
+            color: 1, 1, 1, 1
             pos_hint: {'center_x': .4, 'center_y': .82}
         Label:
             text: "No"
+            color: 1, 1, 1, 1
             pos_hint: {'center_x': .6, 'center_y': .82}
         Button:
             text: "Update"
             font_size: 24
-            background_color: 189/255, 1, 206/255, 1
+            background_normal: ""
+            background_color: 113/255, 201/255, 135/255, 1
             size_hint: None, None
             size: 250, 120
             pos_hint: {'center_x': .5}
