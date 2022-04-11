@@ -303,7 +303,8 @@
     title_size: 30
     separator_height: 3
     separator_color: 1, 1, 1, 1
-    background_color: utils.get_colors_from_hex('FFB6C1')
+    background_normal: ""
+    background_color: 189/255, 1, 206/255, 1
     BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
@@ -326,8 +327,10 @@
     title_align: "center"
     title_size: 20
     title_color: 1, 1, 1, 1
+    background_normal: ""
     background_color: 189/255, 1, 206/255, 1
-    BoxLayout:
+
+    RelativeLayout:
         orientation: "vertical"
         size: root.width, root.height
         MDTextField:
@@ -340,6 +343,7 @@
             line_color_normal: 108/255, 168/255, 124/255, 1
             max_text_length: 10
             hint_text: "$"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.75}
             
         Button:
             text: "Update"
@@ -380,6 +384,9 @@
             text: "Update"
             font_size: 24
             background_color: 189/255, 1, 206/255, 1
+            size_hint: None, None
+            size: 250, 120
+            pos_hint: {'center_x': .5}
             on_release:
                 root.update_values()
             size_hint: 0.8, 0.02

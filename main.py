@@ -3,7 +3,7 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import StringProperty, BooleanProperty, NumericProperty
+from kivy.properties import StringProperty, BooleanProperty, NumericProperty, ListProperty
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
 
