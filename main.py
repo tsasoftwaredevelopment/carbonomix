@@ -123,7 +123,8 @@ class MainScreen(Screen):
         pop_up.open()
         
     def display_footprint(self):
-        return str(get_footprint())
+        return "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
+        #str(get_footprint())
 
     def update_values(self):
         values = get_current_values()
