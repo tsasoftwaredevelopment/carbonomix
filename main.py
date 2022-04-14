@@ -84,6 +84,7 @@ class EditPopupCheckbox(Popup):
         update_footprint((self.ids.edit_yes.state == 'down',), (categories[category_names.index(self.title)],))
         sm.get_screen("main").update_values()
 
+
 class ExitScreen(Screen):
     pass
 

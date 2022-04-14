@@ -238,9 +238,18 @@
                     do_scroll_x: False
                     do_scroll_y: True
                     FloatLayout: 
-                        MDLabel:
-                            text: "filler" 
-                            pos_hint: {'center_x': 0.6, 'center_y': 0.95}
+                        size_hint_y: 1.2
+                        MDCard: 
+                            size_hint: 0.6, 0.17
+                            md_bg_color: 177/255, 156/255, 217/255, 1
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.885}
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel: 
+                                text: "Carbon Footprint:              " + root.display_footprint() + " lbs CO2 per year"
+                                halign: "center"
+                                font_size: "20sp"
+    
                         MDList:
                             id: info_list
                             EditListItem:
