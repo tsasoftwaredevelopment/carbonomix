@@ -233,28 +233,30 @@
                 text: "Your Info"
                 icon: 'cellphone-information'
                 on_tab_release: root.update_values()
-                ScrollView:
-                    do_scroll_x: False
-                    do_scroll_y: True
-                    BoxLayout: 
+                MDWidget: 
+                    size_hint: .5, 0.3
+                    md_bg_color: 1, 1, 1, 1
                      
-                        MDLabel: 
-                                text: "Carbon Footprint: " + root.display_footprint()
-                                font_size: "30dp"
-                                pos_hint: {'center_y': 0.95}
-                                halign: "center"
-                                size_hint: 0.7, 0.2
-                         
-                        MDList:
-                                id: info_list
-                                EditListItem:
-                                EditListItem:
-                                EditListItem:
-                                EditListItem:
-                                EditListItem:
-                                EditListItem:
-                                EditListItem:
-                                EditListItem:
+                    MDLabel: 
+                            text: "Carbon Footprint: " + root.display_footprint()
+                            font_size: "30dp"
+                            pos_hint: {'center_y': 0.95}
+                            halign: "center"
+                            size_hint: 0.7, 0.2
+                MDWidget: 
+                    size_hint: .5, 0.3
+                    md_bg_color: 1, 1, 1, 1        
+                    
+                    MDList:
+                            id: info_list
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
             MDBottomNavigationItem:
                 name: 'statistics'
                 text: "Statistics"
