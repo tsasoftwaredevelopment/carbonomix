@@ -20,7 +20,7 @@ from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta, date
-
+from kivymd.uix.card import MDCard
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
@@ -83,7 +83,6 @@ class EditPopupCheckbox(Popup):
         self.dismiss()
         update_footprint((self.ids.edit_yes.state == 'down',), (categories[category_names.index(self.title)],))
         sm.get_screen("main").update_values()
-
 
 class ExitScreen(Screen):
     pass
