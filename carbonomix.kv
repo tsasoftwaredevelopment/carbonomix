@@ -1,3 +1,4 @@
+
 <Label>
     color: 0, 0, 0, 1
 
@@ -233,16 +234,32 @@
                 text: "Your Info"
                 icon: 'cellphone-information'
                 on_tab_release: root.update_values()
-                MDList:
-                    id: info_list
-                    EditListItem:
-                    EditListItem:
-                    EditListItem:
-                    EditListItem:
-                    EditListItem:
-                    EditListItem:
-                    EditListItem:
-                    EditListItem:
+                ScrollView: 
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    FloatLayout: 
+                        size_hint_y: 1.2
+                        MDCard: 
+                            size_hint: 0.6, 0.17
+                            md_bg_color: 177/255, 156/255, 217/255, 1
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.885}
+                            border_radius: 20
+                            radius: [15]
+                            MDLabel: 
+                                text: root.display_footprint()
+                                halign: "center"
+                                font_size: "20sp"
+    
+                        MDList:
+                            id: info_list
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
+                            EditListItem:
 
             MDBottomNavigationItem:
                 name: 'statistics'
@@ -405,7 +422,7 @@
     IconRightWidget:  
         icon: "pencil"
         on_release: 
-            root.parent.parent.parent.parent.parent.parent.edit_title(root.text.split(":")[0])
+            root.parent.parent.parent.parent.parent.parent.parent.parent.edit_title(root.text.split(":")[0])
 
 
 <ExitScreen>

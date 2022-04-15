@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta, date
 
+
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
@@ -123,7 +124,7 @@ class MainScreen(Screen):
         pop_up.open()
         
     def display_footprint(self):
-        return str(get_footprint())
+        return "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
 
     def update_values(self):
         values = get_current_values()
