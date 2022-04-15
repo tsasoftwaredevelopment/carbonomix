@@ -20,7 +20,8 @@ from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta, date
-from kivymd.uix.card import MDCard
+
+
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
@@ -124,7 +125,6 @@ class MainScreen(Screen):
         
     def display_footprint(self):
         return "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
-        #str(get_footprint())
 
     def update_values(self):
         values = get_current_values()
