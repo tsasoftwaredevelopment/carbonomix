@@ -13,6 +13,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
+from kivymd.uix.datatables import MDDataTable
 
 from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 
@@ -66,7 +67,7 @@ class FootprintPopup(Popup):
 
 class EditListItem(OneLineAvatarIconListItem):
     pass
-        
+
 
 class EditPopup(Popup):
     def update_values(self):
@@ -93,6 +94,7 @@ class ExitScreen(Screen):
 class MainScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.current_tab = "home"
         self.update_values()
         self.display_menu = MDDropdownMenu(
             caller=self.ids.constraint,
@@ -106,12 +108,28 @@ class MainScreen(Screen):
             width_mult=2,
             max_height=dp(150),
         )
+        self.data_table = MDDataTable(
+            use_pagination=True,
+            column_data=(
+                ("Category", Window.width * 0.11),
+                ("Value", Window.width * 0.06),
+                ("Date", Window.width * 0.05),
+            )
+        )
+
+    def new_data_table_size(self):
+        new_values = (
+                ("Category", max(Window.width * 0.099, dp(44))),
+                ("Value", max(Window.width * 0.054, 24)),
+                ("Date", max(Window.width * 0.045, 20)),
+        )
+        return new_values
 
     def choose_constraint(self, option):
         self.display_menu.dismiss()
         self.ids.constraint.text = option
         self.display_values()
-    
+
     @staticmethod
     def edit_title(category):
         if category_names.index(category) > 5:
@@ -122,7 +140,7 @@ class MainScreen(Screen):
                 pop_up.ids.new_value.hint_text = "#"
         pop_up.title = category
         pop_up.open()
-        
+
     def display_footprint(self):
         return "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
 
@@ -223,10 +241,37 @@ class MainScreen(Screen):
             plt.xlabel("Date")
             plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
             ax.set_xticklabels(dates, rotation=45, ha='right')
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
             self.ids.statistics.add_widget(
                 GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
             plt.close(fig)
+
+    def display_data_table(self, row_data=None):
+        if row_data is None:
+            row_data = (
+                (
+                    "Yearly Flights Under 4 Hours",
+                    343897,
+                    datetime.now().strftime("%b-%d %Y")
+                ),
+                (
+                    "Yearly Mileage",
+                    "43897.23 mpg",
+                    datetime.now().strftime("%b-%d %Y")
+                ),
+                (
+                    "Monthly Oil Bill",
+                    348,
+                    datetime.now().strftime("%b-%d %Y")
+                ),
+            )
+
+        self.data_table = MDDataTable(
+            use_pagination=True,
+            column_data=self.new_data_table_size(),
+            row_data=row_data,
+        )
+        self.ids.data_table.add_widget(self.data_table)
 
 
 class GraphItem(MDBoxLayout):
