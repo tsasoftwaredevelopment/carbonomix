@@ -12,6 +12,7 @@ from kivymd.uix.snackbar import Snackbar
 from kivymd.uix.boxlayout import MDBoxLayout
 from database import update, query, create_tables, update_footprint, get_footprint
 from kivymd.app import MDApp
+from random import randint as ri
 
 # DEBUG = True means you're testing.
 DEBUG = False
@@ -74,10 +75,22 @@ class MenuHeader(MDBoxLayout):
 
 
 class CarbonomixApp(MDApp):
+    global loadScreen
+    loadScreen = Image(source='text.png',pos=(0,0))
+    
+    def loading_screen(self):
+        Window.size = (400, 600)
+        d = 1.5
+        load_anim = (Animation(x=ri(-100,300), y=ri(-200,200), d=d) + Animation(x=ri(-100,300), y=ri(-200,200), d=d) + 
+            Animation(x=ri(-100,300), y=ri(-200,200), d=d) + Animation(x=ri(-100,300), y=ri(-200,200), d=d) + Animation(x=ri(-100,300), y=ri(-200,200), d=d))
+        
+        load_anim.start(loadScreen)
+
+        return loadScreen
+    
     def build(self):
         global sm
         Window.size = (400, 600)
-        Window.clearcolor = (189 / 255, 1, 206 / 255, 1)
 
         fade = FadeTransition()
         fade.duration = 0 if DEBUG else 1.5
