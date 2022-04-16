@@ -10,9 +10,11 @@ from kivy.metrics import dp
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.card import MDCard
 from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
+from kivy.uix.carousel import Carousel
 
 from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 
@@ -58,6 +60,8 @@ class WelcomeScreen(Screen):
         FootprintPopup().open()
         sm.transition = SlideTransition(direction='left')
 
+class CarbonCarousel(MDCard):
+    pass
 
 class FootprintPopup(Popup):
     def display_footprint(self):
