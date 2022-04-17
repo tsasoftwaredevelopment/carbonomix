@@ -251,8 +251,8 @@
                             pos_hint: {'center_x': 0.5, 'center_y': 0.885}
                             border_radius: 20
                             radius: [15]
-                            MDLabel: 
-                                text: root.display_footprint()
+                            MDLabel:
+                                id: footprint_label
                                 halign: "center"
                                 font_size: "20sp"
     
@@ -450,10 +450,10 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
             
         MDRaisedButton:
+            id: update_button
             text: "Update"
             font_size: 24
             md_bg_color: 113/255, 201/255, 135/255, 1
-            on_release: root.update_values
             size_hint: 0.8, 0.35
             pos_hint: {"center_x": 0.5, "center_y": 0.25}
 
@@ -489,13 +489,13 @@
             pos_hint: {'center_x': .6, 'center_y': .82}
 
         MDRaisedButton:
+            id: update_button
             text: "Update"
             font_size: 24
             md_bg_color: 113/255, 201/255, 135/255, 1
             size_hint: None, None
             size: 250, 120
             pos_hint: {'center_x': .5}
-            on_release: root.update_values
             size_hint: 0.8, 0.35
             pos_hint: {"center_x": 0.5, "center_y": 0.25}
 
