@@ -195,8 +195,8 @@ def update_footprint(values, categories_list=categories, date=None, user_id=1):
         assert len(categories_list) == len(values) and categories_list[i] in categories
 
         category_id = categories.index(categories_list[i]) + 1
-
-        insert_values += f"({user_id}, {category_id}, {values[i] if type(values[i]) is not bool else int(values[i])}{', ' + str(date) if date else ''}), "
+        quote = "'"
+        insert_values += f"({user_id}, {category_id}, {values[i] if type(values[i]) is not bool else int(values[i])}{', ' + quote + str(date) + quote if date else ''}), "
 
     if not insert_values.endswith("VALUES "):
         update(insert_values[:-2])
@@ -204,9 +204,9 @@ def update_footprint(values, categories_list=categories, date=None, user_id=1):
     update(
         f"""
         INSERT INTO footprints (user_id, footprint{", submitted_at" if date else ""})
-        VALUES (%s, %s{", " + str(date) if date else ""})
+        VALUES (%s, %s{", %s" if date else ""})
         """,
-        (user_id, new_footprint)
+        (user_id, new_footprint, date)
     )
 
 
