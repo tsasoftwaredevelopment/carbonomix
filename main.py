@@ -335,7 +335,7 @@ class MainScreen(Screen):
                 """,
                 (1,)
             ).fetchall()
-            for i in range(dates):
+            for i in range(len(dates)):
                 if i > 0 and dates[i][0] == dates[i - 1][0]:
                     continue
                 submitted_at_max = query(
@@ -403,7 +403,7 @@ class MainScreen(Screen):
                     (float(new_value), 1, index)
                 ).fetchall()
 
-                for i in range(dates):
+                for i in range(len(dates)):
                     if i > 0 and dates[i][0] == dates[i - 1][0]:
                         continue
                     update(
