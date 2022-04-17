@@ -70,7 +70,7 @@ class EditListItem(OneLineAvatarIconListItem):
 
 
 class EditPopup(Popup):
-    def update_values(self):
+    def update_values(self, button=None, mouse=None):
         if not self.ids.new_value.text:
             return
         self.dismiss()
@@ -79,7 +79,7 @@ class EditPopup(Popup):
 
 
 class EditPopupCheckbox(Popup):
-    def update_values(self):
+    def update_values(self, button=None, mouse=None):
         if self.ids.edit_yes.state == self.ids.edit_no.state:
             return
         self.dismiss()
@@ -292,7 +292,6 @@ class MainScreen(Screen):
 
         if function == "Delete":
             indices = [row[0] for row in rows]
-            print(indices)
             update(
                 f"""
                 DELETE FROM input_values
@@ -311,8 +310,42 @@ class MainScreen(Screen):
             for index in indices:
                 self.data_table.remove_row(self.data_table.row_data[index - 1])
         elif function == "Edit":
-            # TODO: Add function.
-            pass
+            index = rows[0][0]
+            pop_up = EditPopup() if category_names.index(rows[0][1].text) <= 5 else EditPopupCheckbox()
+            pop_up.title = rows[0][1].text
+
+            def edit_value(button=None):
+                if isinstance(pop_up, EditPopup):
+                    if not pop_up.ids.new_value.text:
+                        return
+                    new_value = pop_up.ids.new_value.text
+                elif isinstance(pop_up, EditPopupCheckbox):
+                    if pop_up.ids.edit_yes.state == pop_up.ids.edit_no.state:
+                        return
+                    new_value = pop_up.ids.edit_yes.state == 'down'
+
+                pop_up.dismiss()
+                old_data = self.data_table.row_data[index - 1]
+                self.data_table.update_row(old_data, (old_data[0], new_value, old_data[2]))
+                update(
+                    """
+                    UPDATE input_values
+                    SET value = %s
+                    WHERE user_id = %s AND (category_id, value, submitted_at) IN (
+                        SELECT category_id, value, submitted_at
+                        FROM (
+                            SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC) as row_number
+                            FROM input_values
+                        ) as ranked
+                        WHERE row_number = %s
+                    )
+                    """,
+                    (float(new_value), 1, index)
+                )
+
+            pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
+            pop_up.children[0].children[0].children[0].children[0].bind(on_release=edit_value)
+            pop_up.open()
         elif function == "Add":
             # TODO: Add function.
             pass
