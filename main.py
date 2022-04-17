@@ -311,7 +311,8 @@ class MainScreen(Screen):
                 self.data_table.remove_row(self.data_table.row_data[index - 1])
         elif function == "Edit":
             index = rows[0][0]
-            pop_up = EditPopup() if category_names.index(rows[0][1].text) <= 5 else EditPopupCheckbox()
+            category_name = category_names.index(rows[0][1].text)
+            pop_up = EditPopup() if category_name <= 5 else EditPopupCheckbox()
             pop_up.title = rows[0][1].text
 
             def edit_value(button=None):
@@ -326,7 +327,7 @@ class MainScreen(Screen):
 
                 pop_up.dismiss()
                 old_data = self.data_table.row_data[index - 1]
-                self.data_table.update_row(old_data, (old_data[0], new_value, old_data[2]))
+                self.data_table.update_row(old_data, (old_data[0], category_value_formats[category_name].format(new_value), old_data[2]))
                 update(
                     """
                     UPDATE input_values
