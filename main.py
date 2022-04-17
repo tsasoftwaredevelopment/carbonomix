@@ -268,7 +268,7 @@ class MainScreen(Screen):
             SELECT category_id, value, submitted_at
             FROM input_values
             WHERE user_id = %s
-            ORDER BY submitted_at DESC, value DESC, category_id
+            ORDER BY submitted_at DESC, category_id, value DESC
             """,
             (1,)
         ).fetchall()
@@ -326,7 +326,7 @@ class MainScreen(Screen):
                 WHERE user_id = %s AND (category_id, value, submitted_at) IN (
                     SELECT category_id, value, submitted_at
                     FROM (
-                        SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, value DESC, category_id) as row_number
+                        SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, category_id, value DESC) as row_number
                         FROM input_values
                     ) as ranked
                     WHERE row_number IN ({", ".join(str(index) for index in indices)})
@@ -369,7 +369,7 @@ class MainScreen(Screen):
                     WHERE user_id = %s AND (category_id, value, submitted_at) IN (
                         SELECT category_id, value, submitted_at
                         FROM (
-                            SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, value DESC, category_id) as row_number
+                            SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, category_id, value DESC) as row_number
                             FROM input_values
                         ) as ranked
                         WHERE row_number = %s
