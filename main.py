@@ -15,7 +15,7 @@ from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
 
-from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
+from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
@@ -24,7 +24,7 @@ from datetime import datetime, timedelta, date
 
 
 # DEBUG = True means you're testing.
-DEBUG = False
+DEBUG = True
 # Set this to True if you want to see the questions again on the welcome screen.
 always_show_questions = False
 
@@ -260,18 +260,24 @@ class MainScreen(Screen):
             elevation=5,
         )
         self.data_table.bind(on_row_press=self.on_row_press)
+
+        self.data_table.children[0].children[2].children[0].children[-1].children[1].remove_widget(self.data_table.children[0].children[2].children[0].children[-1].children[1].children[1])
+        self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text = " " * 12 + self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text
         self.ids.data_table.add_widget(self.data_table)
         self.selected_rows = []
 
     def on_row_press(self, table, row):
+        current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
+        current_rows_text = tuple(int(x) for x in current_rows_text)
+
         if row.ids.check.state == "down":
-            self.selected_rows.append(row)
+            self.selected_rows.append((current_rows_text[0] + row.index // 3, row))
         else:
             if row in self.selected_rows:
-                self.selected_rows.remove(row)
+                self.selected_rows.remove((current_rows_text[0] + row.index // 3, row))
 
     def data_table_button_pressed(self, function):
-        rows = self.data_table.get_row_checks()
+        rows = self.selected_rows
         self.ids.error_text.text = "   "
         if len(rows) == 0:
             self.ids.error_text.text += "Please select a row."
@@ -281,11 +287,29 @@ class MainScreen(Screen):
             return
 
         for row in self.selected_rows:
-            row.ids.check.state = "normal"
+            row[1].ids.check.state = "normal"
+        self.selected_rows = []
 
         if function == "Delete":
-            for row in rows:
-                self.data_table.remove_row(tuple(row))
+            indices = [row[0] for row in rows]
+            print(indices)
+            update(
+                f"""
+                DELETE FROM input_values
+                WHERE user_id = %s AND (category_id, value, submitted_at) IN (
+                    SELECT category_id, value, submitted_at
+                    FROM (
+                        SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC) as row_number
+                        FROM input_values
+                    ) as ranked
+                    WHERE row_number IN ({", ".join(str(index) for index in indices)})
+                )
+                """,
+                (1,)
+            )
+
+            for index in indices:
+                self.data_table.remove_row(self.data_table.row_data[index - 1])
         elif function == "Edit":
             # TODO: Add function.
             pass
