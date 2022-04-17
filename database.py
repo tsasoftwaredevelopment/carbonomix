@@ -204,9 +204,11 @@ def update_footprint(values, categories_list=categories, date=None, user_id=1):
     update(
         f"""
         INSERT INTO footprints (user_id, footprint{", submitted_at" if date else ""})
-        VALUES (%s, %s{", %s" if date else ""})
+        VALUES (%(user_id)s, %(new_footprint)s{", %(date)s" if date else ""})
+        ON CONFLICT ON CONSTRAINT footprints_pkey
+        DO UPDATE SET footprint = %(new_footprint)s
         """,
-        (user_id, new_footprint, date)
+        {'user_id': user_id, 'new_footprint': new_footprint, 'date': date}
     )
 
 

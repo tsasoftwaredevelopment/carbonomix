@@ -478,7 +478,7 @@ class MainScreen(Screen):
                         update_footprint(tuple(), tuple(), date_value)
                         new_row = (category_names[category_index], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), date_value.strftime("%b-%d %Y"))
                         for i in range(len(self.data_table.row_data)):
-                            if datetime.strptime(self.data_table.row_data[i][-1], "%b-%d %Y").date() > date_value:
+                            if datetime.strptime(self.data_table.row_data[i][-1], "%b-%d %Y") > date_value:
                                 continue
                             else:
                                 self.data_table.row_data = self.get_data_table_row_data()
