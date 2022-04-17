@@ -42,6 +42,11 @@ connection = connect(environ.get('DATABASE_URL'), sslmode='require')
 c = connection.cursor()
 
 
+def close():
+    c.close()
+    connection.close()
+
+
 def update(*args):
     c.execute(*args)
     connection.commit()

@@ -17,7 +17,7 @@ from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.pickers import MDDatePicker
 
-from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
+from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
@@ -599,6 +599,7 @@ class CarbonomixApp(MDApp):
         self.snackbar.open()
 
         Clock.schedule_once(close_application, 4)
+        close()
 
     def menu_callback2(self, text_item):
         self.snackbar.text = text_item
