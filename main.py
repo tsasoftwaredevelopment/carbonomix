@@ -26,7 +26,7 @@ from datetime import datetime, timedelta, date
 
 
 # DEBUG = True means you're testing.
-DEBUG = True
+DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
 always_show_questions = False
 
