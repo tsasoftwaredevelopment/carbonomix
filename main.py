@@ -61,7 +61,7 @@ class WelcomeScreen(Screen):
         sm.transition = SlideTransition(direction='left')
 
 class CarbonCarousel(MDCard):
-    pass
+    program_text = BooleanProperty(True)
 
 class FootprintPopup(Popup):
     def display_footprint(self):
