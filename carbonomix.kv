@@ -1,3 +1,4 @@
+#:import Window kivy.core.window.Window
 
 <Label>
     color: 0, 0, 0, 1
@@ -315,6 +316,13 @@
                 FloatLayout:
                     id: data_table
 
+                    MDLabel:
+                        id: error_text
+                        text: "   "
+                        font_size: "15sp"
+                        theme_text_color: "Error"
+                        pos_hint: {'center_y': 0.13}
+
                     BoxLayout:
                         pos_hint: {'center_x': 0.5, 'bottom': 0}
                         orientation: "horizontal"
@@ -325,20 +333,18 @@
                         TableButton:
                             text: "Add"
                             md_bg_color: 51/255, 1, 109/255, 1
-                            on_release: self.add_row()
                         TableButton:
                             text: "Edit"
                             md_bg_color: 51/255, 126/255, 1, 1
-                            on_release: self.edit_row()
                         TableButton:
                             text: "Delete"
                             md_bg_color: 1, 51/255, 51/255, 1
-                            on_release: self.delete_row()
 
 
 <TableButton>
     size_hint_y: 0.8
     font_size: "17sp"
+    on_release: root.parent.parent.parent.parent.parent.parent.parent.data_table_button_pressed(self.text)
 
 
 <GraphItem>
