@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from os import environ
 from psycopg2 import connect
+from datetime import datetime
 
 
 categories = (
@@ -187,6 +188,18 @@ def _get_new_footprint(date=None, user_id=1):
 
 
 def update_footprint(values, categories_list=categories, date=None, user_id=1):
+    if date is None:
+        tz = query(
+            """
+            SELECT submitted_at
+            FROM footprints
+            WHERE user_id = %s
+            LIMIT 1
+            """,
+            (user_id,)
+        ).fetchone()[0].tzinfo
+        date = datetime.now(tz)
+
     insert_values = f"""
         INSERT INTO input_values (user_id, category_id, value{", submitted_at" if date else ""})
         VALUES """
@@ -214,7 +227,7 @@ def update_footprint(values, categories_list=categories, date=None, user_id=1):
 
     if old_footprint and new_footprint == float(old_footprint[0]):
         return
-    print("Continue.")
+
     update(
         f"""
         INSERT INTO footprints (user_id, footprint{", submitted_at" if date else ""})

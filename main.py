@@ -353,9 +353,7 @@ class MainScreen(Screen):
                     """,
                     (1, dates[i][1], dates[i][0])
                 ).fetchone()
-                print(submitted_at_max)
                 submitted_at_max = submitted_at_max[0] if submitted_at_max else datetime.now(dates[i][0].tzinfo)
-                print(dates[i][0], submitted_at_max, dates[i][0] <= submitted_at_max)
                 update(
                     """
                     DELETE FROM footprints
@@ -453,7 +451,6 @@ class MainScreen(Screen):
                     SELECT submitted_at
                     FROM footprints
                     WHERE user_id = %s
-                    ORDER BY submitted_at DESC
                     LIMIT 1
                     """,
                     (1,)
@@ -495,12 +492,7 @@ class MainScreen(Screen):
                         )
                         update_footprint(tuple(), tuple(), date_value)
                         new_row = (category_names[category_index], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), date_value.strftime("%b-%d %Y"))
-                        for i in range(len(self.data_table.row_data)):
-                            if datetime.strptime(self.data_table.row_data[i][-1], "%b-%d %Y") > date_value:
-                                continue
-                            else:
-                                self.data_table.row_data = self.get_data_table_row_data()
-                                break
+                        self.data_table.row_data = self.get_data_table_row_data()
 
                     pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
                     pop_up.children[0].children[0].children[0].children[0].bind(on_release=add_value)
