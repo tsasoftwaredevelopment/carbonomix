@@ -455,7 +455,8 @@ class MainScreen(Screen):
                     WHERE user_id = %s
                     ORDER BY submitted_at DESC
                     LIMIT 1
-                    """
+                    """,
+                    (1,)
                 ).fetchone()[0].tzinfo
                 date_value = datetime.combine(date_value, datetime.max.time()) if date_value != date.today() else datetime.now(tz)
                 choose_category = CategoryPopup()
