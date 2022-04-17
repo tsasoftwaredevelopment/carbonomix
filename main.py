@@ -320,7 +320,7 @@ class MainScreen(Screen):
 
         if function == "Delete":
             indices = [row[0] for row in rows]
-            update(
+            dates = update(
                 f"""
                 DELETE FROM input_values
                 WHERE user_id = %s AND (category_id, value, submitted_at) IN (
@@ -331,9 +331,33 @@ class MainScreen(Screen):
                     ) as ranked
                     WHERE row_number IN ({", ".join(str(index) for index in indices)})
                 )
+                RETURNING submitted_at, category_id
                 """,
                 (1,)
-            )
+            ).fetchall()
+            for i in range(dates):
+                if i > 0 and dates[i][0] == dates[i - 1][0]:
+                    continue
+                submitted_at_max = query(
+                    """
+                    SELECT submitted_at
+                    FROM input_values
+                    WHERE user_id = %s AND category_id = %s AND submitted_at >= %s
+                    LIMIT 1
+                    """,
+                    (1, dates[i][1], dates[i][0])
+                ).fetchone()
+                submitted_at_max = submitted_at_max[0] if submitted_at_max else datetime.now()
+                update(
+                    """
+                    DELETE FROM footprints
+                    WHERE user_id = %s AND submitted_at >= %s AND submitted_at < %s
+                    """,
+                    (1, dates[i][0], submitted_at_max)
+                )
+                update_footprint(tuple(), tuple(), dates[i][0])
+                if dates[i][0] != submitted_at_max:
+                    update_footprint(tuple(), tuple(), submitted_at_max)
 
             for index in indices:
                 self.data_table.remove_row(self.data_table.row_data[index - 1])
@@ -362,7 +386,7 @@ class MainScreen(Screen):
                 pop_up.dismiss()
                 old_data = self.data_table.row_data[index - 1]
                 self.data_table.update_row(old_data, (old_data[0], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), old_data[2]))
-                update(
+                dates = update(
                     """
                     UPDATE input_values
                     SET value = %s
@@ -374,9 +398,22 @@ class MainScreen(Screen):
                         ) as ranked
                         WHERE row_number = %s
                     )
+                    RETURNING submitted_at
                     """,
                     (float(new_value), 1, index)
-                )
+                ).fetchall()
+
+                for i in range(dates):
+                    if i > 0 and dates[i][0] == dates[i - 1][0]:
+                        continue
+                    update(
+                        """
+                        DELETE FROM footprints
+                        WHERE user_id = %s AND submitted_at = %s
+                        """,
+                        (1, dates[i][0])
+                    )
+                    update_footprint(tuple(), tuple(), dates[i][0])
 
             pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
             pop_up.children[0].children[0].children[0].children[0].bind(on_release=edit_value)
@@ -403,6 +440,7 @@ class MainScreen(Screen):
                     continue
 
             def on_save(instance, date_value, date_range):
+                date_value = datetime.combine(date_value, datetime.max.time()) if date_value != date.today() else datetime.now()
                 choose_category = CategoryPopup()
 
                 def on_category_select(instance=None):
@@ -437,6 +475,7 @@ class MainScreen(Screen):
                             """,
                             (1, category_index + 1, float(new_value), date_value)
                         )
+                        update_footprint(tuple(), tuple(), date_value)
                         new_row = (category_names[category_index], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), date_value.strftime("%b-%d %Y"))
                         for i in range(len(self.data_table.row_data)):
                             if datetime.strptime(self.data_table.row_data[i][-1], "%b-%d %Y").date() > date_value:

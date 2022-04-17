@@ -50,6 +50,7 @@ def close():
 def update(*args):
     c.execute(*args)
     connection.commit()
+    return c
 
 
 def query(*args):
@@ -164,30 +165,30 @@ def _calculate_footprint(electric_bill=0, gas_bill=0, oil_bill=0, mileage=0, fli
     return footprint
 
 
-def get_current_values(user_id=1):
+def get_current_values(date=None, user_id=1):
     h = query(
-        """
+        f"""
         SELECT value
         FROM (
             SELECT value,
                 ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY category_id, submitted_at DESC) AS row_number
             FROM input_values
-            WHERE user_id = %s
+            WHERE user_id = %s{" AND submitted_at <= %s" if date else ""}
         ) split
         WHERE row_number = 1
         """,
-        (user_id,)
+        (user_id,) + ((date,) if date else ())
     ).fetchall()
     return tuple(float(h[i][0]) for i in range(len(h)))
 
 
-def _get_new_footprint(user_id=1):
-    return _calculate_footprint(*get_current_values(user_id))
+def _get_new_footprint(date=None, user_id=1):
+    return _calculate_footprint(*get_current_values(date, user_id))
 
 
-def update_footprint(values, categories_list=categories, user_id=1):
-    insert_values = """
-        INSERT INTO input_values (user_id, category_id, value)
+def update_footprint(values, categories_list=categories, date=None, user_id=1):
+    insert_values = f"""
+        INSERT INTO input_values (user_id, category_id, value{", submitted_at" if date else ""})
         VALUES """
 
     for i in range(len(categories_list)):
@@ -195,14 +196,40 @@ def update_footprint(values, categories_list=categories, user_id=1):
 
         category_id = categories.index(categories_list[i]) + 1
 
-        insert_values += f"({user_id}, {category_id}, {values[i] if type(values[i]) is not bool else int(values[i])}), "
+        insert_values += f"({user_id}, {category_id}, {values[i] if type(values[i]) is not bool else int(values[i])}{', ' + str(date) if date else ''}), "
 
-    update(insert_values[:-2])
-    new_footprint = _get_new_footprint(user_id)
+    if not insert_values.endswith("VALUES "):
+        update(insert_values[:-2])
+    new_footprint = _get_new_footprint(date, user_id)
     update(
-        """
-        INSERT INTO footprints (user_id, footprint)
-        VALUES (%s, %s)
+        f"""
+        INSERT INTO footprints (user_id, footprint{", submitted_at" if date else ""})
+        VALUES (%s, %s{", " + str(date) if date else ""})
         """,
         (user_id, new_footprint)
     )
+
+
+def _recalculate_footprints(user_id=1):
+    update(
+        """
+        DELETE FROM footprints
+        """
+    )
+    dates = query(
+        """
+        SELECT submitted_at
+        FROM input_values
+        WHERE user_id = %s
+        ORDER BY submitted_at DESC
+        """,
+        (user_id,)
+    ).fetchall()
+    for i in range(len(dates)):
+        print(i)
+        if dates[i][0] == dates[i-1][0]:
+            continue
+
+        update_footprint(tuple(), tuple(), dates[i][0], user_id)
+
+    print("Complete.")
