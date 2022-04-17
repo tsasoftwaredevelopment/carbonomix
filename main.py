@@ -11,7 +11,7 @@ from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import OneLineAvatarIconListItem
-from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
 
@@ -253,11 +253,24 @@ class MainScreen(Screen):
 
         self.data_table = MDDataTable(
             use_pagination=True,
+            pos_hint={'center_x': 0.5, 'center_y': 0.55},
+            size_hint=(0.95, 0.8),
             column_data=self.new_data_table_size(),
             row_data=row_data,
         )
 
         self.ids.data_table.add_widget(self.data_table)
+
+
+class TableButton(MDRaisedButton):
+    def add_row(self):
+        pass
+
+    def delete_row(self):
+        pass
+
+    def edit_row(self):
+        pass
 
 
 class GraphItem(MDBoxLayout):

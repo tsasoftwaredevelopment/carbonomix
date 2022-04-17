@@ -308,10 +308,37 @@
                 name: 'data-table'
                 text: "Data"
                 icon: 'table-large'
-                id: data_table
                 on_tab_release:
                     root.current_tab = 'data-table'
                     root.display_data_table()
+
+                FloatLayout:
+                    id: data_table
+
+                    BoxLayout:
+                        pos_hint: {'center_x': 0.5, 'bottom': 0}
+                        orientation: "horizontal"
+                        padding: "15dp"
+                        spacing: "20dp"
+                        size_hint: 1, 0.15
+
+                        TableButton:
+                            text: "Add"
+                            md_bg_color: 51/255, 1, 109/255, 1
+                            on_release: self.add_row()
+                        TableButton:
+                            text: "Edit"
+                            md_bg_color: 51/255, 126/255, 1, 1
+                            on_release: self.edit_row()
+                        TableButton:
+                            text: "Delete"
+                            md_bg_color: 1, 51/255, 51/255, 1
+                            on_release: self.delete_row()
+
+
+<TableButton>
+    size_hint_y: 0.8
+    font_size: "17sp"
 
 
 <GraphItem>
@@ -382,7 +409,6 @@
         MDRaisedButton:
             text: "Update"
             font_size: 24
-            background_normal: ""
             md_bg_color: 113/255, 201/255, 135/255, 1
             on_touch_up:
                 root.update_values()
@@ -423,7 +449,6 @@
         MDRaisedButton:
             text: "Update"
             font_size: 24
-            background_normal: ""
             md_bg_color: 113/255, 201/255, 135/255, 1
             size_hint: None, None
             size: 250, 120
