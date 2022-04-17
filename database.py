@@ -201,6 +201,20 @@ def update_footprint(values, categories_list=categories, date=None, user_id=1):
     if not insert_values.endswith("VALUES "):
         update(insert_values[:-2])
     new_footprint = _get_new_footprint(date, user_id)
+    old_footprint = query(
+        """
+        SELECT footprint
+        FROM footprints
+        WHERE user_id = %s
+        ORDER BY submitted_at DESC
+        LIMIT 1
+        """,
+        (user_id,)
+    ).fetchone()
+
+    if old_footprint and new_footprint == float(old_footprint[0]):
+        return
+    print("Continue.")
     update(
         f"""
         INSERT INTO footprints (user_id, footprint{", submitted_at" if date else ""})

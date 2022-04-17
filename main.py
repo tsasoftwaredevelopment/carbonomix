@@ -94,6 +94,10 @@ class CategoryPopup(Popup):
 
 
 class EditPopup(Popup):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.update_button.bind(on_release=self.update_values)
+
     def update_values(self, button=None, mouse=None):
         if not self.ids.new_value.text:
             return
@@ -103,6 +107,10 @@ class EditPopup(Popup):
 
 
 class EditPopupCheckbox(Popup):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.update_button.bind(on_release=self.update_values)
+
     def update_values(self, button=None, mouse=None):
         if self.ids.edit_yes.state == self.ids.edit_no.state:
             return
@@ -157,10 +165,8 @@ class MainScreen(Screen):
         pop_up.title = category
         pop_up.open()
 
-    def display_footprint(self):
-        return "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
-
     def update_values(self):
+        self.ids.footprint_label.text = "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
         values = get_current_values()
         format = tuple(category_names[i] + ": " +
                        category_value_formats[i] for i in
@@ -347,7 +353,9 @@ class MainScreen(Screen):
                     """,
                     (1, dates[i][1], dates[i][0])
                 ).fetchone()
-                submitted_at_max = submitted_at_max[0] if submitted_at_max else datetime.now()
+                print(submitted_at_max)
+                submitted_at_max = submitted_at_max[0] if submitted_at_max else datetime.now(dates[i][0].tzinfo)
+                print(dates[i][0], submitted_at_max, dates[i][0] <= submitted_at_max)
                 update(
                     """
                     DELETE FROM footprints
@@ -440,7 +448,16 @@ class MainScreen(Screen):
                     continue
 
             def on_save(instance, date_value, date_range):
-                date_value = datetime.combine(date_value, datetime.max.time()) if date_value != date.today() else datetime.now()
+                tz = query(
+                    """
+                    SELECT submitted_at
+                    FROM footprints
+                    WHERE user_id = %s
+                    ORDER BY submitted_at DESC
+                    LIMIT 1
+                    """
+                ).fetchone()[0].tzinfo
+                date_value = datetime.combine(date_value, datetime.max.time()) if date_value != date.today() else datetime.now(tz)
                 choose_category = CategoryPopup()
 
                 def on_category_select(instance=None):
