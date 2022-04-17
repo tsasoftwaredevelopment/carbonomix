@@ -25,6 +25,17 @@ category_names = (
     'Recycles Aluminum and Tin'
 )
 
+category_value_formats = (
+    "${:,.2f}",
+    "${:,.2f}",
+    "${:,.2f}",
+    "{:,.2f} mpg",
+    "{:,.0f}",
+    "{:,.0f}",
+    "{:s}",
+    "{:s}"
+)
+
 load_dotenv(".env")
 
 connection = connect(environ.get('DATABASE_URL'), sslmode='require')

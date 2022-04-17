@@ -15,7 +15,7 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
 
-from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
+from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
@@ -108,14 +108,6 @@ class MainScreen(Screen):
             width_mult=2,
             max_height=dp(150),
         )
-        self.data_table = MDDataTable(
-            use_pagination=True,
-            column_data=(
-                ("Category", Window.width * 0.11),
-                ("Value", Window.width * 0.06),
-                ("Date", Window.width * 0.05),
-            )
-        )
 
     def new_data_table_size(self):
         new_values = (
@@ -147,7 +139,7 @@ class MainScreen(Screen):
     def update_values(self):
         values = get_current_values()
         format = tuple(category_names[i] + ": " +
-                       ("${:,.2f}", "${:,.2f}", "${:,.2f}", "{:,.2f} mpg", "{:,.0f}", "{:,.0f}", "{:s}", "{:s}")[i] for i in
+                       category_value_formats[i] for i in
                        range(len(categories)))
 
         for i in range(len(values)):
@@ -248,29 +240,23 @@ class MainScreen(Screen):
 
     def display_data_table(self, row_data=None):
         if row_data is None:
-            row_data = (
-                (
-                    "Yearly Flights Under 4 Hours",
-                    343897,
-                    datetime.now().strftime("%b-%d %Y")
-                ),
-                (
-                    "Yearly Mileage",
-                    "43897.23 mpg",
-                    datetime.now().strftime("%b-%d %Y")
-                ),
-                (
-                    "Monthly Oil Bill",
-                    348,
-                    datetime.now().strftime("%b-%d %Y")
-                ),
-            )
+            data = query(
+                """
+                SELECT category_id, value, submitted_at
+                FROM input_values
+                WHERE user_id = %s
+                ORDER BY submitted_at DESC
+                """,
+                (1,)
+            ).fetchall()
+            row_data = ((category_names[row[0] - 1], category_value_formats[row[0] - 1].format(row[1] if row[0] < 7 else "Yes" if row[1] == 1 else "No"), row[2].strftime("%b-%d %Y")) for row in data)
 
         self.data_table = MDDataTable(
             use_pagination=True,
             column_data=self.new_data_table_size(),
             row_data=row_data,
         )
+
         self.ids.data_table.add_widget(self.data_table)
 
 
