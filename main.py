@@ -262,25 +262,29 @@ class MainScreen(Screen):
                 GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
             plt.close(fig)
 
-    def display_data_table(self):
+    def get_data_table_row_data(self):
         data = query(
             """
             SELECT category_id, value, submitted_at
             FROM input_values
             WHERE user_id = %s
-            ORDER BY submitted_at DESC
+            ORDER BY submitted_at DESC, value DESC, category_id
             """,
             (1,)
         ).fetchall()
-        row_data = ((category_names[row[0] - 1], category_value_formats[row[0] - 1].format(row[1] if row[0] < 7 else "Yes" if row[1] == 1 else "No"), row[2].strftime("%b-%d %Y")) for row in data)
+        row_data = ((category_names[row[0] - 1], category_value_formats[row[0] - 1].format(
+            row[1] if row[0] < 7 else "Yes" if row[1] == 1 else "No"), row[2].strftime("%b-%d %Y")) for row in data)
 
+        return row_data
+
+    def display_data_table(self):
         self.data_table = MDDataTable(
             check=True,
             use_pagination=True,
             pos_hint={'center_x': 0.5, 'center_y': 0.57},
             size_hint=(0.95, 0.8),
             column_data=self.new_data_table_size(),
-            row_data=row_data,
+            row_data=self.get_data_table_row_data(),
             elevation=5,
         )
         self.data_table.bind(on_row_press=self.on_row_press)
@@ -322,7 +326,7 @@ class MainScreen(Screen):
                 WHERE user_id = %s AND (category_id, value, submitted_at) IN (
                     SELECT category_id, value, submitted_at
                     FROM (
-                        SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC) as row_number
+                        SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, value DESC, category_id) as row_number
                         FROM input_values
                     ) as ranked
                     WHERE row_number IN ({", ".join(str(index) for index in indices)})
@@ -365,7 +369,7 @@ class MainScreen(Screen):
                     WHERE user_id = %s AND (category_id, value, submitted_at) IN (
                         SELECT category_id, value, submitted_at
                         FROM (
-                            SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC) as row_number
+                            SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, value DESC, category_id) as row_number
                             FROM input_values
                         ) as ranked
                         WHERE row_number = %s
@@ -438,7 +442,7 @@ class MainScreen(Screen):
                             if datetime.strptime(self.data_table.row_data[i][-1], "%b-%d %Y").date() > date_value:
                                 continue
                             else:
-                                self.data_table.row_data = self.data_table.row_data[:i] + [new_row] + self.data_table.row_data[i:]
+                                self.data_table.row_data = self.get_data_table_row_data()
                                 break
 
                     pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
