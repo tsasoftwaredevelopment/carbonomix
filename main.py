@@ -8,12 +8,14 @@ from kivy.uix.popup import Popup
 from kivy.metrics import dp
 
 from kivymd.app import MDApp
+from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.pickers import MDDatePicker
 
 from database import update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 
@@ -67,6 +69,28 @@ class FootprintPopup(Popup):
 
 class EditListItem(OneLineAvatarIconListItem):
     pass
+
+
+class CategoryPopup(Popup):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.category_dropdown.text = category_names[0]
+        self.category_menu = MDDropdownMenu(
+            caller=self.ids.label,
+            items=[
+                {
+                    "text": category,
+                    "viewclass": "OneLineListItem",
+                    "on_release": lambda x=category: self.change_category(x)
+                } for category in category_names
+            ],
+            width_mult=4,
+            max_height=dp(300),
+        )
+
+    def change_category(self, category):
+        self.category_menu.dismiss()
+        self.ids.category_dropdown.text = category
 
 
 class EditPopup(Popup):
@@ -279,7 +303,7 @@ class MainScreen(Screen):
     def data_table_button_pressed(self, function):
         rows = self.selected_rows
         self.ids.error_text.text = "   "
-        if len(rows) == 0:
+        if len(rows) == 0 and function != "Add":
             self.ids.error_text.text += "Please select a row."
             return
         elif function == "Edit" and len(rows) > 1:
@@ -311,8 +335,14 @@ class MainScreen(Screen):
                 self.data_table.remove_row(self.data_table.row_data[index - 1])
         elif function == "Edit":
             index = rows[0][0]
-            category_name = category_names.index(rows[0][1].text)
-            pop_up = EditPopup() if category_name <= 5 else EditPopupCheckbox()
+            category_index = category_names.index(rows[0][1].text)
+            if category_index <= 5:
+                pop_up = EditPopup()
+                if category_index > 2:
+                    pop_up.ids.new_value.hint_text = "#"
+            else:
+                pop_up = EditPopupCheckbox()
+
             pop_up.title = rows[0][1].text
 
             def edit_value(button=None):
@@ -327,7 +357,7 @@ class MainScreen(Screen):
 
                 pop_up.dismiss()
                 old_data = self.data_table.row_data[index - 1]
-                self.data_table.update_row(old_data, (old_data[0], category_value_formats[category_name].format(new_value), old_data[2]))
+                self.data_table.update_row(old_data, (old_data[0], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), old_data[2]))
                 update(
                     """
                     UPDATE input_values
@@ -348,8 +378,73 @@ class MainScreen(Screen):
             pop_up.children[0].children[0].children[0].children[0].bind(on_release=edit_value)
             pop_up.open()
         elif function == "Add":
-            # TODO: Add function.
-            pass
+            date_dialog = MDDatePicker(
+                max_date=date.today(),
+                min_date=date(date.today().year - 20, 1, 1),
+                min_year=date.today().year - 20,
+                max_year=date.today().year,
+                primary_color=(113/255, 201/255, 135/255, 1),
+                selector_color=(113/255, 201/255, 135/255, 1),
+                text_button_color=(0, 0, 0, 1),
+                title="",
+            )
+
+            date_dialog.children[0].children[9].text = "Select Date"
+            date_dialog.children[0].remove_widget(date_dialog.children[0].children[7])
+            for date_item in date_dialog.children[0].children[2].children:
+                try:
+                    if date_item.is_today:
+                        date_item.is_today = False
+                        date_item.children[0].text_color = (0, 0, 0, 1)
+                        break
+                except AttributeError:
+                    continue
+
+            def on_save(instance, date, date_range):
+                choose_category = CategoryPopup()
+
+                def on_category_select(instance=None):
+                    category_index = category_names.index(choose_category.ids.category_dropdown.text)
+                    if category_index <= 5:
+                        pop_up = EditPopup()
+                        if category_index > 2:
+                            pop_up.ids.new_value.hint_text = "#"
+                    else:
+                        pop_up = EditPopupCheckbox()
+
+                    pop_up.title = category_names[category_index]
+                    pop_up.open()
+                    choose_category.dismiss()
+
+                    def add_value(button=None):
+                        if isinstance(pop_up, EditPopup):
+                            if not pop_up.ids.new_value.text:
+                                return
+                            new_value = pop_up.ids.new_value.text
+                        elif isinstance(pop_up, EditPopupCheckbox):
+                            if pop_up.ids.edit_yes.state == pop_up.ids.edit_no.state:
+                                return
+                            new_value = pop_up.ids.edit_yes.state == 'down'
+
+                        pop_up.dismiss()
+
+                        update(
+                            """
+                            INSERT INTO input_values (user_id, category_id, value, submitted_at)
+                            VALUES (%s, %s, %s, %s)
+                            """,
+                            (1, category_index + 1, float(new_value), date)
+                        )
+                        self.data_table.add_row((category_names[category_index], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), date.strftime("%b-%d %Y")))
+
+                    pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
+                    pop_up.children[0].children[0].children[0].children[0].bind(on_release=add_value)
+
+                choose_category.ids.continue_button.bind(on_release=on_category_select)
+                choose_category.open()
+
+            date_dialog.bind(on_save=on_save)
+            date_dialog.open()
 
 
 class TableButton(MDRaisedButton):
