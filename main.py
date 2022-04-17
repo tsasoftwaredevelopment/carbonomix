@@ -386,10 +386,8 @@ class MainScreen(Screen):
                 primary_color=(113/255, 201/255, 135/255, 1),
                 selector_color=(113/255, 201/255, 135/255, 1),
                 text_button_color=(0, 0, 0, 1),
-                title="",
             )
 
-            date_dialog.children[0].children[9].text = "Select Date"
             date_dialog.children[0].remove_widget(date_dialog.children[0].children[7])
             for date_item in date_dialog.children[0].children[2].children:
                 try:
@@ -400,7 +398,7 @@ class MainScreen(Screen):
                 except AttributeError:
                     continue
 
-            def on_save(instance, date, date_range):
+            def on_save(instance, date_value, date_range):
                 choose_category = CategoryPopup()
 
                 def on_category_select(instance=None):
@@ -433,9 +431,15 @@ class MainScreen(Screen):
                             INSERT INTO input_values (user_id, category_id, value, submitted_at)
                             VALUES (%s, %s, %s, %s)
                             """,
-                            (1, category_index + 1, float(new_value), date)
+                            (1, category_index + 1, float(new_value), date_value)
                         )
-                        self.data_table.add_row((category_names[category_index], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), date.strftime("%b-%d %Y")))
+                        new_row = (category_names[category_index], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), date_value.strftime("%b-%d %Y"))
+                        for i in range(len(self.data_table.row_data)):
+                            if datetime.strptime(self.data_table.row_data[i][-1], "%b-%d %Y").date() > date_value:
+                                continue
+                            else:
+                                self.data_table.row_data = self.data_table.row_data[:i] + [new_row] + self.data_table.row_data[i:]
+                                break
 
                     pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
                     pop_up.children[0].children[0].children[0].children[0].bind(on_release=add_value)
