@@ -6,6 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty, NumericProperty
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
+from kivy.uix.accordion import Accordion, AccordionItem
 
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
@@ -17,6 +18,7 @@ from kivymd.uix.snackbar import BaseSnackbar
 from kivy.uix.carousel import Carousel
 
 from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
+from programs import program_text
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
@@ -62,10 +64,23 @@ class WelcomeScreen(Screen):
 
 class CarbonCarousel(MDCard):
     program_text = BooleanProperty(True)
+    def open_p1(self):
+        sm.current = "p1"
+    
+
 
 class FootprintPopup(Popup):
     def display_footprint(self):
         return str(get_footprint())
+
+
+class P1ListItem(OneLineAvatarIconListItem):
+    def popup_open(self):
+        program_popup = P1Popup(title=self.text)
+        program_popup.ids.p1_popup_label.text = program_text[1][int(self.text.split(" ")[1])]
+        program_popup.open()
+
+
 
 
 class EditListItem(OneLineAvatarIconListItem):
@@ -88,6 +103,21 @@ class EditPopupCheckbox(Popup):
         self.dismiss()
         update_footprint((self.ids.edit_yes.state == 'down',), (categories[category_names.index(self.title)],))
         sm.get_screen("main").update_values()
+
+
+
+class ProgramOneScreen(Screen):
+    def add_list(self):
+        for i in range(1, 10):
+            self.ids.p1_list.add_widget(P1ListItem(text="Day " + str(i)))
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_list()
+     
+
+class P1Popup(Popup):
+    pass
 
 
 class ExitScreen(Screen):
@@ -277,9 +307,11 @@ class CarbonomixApp(MDApp):
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
+        program_one = ProgramOneScreen(name='p1')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
+        sm.add_widget(program_one)
 
         menu_items = [
             {
