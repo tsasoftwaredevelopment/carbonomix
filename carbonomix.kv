@@ -240,13 +240,13 @@
                     direction: 'right'
                     
                     CarbonCarousel:
-                        program_text: False
+                        program_one_text: False
                     CarbonCarousel:
-                        program_text: False
+                        program_one_text: False
                     CarbonCarousel: 
-                        program_text: False
+                        program_one_text: False
                     CarbonCarousel: 
-                        program_text: False
+                        program_one_text: False
                 MDCarousel:
                     size_hint: 0.85, 0.25 
                     pos_hint: {'center_x': 0.5, 'center_y': 0.475}
@@ -254,13 +254,13 @@
                     direction: 'right'
 
                     CarbonCarousel:
-                        program_text: False
+                        program_one_text: False
                     CarbonCarousel:
-                        program_text: False
+                        program_one_text: False
                     CarbonCarousel:
-                        program_text: False 
+                        program_one_text: False 
                     CarbonCarousel:
-                        program_text: False 
+                        program_one_text: False 
                 MDCarousel:
                     id: Programs
                     size_hint: 0.85, 0.25 
@@ -269,9 +269,14 @@
                     direction: 'right'
 
                     CarbonCarousel:
-                    CarbonCarousel:
+                        program_one_text: True
+                        program_card_label: True
                     CarbonCarousel: 
+                        program_one_text: False
+                        program_card_label: True
                     CarbonCarousel:
+                        program_one_text: False
+                        program_card_label: True
 
 
 
@@ -354,7 +359,7 @@
         FloatLayout:
             MDLabel: 
                 id: card_label
-                text: "p1" if root.program_text else "other"
+                text: "Environmental Philantrophy" if root.program_one_text else "Coming Soon"
                 halign: "center"
             MDIconButton: 
                 icon: "arrow-left"
@@ -368,7 +373,7 @@
                     root.parent.parent.load_next() 
                     print(root.parent)
             MDRaisedButton:
-                opacity: 1 if root.program_text else 0
+                opacity: 1 if root.program_card_label else 0
                 text: "View"
                 text_color: 0, 0, 0, 1
                 md_bg_color: 1, 150/255,79/255, 1
@@ -546,31 +551,50 @@
         Rectangle: 
             pos: self.pos
             size: self.size 
+    MDLabel: 
+        text: "Environmental Philantrophy"
+        font_size: 22
+        pos_hint: {'center_y': 0.92}
+        halign: "center"
     MDList: 
         id: p1_list
 
     
 <P1ListItem>
     IconRightWidget: 
-        id: popo
-        icon: "pencil"
+        icon: "card-text"
         on_release: 
             root.popup_open()
 
 <P1Popup>
-    auto_dismiss: False
     size_hint: 0.9, 0.9
     halign: "center"
     title_align: "center"
     title_size: 30
+    title_color: 0, 0, 0, 1
     separator_height: 3
-    separator_color: 1, 1, 1, 1
-    background_normal: ""
-    background_color: 189/255, 1, 206/255, 1
-    MDLabel: 
-        id: p1_popup_label
-        halign: "center"
-        text_color: 1, 1, 1, 1
+    separator_color: 0, 0, 0, 1
+    background: ""
+    FloatLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        MDLabel: 
+            id: p1_popup_label
+            font_size: 15
+        MDRaisedButton: 
+            text: "Exit"
+            on_release: root.popup_close()
+            size_hint: 0.425, 0.1
+            pos_hint: {'center_x':0.775, 'center_y':0.15}
+            md_bg_color: 1, 150/255,79/255, 1
+
+        MDRaisedButton:
+            text: "Complete"
+            on_release: root.popup_close()
+            size_hint: 0.425, 0.1
+            pos_hint: {'center_x':0.225, 'center_y':0.15}
+            md_bg_color: 1, 150/255,79/255, 1
+
     
 
 

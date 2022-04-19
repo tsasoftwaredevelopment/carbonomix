@@ -63,7 +63,8 @@ class WelcomeScreen(Screen):
         sm.transition = SlideTransition(direction='left')
 
 class CarbonCarousel(MDCard):
-    program_text = BooleanProperty(True)
+    program_one_text = BooleanProperty(True)
+    program_card_label = BooleanProperty(False)
     def open_p1(self):
         sm.current = "p1"
     
@@ -117,7 +118,8 @@ class ProgramOneScreen(Screen):
      
 
 class P1Popup(Popup):
-    pass
+    def popup_close(self):
+        self.dismiss()
 
 
 class ExitScreen(Screen):
