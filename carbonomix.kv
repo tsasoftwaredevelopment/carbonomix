@@ -402,9 +402,10 @@
     title_align: "center"
     title_size: 30
     separator_height: 3
-    separator_color: 1, 1, 1, 1
-    background_normal: ""
-    background_color: 189/255, 1, 206/255, 1
+    separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
+    background: ""
+
     BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
@@ -413,10 +414,12 @@
             font_size: 40
             halign: "center"
             text_color_active: 5, 5, 5, 5
-        Button:
+        MDRaisedButton:
             text: "Go to Home Screen"
             font_size: 24
-            background_color: 189/255, 1, 206/255, 1
+            md_bg_color: 1, 150/255,79/255, 1
+            size_hint: 1, 0.5
+            pos_hint: {'center_x': 0.5}
             on_release: 
                 app.root.current = "main"
                 root.dismiss()
@@ -570,7 +573,7 @@
     size_hint: 0.9, 0.9
     halign: "center"
     title_align: "center"
-    title_size: 30
+    title_size: 40
     title_color: 0, 0, 0, 1
     separator_height: 3
     separator_color: 0, 0, 0, 1
@@ -578,11 +581,16 @@
     FloatLayout:
         orientation: "vertical"
         size: root.width, root.height
-        MDLabel: 
-            id: p1_popup_label
-            font_size: 15
-            pos_hint: {'center_y': .7}
-            #fix x positioning
+        MDCard: 
+            size_hint: 0.65, 0.5 
+            pos_hint: {'center_x': 0.5,'center_y':0.6}
+            md_bg_color: 1, 150/255,79/255, 1 
+            radius: [15]
+            MDLabel: 
+                id: p1_popup_label
+                font_size: 28
+                halign: "center"
+
 
         MDRaisedButton: 
             text: "Exit"
