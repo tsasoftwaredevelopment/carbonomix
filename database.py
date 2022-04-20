@@ -268,13 +268,24 @@ def _generate_data(user_id=1):
     from random import uniform, randint
     from datetime import datetime, timedelta
 
-    ranges = [
+    """ranges = [
         ((80, 90), (40, 50)),  # electric_bill
         ((20, 40), (50, 70)),  # gas_bill
         (250, 450),  # oil_bill
         (20000, 26000),  # mileage
         (1, 4),  # flights_under_4
         (0, 1),  # flights_over_4
+        (0, 1),  # recycles_newspaper
+        (0, 1),  # recycles_aluminum_tin
+    ]"""
+
+    ranges = [
+        ((35, 60), (20, 40)),  # electric_bill
+        ((20, 35), (30, 50)),  # gas_bill
+        (200, 350),  # oil_bill
+        (18000, 23000),  # mileage
+        (1, 4),  # flights_under_4
+        (0, 2),  # flights_over_4
         (0, 1),  # recycles_newspaper
         (0, 1),  # recycles_aluminum_tin
     ]
@@ -311,7 +322,13 @@ def _generate_data(user_id=1):
                 user_id
             )
             date -= timedelta(days=randint(29, 31))
+            r = (1.002, 1.015)
+            for i in range(2):
+                ranges[i] = ((ranges[i][0][0] * uniform(*r), ranges[i][0][1] * uniform(*r)), (ranges[i][1][0] * uniform(*r), ranges[i][1][1] * uniform(*r)))
+            for i in range(2, 3):
+                ranges[i] = (ranges[i][0] * uniform(*r), ranges[i][1] * uniform(*r))
 
+    print(ranges)
     print("Complete.")
 
 
