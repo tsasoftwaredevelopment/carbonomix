@@ -1,6 +1,7 @@
 kivy[base]
 kivy_examples
 kivymd
+https://github.com/kivymd/KivyMD/archive/master.zip
 psycopg2
 python-dotenv
 kivy-garden
