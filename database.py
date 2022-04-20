@@ -284,7 +284,7 @@ def _generate_data(user_id=1):
 
     date = datetime.now()
 
-    for year in range(5):
+    for year in range(20):
         yearly_category_indices = (3, 4, 5)
         new_yearly_values = []
         for category in yearly_category_indices:
@@ -315,4 +315,4 @@ def _generate_data(user_id=1):
     print("Complete.")
 
 
-_generate_data()
+# _generate_data()
