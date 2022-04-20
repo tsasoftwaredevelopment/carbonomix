@@ -287,8 +287,8 @@ def _generate_data(user_id=1):
     for year in range(5):
         yearly_category_indices = (3, 4, 5)
         new_yearly_values = []
-        for i in yearly_category_indices:
-            new_yearly_values.append(uniform(*ranges[i]))
+        for category in yearly_category_indices:
+            new_yearly_values.append(uniform(*ranges[category]) if category == 3 else randint(*ranges[category]))
 
         update_footprint(
             new_yearly_values,
@@ -302,7 +302,7 @@ def _generate_data(user_id=1):
             monthly_category_indices = (0, 1, 2, -1, -2)
             new_monthly_values = []
             for category in monthly_category_indices:
-                new_monthly_values.append(uniform(*ranges[category] if category not in (0, 1) else ranges[category][int(date.month in (12, 1, 2))]))
+                new_monthly_values.append(uniform(*ranges[category] if category not in (0, 1) else ranges[category][int(date.month in (12, 1, 2))]) if category >= 0 else randint(*ranges[category]))
 
             update_footprint(
                 new_monthly_values,
@@ -315,4 +315,4 @@ def _generate_data(user_id=1):
     print("Complete.")
 
 
-# _generate_data()
+_generate_data()
