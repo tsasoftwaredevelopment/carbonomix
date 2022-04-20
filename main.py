@@ -6,7 +6,6 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, BooleanProperty, NumericProperty
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
-from kivy.uix.accordion import Accordion, AccordionItem
 
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
@@ -15,7 +14,6 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.snackbar import BaseSnackbar
-from kivy.uix.carousel import Carousel
 
 from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
 from programs import program_text
