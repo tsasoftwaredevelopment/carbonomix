@@ -12,10 +12,12 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.list import OneLineAvatarIconListItem
-from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
+from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.pickers import MDDatePicker
 
-from database import query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names
+from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 from programs import program_text, weekly_indices
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
@@ -27,7 +29,7 @@ from datetime import datetime, timedelta, date
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = False
+always_show_questions = True
 # Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
 week_interval = 7 * 24 * 60 * 60
 
@@ -85,10 +87,36 @@ class P1ListItem(OneLineAvatarIconListItem):
 
 class EditListItem(OneLineAvatarIconListItem):
     pass
-        
+
+
+class CategoryPopup(Popup):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.category_dropdown.text = category_names[0]
+        self.category_menu = MDDropdownMenu(
+            caller=self.ids.label,
+            items=[
+                {
+                    "text": category,
+                    "viewclass": "OneLineListItem",
+                    "on_release": lambda x=category: self.change_category(x)
+                } for category in category_names
+            ],
+            width_mult=4,
+            max_height=dp(300),
+        )
+
+    def change_category(self, category):
+        self.category_menu.dismiss()
+        self.ids.category_dropdown.text = category
+
 
 class EditPopup(Popup):
-    def update_values(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.update_button.bind(on_release=self.update_values)
+
+    def update_values(self, button=None, mouse=None):
         if not self.ids.new_value.text:
             return
         self.dismiss()
@@ -97,7 +125,11 @@ class EditPopup(Popup):
 
 
 class EditPopupCheckbox(Popup):
-    def update_values(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.update_button.bind(on_release=self.update_values)
+
+    def update_values(self, button=None, mouse=None):
         if self.ids.edit_yes.state == self.ids.edit_no.state:
             return
         self.dismiss()
@@ -113,6 +145,8 @@ class ProgramOneScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_list()
+    def to_main(self):
+        sm.current = "main"
      
 
 class P1Popup(Popup):
@@ -127,6 +161,7 @@ class ExitScreen(Screen):
 class MainScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.current_tab = "home"
         self.update_values()
         self.display_menu = MDDropdownMenu(
             caller=self.ids.constraint,
@@ -154,11 +189,19 @@ class MainScreen(Screen):
 
         self.rotate_weekly_text()
 
+    def new_data_table_size(self):
+        new_values = (
+                ("Category", max(Window.width * 0.099, dp(55))),  # 44 without checks.
+                ("Value", max(Window.width * 0.054, 24)),
+                ("Date", max(Window.width * 0.045, 20)),
+        )
+        return new_values
+
     def choose_constraint(self, option):
         self.display_menu.dismiss()
         self.ids.constraint.text = option
         self.display_values()
-    
+
     @staticmethod
     def edit_title(category):
         if category_names.index(category) > 5:
@@ -169,14 +212,12 @@ class MainScreen(Screen):
                 pop_up.ids.new_value.hint_text = "#"
         pop_up.title = category
         pop_up.open()
-        
-    def display_footprint(self):
-        return "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
 
     def update_values(self):
+        self.ids.footprint_label.text = "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
         values = get_current_values()
         format = tuple(category_names[i] + ": " +
-                       ("${:,.2f}", "${:,.2f}", "${:,.2f}", "{:,.2f} mpg", "{:,.0f}", "{:,.0f}", "{:s}", "{:s}")[i] for i in
+                       category_value_formats[i] for i in
                        range(len(categories)))
 
         for i in range(len(values)):
@@ -270,7 +311,7 @@ class MainScreen(Screen):
             plt.xlabel("Date")
             plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
             ax.set_xticklabels(dates, rotation=45, ha='right')
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
             self.ids.statistics.add_widget(
                 GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
             plt.close(fig)
@@ -281,6 +322,245 @@ class MainScreen(Screen):
             for i in range(len(self.tips_and_challenges_cards[key])):
                 self.tips_and_challenges_cards[key][i].ids.card_label.text = program_text[key][weekly_indices[key] + 1][i]
             weekly_indices[key] += 1
+
+    def get_data_table_row_data(self):
+        data = query(
+            """
+            SELECT category_id, value, submitted_at
+            FROM input_values
+            WHERE user_id = %s
+            ORDER BY submitted_at DESC, category_id, value DESC
+            """,
+            (1,)
+        ).fetchall()
+        row_data = ((category_names[row[0] - 1], category_value_formats[row[0] - 1].format(
+            row[1] if row[0] < 7 else "Yes" if row[1] == 1 else "No"), row[2].strftime("%b-%d %Y")) for row in data)
+
+        return row_data
+
+    def display_data_table(self):
+        self.data_table = MDDataTable(
+            check=True,
+            use_pagination=True,
+            pos_hint={'center_x': 0.5, 'center_y': 0.57},
+            size_hint=(0.95, 0.8),
+            column_data=self.new_data_table_size(),
+            row_data=self.get_data_table_row_data(),
+            elevation=5,
+        )
+        self.data_table.bind(on_row_press=self.on_row_press)
+
+        self.data_table.children[0].children[2].children[0].children[-1].children[1].remove_widget(self.data_table.children[0].children[2].children[0].children[-1].children[1].children[1])
+        self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text = " " * 12 + self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text
+        self.ids.data_table.add_widget(self.data_table)
+        self.selected_rows = []
+
+    def on_row_press(self, table, row):
+        current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
+        current_rows_text = tuple(int(x) for x in current_rows_text)
+
+        if row.ids.check.state == "down":
+            self.selected_rows.append((current_rows_text[0] + row.index // 3, row))
+        else:
+            if row in self.selected_rows:
+                self.selected_rows.remove((current_rows_text[0] + row.index // 3, row))
+
+    def data_table_button_pressed(self, function):
+        rows = self.selected_rows
+        self.ids.error_text.text = "   "
+        if len(rows) == 0 and function != "Add":
+            self.ids.error_text.text += "Please select a row."
+            return
+        elif function == "Edit" and len(rows) > 1:
+            self.ids.error_text.text += "Please only select one row to edit."
+            return
+
+        for row in self.selected_rows:
+            row[1].ids.check.state = "normal"
+        self.selected_rows = []
+
+        if function == "Delete":
+            indices = [row[0] for row in rows]
+            dates = update(
+                f"""
+                DELETE FROM input_values
+                WHERE user_id = %s AND (category_id, value, submitted_at) IN (
+                    SELECT category_id, value, submitted_at
+                    FROM (
+                        SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, category_id, value DESC) as row_number
+                        FROM input_values
+                    ) as ranked
+                    WHERE row_number IN ({", ".join(str(index) for index in indices)})
+                )
+                RETURNING submitted_at, category_id
+                """,
+                (1,)
+            ).fetchall()
+            for i in range(len(dates)):
+                if i > 0 and dates[i][0] == dates[i - 1][0]:
+                    continue
+                submitted_at_max = query(
+                    """
+                    SELECT submitted_at
+                    FROM input_values
+                    WHERE user_id = %s AND category_id = %s AND submitted_at >= %s
+                    LIMIT 1
+                    """,
+                    (1, dates[i][1], dates[i][0])
+                ).fetchone()
+                submitted_at_max = submitted_at_max[0] if submitted_at_max else datetime.now(dates[i][0].tzinfo)
+                update(
+                    """
+                    DELETE FROM footprints
+                    WHERE user_id = %s AND submitted_at >= %s AND submitted_at < %s
+                    """,
+                    (1, dates[i][0], submitted_at_max)
+                )
+                update_footprint(tuple(), tuple(), dates[i][0])
+                if dates[i][0] != submitted_at_max:
+                    update_footprint(tuple(), tuple(), submitted_at_max)
+
+            for index in indices:
+                self.data_table.remove_row(self.data_table.row_data[index - 1])
+        elif function == "Edit":
+            index = rows[0][0]
+            category_index = category_names.index(rows[0][1].text)
+            if category_index <= 5:
+                pop_up = EditPopup()
+                if category_index > 2:
+                    pop_up.ids.new_value.hint_text = "#"
+            else:
+                pop_up = EditPopupCheckbox()
+
+            pop_up.title = rows[0][1].text
+
+            def edit_value(button=None):
+                if isinstance(pop_up, EditPopup):
+                    if not pop_up.ids.new_value.text:
+                        return
+                    new_value = pop_up.ids.new_value.text
+                elif isinstance(pop_up, EditPopupCheckbox):
+                    if pop_up.ids.edit_yes.state == pop_up.ids.edit_no.state:
+                        return
+                    new_value = pop_up.ids.edit_yes.state == 'down'
+
+                pop_up.dismiss()
+                old_data = self.data_table.row_data[index - 1]
+                self.data_table.update_row(old_data, (old_data[0], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), old_data[2]))
+                dates = update(
+                    """
+                    UPDATE input_values
+                    SET value = %s
+                    WHERE user_id = %s AND (category_id, value, submitted_at) IN (
+                        SELECT category_id, value, submitted_at
+                        FROM (
+                            SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY submitted_at DESC, category_id, value DESC) as row_number
+                            FROM input_values
+                        ) as ranked
+                        WHERE row_number = %s
+                    )
+                    RETURNING submitted_at
+                    """,
+                    (float(new_value), 1, index)
+                ).fetchall()
+
+                for i in range(len(dates)):
+                    if i > 0 and dates[i][0] == dates[i - 1][0]:
+                        continue
+                    update(
+                        """
+                        DELETE FROM footprints
+                        WHERE user_id = %s AND submitted_at = %s
+                        """,
+                        (1, dates[i][0])
+                    )
+                    update_footprint(tuple(), tuple(), dates[i][0])
+
+            pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
+            pop_up.children[0].children[0].children[0].children[0].bind(on_release=edit_value)
+            pop_up.open()
+        elif function == "Add":
+            date_dialog = MDDatePicker(
+                max_date=date.today(),
+                min_date=date(date.today().year - 20, 1, 1),
+                min_year=date.today().year - 20,
+                max_year=date.today().year,
+                primary_color=(113/255, 201/255, 135/255, 1),
+                selector_color=(113/255, 201/255, 135/255, 1),
+                text_button_color=(0, 0, 0, 1),
+            )
+
+            date_dialog.children[0].remove_widget(date_dialog.children[0].children[7])
+            for date_item in date_dialog.children[0].children[2].children:
+                try:
+                    if date_item.is_today:
+                        date_item.is_today = False
+                        date_item.children[0].text_color = (0, 0, 0, 1)
+                        break
+                except AttributeError:
+                    continue
+
+            def on_save(instance, date_value, date_range):
+                tz = query(
+                    """
+                    SELECT submitted_at
+                    FROM footprints
+                    WHERE user_id = %s
+                    LIMIT 1
+                    """,
+                    (1,)
+                ).fetchone()[0].tzinfo
+                date_value = datetime.combine(date_value, datetime.max.time()) if date_value != date.today() else datetime.now(tz)
+                choose_category = CategoryPopup()
+
+                def on_category_select(instance=None):
+                    category_index = category_names.index(choose_category.ids.category_dropdown.text)
+                    if category_index <= 5:
+                        pop_up = EditPopup()
+                        if category_index > 2:
+                            pop_up.ids.new_value.hint_text = "#"
+                    else:
+                        pop_up = EditPopupCheckbox()
+
+                    pop_up.title = category_names[category_index]
+                    pop_up.open()
+                    choose_category.dismiss()
+
+                    def add_value(button=None):
+                        if isinstance(pop_up, EditPopup):
+                            if not pop_up.ids.new_value.text:
+                                return
+                            new_value = pop_up.ids.new_value.text
+                        elif isinstance(pop_up, EditPopupCheckbox):
+                            if pop_up.ids.edit_yes.state == pop_up.ids.edit_no.state:
+                                return
+                            new_value = pop_up.ids.edit_yes.state == 'down'
+
+                        pop_up.dismiss()
+
+                        update(
+                            """
+                            INSERT INTO input_values (user_id, category_id, value, submitted_at)
+                            VALUES (%s, %s, %s, %s)
+                            """,
+                            (1, category_index + 1, float(new_value), date_value)
+                        )
+                        update_footprint(tuple(), tuple(), date_value)
+                        new_row = (category_names[category_index], category_value_formats[category_index].format(float(new_value) if category_index <= 5 else "Yes" if new_value else "No"), date_value.strftime("%b-%d %Y"))
+                        self.data_table.row_data = self.get_data_table_row_data()
+
+                    pop_up.children[0].children[0].children[0].children[0].unbind(on_release=pop_up.update_values)
+                    pop_up.children[0].children[0].children[0].children[0].bind(on_release=add_value)
+
+                choose_category.ids.continue_button.bind(on_release=on_category_select)
+                choose_category.open()
+
+            date_dialog.bind(on_save=on_save)
+            date_dialog.open()
+
+
+class TableButton(MDRaisedButton):
+    pass
 
 
 class GraphItem(MDBoxLayout):
@@ -431,6 +711,7 @@ class CarbonomixApp(MDApp):
         self.snackbar.open()
 
         Clock.schedule_once(close_application, 4)
+        close()
 
     def menu_callback2(self, text_item):
         self.snackbar.text = text_item
