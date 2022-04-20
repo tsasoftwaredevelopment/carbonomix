@@ -170,7 +170,7 @@ class MainScreen(Screen):
                     "text": option,
                     "viewclass": "OneLineListItem",
                     "on_release": lambda x=option: self.choose_constraint(x)
-                } for option in ("Past Month", "Past Year", "All")
+                } for option in ("Past Year", "Past 10 Years", "All")  # ("Past Month", "Past Year", "All")
             ],
             width_mult=2,
             max_height=dp(150),
@@ -226,16 +226,19 @@ class MainScreen(Screen):
 
     def display_values(self):
         self.ids.statistics.bind(minimum_height=self.ids.statistics.setter('height'))
-        first_constraint = "AND submitted_at > NOW() - INTERVAL '1 "
+        first_constraint = "AND submitted_at > NOW() - INTERVAL '"
         delta_time = False
         if self.ids.constraint.text == "All":
             first_constraint = ""
         elif self.ids.constraint.text == "Past Month":
-            first_constraint += "month'"
+            first_constraint += "1 month'"
             delta_time = timedelta(days=(date.today().replace(day=1) - timedelta(days=1)).day)
         elif self.ids.constraint.text == "Past Year":
-            first_constraint += "year'"
+            first_constraint += "1 year'"
             delta_time = timedelta(days=365 if date.today().year % 4 != 0 and date.today().year % 400 != 0 else 366)
+        elif self.ids.constraint.text == "Past 10 Years":
+            first_constraint += "10 year'"
+            delta_time = timedelta(days=365 * 10)  # Eventually incorporate leap years.
 
         for i in range(len(self.ids.statistics.children) - 1, -1, -1):
             if self.ids.statistics.children[i] == self.ids.change_constraint:
@@ -290,6 +293,8 @@ class MainScreen(Screen):
         ).fetchall()
         index = 0
         for i in range(len(categories) - 2):
+            if self.ids.constraint.text == "Past Year" and i > 2:
+                break
             fig, ax = plt.subplots()
             last_value = None
             increase = None
