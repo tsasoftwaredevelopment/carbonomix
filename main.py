@@ -145,6 +145,7 @@ class ProgramOneScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_list()
+
     def to_main(self):
         sm.current = "main"
      
