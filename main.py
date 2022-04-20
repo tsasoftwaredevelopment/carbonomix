@@ -29,7 +29,7 @@ from datetime import datetime, timedelta, date
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 # Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
 week_interval = 7 * 24 * 60 * 60
 

@@ -262,3 +262,57 @@ def _recalculate_footprints(user_id=1):
         update_footprint(tuple(), tuple(), dates[i][0], user_id)
 
     print("Complete.")
+
+
+def _generate_data(user_id=1):
+    from random import uniform, randint
+    from datetime import datetime, timedelta
+
+    ranges = [
+        ((80, 90), (40, 50)),  # electric_bill
+        ((20, 40), (50, 70)),  # gas_bill
+        (250, 450),  # oil_bill
+        (20000, 26000),  # mileage
+        (1, 4),  # flights_under_4
+        (0, 1),  # flights_over_4
+        (0, 1),  # recycles_newspaper
+        (0, 1),  # recycles_aluminum_tin
+    ]
+
+    update("""DELETE FROM input_values""")
+    update("""DELETE FROM footprints""")
+
+    date = datetime.now()
+
+    for year in range(5):
+        yearly_category_indices = (3, 4, 5)
+        new_yearly_values = []
+        for i in yearly_category_indices:
+            new_yearly_values.append(uniform(*ranges[i]))
+
+        update_footprint(
+            new_yearly_values,
+            tuple(categories[i] for i in yearly_category_indices),
+            date,
+            user_id
+        )
+
+        for month in range(12):
+            print(date)
+            monthly_category_indices = (0, 1, 2, -1, -2)
+            new_monthly_values = []
+            for category in monthly_category_indices:
+                new_monthly_values.append(uniform(*ranges[category] if category not in (0, 1) else ranges[category][int(date.month in (12, 1, 2))]))
+
+            update_footprint(
+                new_monthly_values,
+                tuple(categories[i] for i in monthly_category_indices),
+                date,
+                user_id
+            )
+            date -= timedelta(days=randint(29, 31))
+
+    print("Complete.")
+
+
+# _generate_data()
