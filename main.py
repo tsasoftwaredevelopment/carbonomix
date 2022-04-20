@@ -60,12 +60,13 @@ class WelcomeScreen(Screen):
         FootprintPopup().open()
         sm.transition = SlideTransition(direction='left')
 
+
 class CarbonCarousel(MDCard):
     program_one_text = BooleanProperty(True)
     program_card_label = BooleanProperty(False)
+
     def open_p1(self):
         sm.current = "p1"
-    
 
 
 class FootprintPopup(Popup):
@@ -78,8 +79,6 @@ class P1ListItem(OneLineAvatarIconListItem):
         program_popup = P1Popup(title=self.text)
         program_popup.ids.p1_popup_label.text = program_text[1][int(self.text.split(" ")[1])]
         program_popup.open()
-
-
 
 
 class EditListItem(OneLineAvatarIconListItem):
@@ -102,7 +101,6 @@ class EditPopupCheckbox(Popup):
         self.dismiss()
         update_footprint((self.ids.edit_yes.state == 'down',), (categories[category_names.index(self.title)],))
         sm.get_screen("main").update_values()
-
 
 
 class ProgramOneScreen(Screen):
