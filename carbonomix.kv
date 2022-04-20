@@ -582,7 +582,7 @@
         orientation: "vertical"
         size: root.width, root.height
         MDCard: 
-            size_hint: 0.65, 0.5 
+            size_hint: 0.7, 0.55
             pos_hint: {'center_x': 0.5,'center_y':0.6}
             md_bg_color: 1, 150/255,79/255, 1 
             radius: [15]
@@ -595,16 +595,18 @@
         MDRaisedButton: 
             text: "Exit"
             on_release: root.popup_close()
-            size_hint: 0.425, 0.1
-            pos_hint: {'center_x':0.775, 'center_y':0.15}
+            size_hint: 0.7, 0.1
+            pos_hint: {'center_x':0.5, 'center_y':0.15}
             md_bg_color: 1, 150/255,79/255, 1
+            text_color: 0, 0, 0, 0.99
 
-        MDRaisedButton:
-            text: "Complete"
-            on_release: root.popup_close()
-            size_hint: 0.425, 0.1
-            pos_hint: {'center_x':0.225, 'center_y':0.15}
-            md_bg_color: 1, 150/255,79/255, 1
+        #MDRaisedButton:
+            #text: "Complete"
+            #on_release: root.popup_close()
+            #size_hint: 0.425, 0.1
+            #pos_hint: {'center_x':0.225, 'center_y':0.15}
+            #md_bg_color: 1, 150/255,79/255, 1
+            #text_color: 0, 0, 0, 0.99
 
     
 
