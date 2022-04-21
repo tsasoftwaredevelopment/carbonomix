@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
-from os import environ
+from os import environ, getcwd, path
+import sys
+
 from psycopg2 import connect
 from datetime import datetime
 
@@ -37,8 +39,12 @@ category_value_formats = (
     "{:s}"
 )
 
-load_dotenv(".env")
+extend_data_directory = getcwd()
 
+if getattr(sys, 'frozen', False):
+    extend_data_directory = sys._MEIPASS
+
+load_dotenv(dotenv_path=path.join(extend_data_directory, '.env'))
 connection = connect(environ.get('DATABASE_URL'), sslmode='require')
 c = connection.cursor()
 
