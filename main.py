@@ -15,7 +15,7 @@ from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.picker import MDDatePicker
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 from programs import program_text, weekly_indices
@@ -66,16 +66,25 @@ class WelcomeScreen(Screen):
 
 
 class CarbonCarousel(MDCard):
+    challenge_button = BooleanProperty(True)
     program_one_text = BooleanProperty(False)
     program_card_label = BooleanProperty(False)
 
     def open_p1(self):
         sm.current = "p1"
 
+    def open_explanations(self):
+        sm.current = 'explanation'
+
+
+class ChallengePopup(Popup):
+    def makePopUpExist(self):
+        pass
+
 
 class FootprintPopup(Popup):
     def display_footprint(self):
-        return str(get_footprint())
+        return "{:,.2f}".format(get_footprint())
 
 
 class P1ListItem(OneLineAvatarIconListItem):
@@ -138,17 +147,20 @@ class EditPopupCheckbox(Popup):
 
 
 class ProgramOneScreen(Screen):
-    def add_list(self):
-        for i in range(1, 10):
-            self.ids.p1_list.add_widget(P1ListItem(text="Day " + str(i)))
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_list()
 
+    def add_list(self):
+        for i in range(1, 10):
+            self.ids.p1_list.add_widget(P1ListItem(text="Day " + str(i)))
+
     def to_main(self):
         sm.current = "main"
-     
+
+
+class ChallengeExplanationScreen(Screen):
+    pass
 
 class P1Popup(Popup):
     def popup_close(self):
@@ -185,6 +197,7 @@ class MainScreen(Screen):
         for key in weekly_indices:
             for i in range(4):
                 card = CarbonCarousel()
+                card.challenge_button = key == 'challenges'
                 self.ids[key].add_widget(card)
                 self.tips_and_challenges_cards[key].append(card)
 
@@ -614,10 +627,12 @@ class CarbonomixApp(MDApp):
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
         program_one = ProgramOneScreen(name='p1')
+        challenge_screen = ChallengeExplanationScreen(name='explanation')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
         sm.add_widget(program_one)
+        sm.add_widget(challenge_screen)
 
         menu_items = [
             {

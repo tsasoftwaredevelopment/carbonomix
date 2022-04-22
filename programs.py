@@ -18,30 +18,30 @@ program_text = {
   },
   "tips": {  # Four weekly.
     1: [
-      "1sfdkljsdfklj",
-      "2lksjfklfjds",
-      "3kljsdfkljdfs",
-      "4sdklffdklj"
+      "For any travel under a mile, use your legs!",
+      "Replace your light bulbs with LED ones! ",
+      "Eat locally grown food as much as you can!",
+      "Use a reusable water bottle."
     ],
     2: [
-      "new 1skjlsdf",
-      "new 2klsjdfkljfd",
-      "new 3lksdjfldk",
-      "new 4lksdjflds"
+      "Coming Soon",
+      "Coming Soon",
+      "Coming Soon",
+      "Coming Soon"
     ]
   },
   "challenges": {  # Four weekly.
     1: [
-      "1sfdkljsdfklj",
-      "2lksjfklfjds",
-      "3kljsdfkljdfs",
-      "4sdklffdklj"
+      "Reduce Beef Consumption: Replace the beef in your diet with other meats or plant base protiens.",
+      "Reduce the Heat Used in Your Home: Keep your indoor temperature within 8 degrees of the outside temperature.",
+      "Shop Local: Only shop at places within 10 miles of your house.",
+      "Shop in Bulk: Only go on one shopping trip a week."
     ],
     2: [
-      "new 1skjlsdf",
-      "new 2klsjdfkljfd",
-      "new 3lksdjfldk",
-      "new 4lksdjflds"
+      "Shop With a Reusable Bag: Use a reusable shopping bag whenever you shop.",
+      "Use Paper Straws: Replace your plastic straws which paper.",
+      "Dont Buy Sodas: Don't buy plastic soda bottles for a week.",
+      "Plant a Tree: Plant a tree."
     ]
   }
 }
