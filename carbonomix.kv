@@ -261,10 +261,10 @@
                         program_card_label: True
                     CarbonCarousel: 
                         program_one_text: False
-                        program_card_label: True
+                        #program_card_label: True
                     CarbonCarousel:
                         program_one_text: False
-                        program_card_label: True
+                        #program_card_label: True
 
             MDBottomNavigationItem:
                 name: 'edit'
@@ -409,13 +409,7 @@
                 md_bg_color: 1, 150/255,79/255, 1
                 pos_hint: {'center_x': 0.5, 'center_y': 0.2}
                 on_release: root.open_p1()
-            MDRaisedButton:
-                opacity: 1 if root.challenge_button else 0
-                text: "Explanations"
-                text_color: 0, 0, 0, 1
-                md_bg_color: 1, 150/255,79/255, 1
-                pos_hint: {'center_x': 0.5, 'center_y': 0.1}
-                on_release: root.open_explanations()
+
             
 
 <GraphItem>

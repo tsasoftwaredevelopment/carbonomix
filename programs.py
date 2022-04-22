@@ -43,5 +43,13 @@ program_text = {
       "Dont Buy Sodas: Don't buy plastic soda bottles for a week.",
       "Plant a Tree: Plant a tree."
     ]
-  }
+  },
+  'expl': [
+      """Plastic bags are bad for the environment and increase your carbon footprint through the oil needed to
+       produce them. Using a reusable bag is a quick and easy way to cut unnecessary waste from your life!""",
+       """Did you know that beef releases over three times the co2 into the atmosphere then pork and over
+       four times the co2 released by chicken? Switching from beef to chicken or pork is an easy way to decrease
+       your carbon footprint without giving up meat!"""
+  ]
+
 }

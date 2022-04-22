@@ -66,7 +66,7 @@ class WelcomeScreen(Screen):
 
 
 class CarbonCarousel(MDCard):
-    challenge_button = BooleanProperty(True)
+    challenge_button = BooleanProperty(False)
     program_one_text = BooleanProperty(False)
     program_card_label = BooleanProperty(False)
 
@@ -160,7 +160,10 @@ class ProgramOneScreen(Screen):
 
 
 class ChallengeExplanationScreen(Screen):
-    pass
+    def popup_open(self):
+        program_popup = P1Popup(title=self.text)
+        program_popup.ids.p1_popup_label.text = program_text['expl'][int(self.text.split(" ")[1])]
+        program_popup.open()
 
 class P1Popup(Popup):
     def popup_close(self):
