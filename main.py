@@ -15,7 +15,7 @@ from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.pickers import MDDatePicker
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 from programs import program_text, weekly_indices
@@ -78,8 +78,7 @@ class CarbonCarousel(MDCard):
 
 
 class ChallengePopup(Popup):
-    def makePopUpExist(self):
-        pass
+    pass
 
 
 class FootprintPopup(Popup):
@@ -164,6 +163,7 @@ class ChallengeExplanationScreen(Screen):
         program_popup = P1Popup(title=self.text)
         program_popup.ids.p1_popup_label.text = program_text['expl'][int(self.text.split(" ")[1])]
         program_popup.open()
+
 
 class P1Popup(Popup):
     def popup_close(self):
