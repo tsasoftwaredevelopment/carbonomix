@@ -29,7 +29,7 @@ from datetime import datetime, timedelta, date
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = False
+always_show_questions = True
 # Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
 week_interval = 7 * 24 * 60 * 60
 
@@ -66,16 +66,24 @@ class WelcomeScreen(Screen):
 
 
 class CarbonCarousel(MDCard):
+    challenge_button = BooleanProperty(False)
     program_one_text = BooleanProperty(False)
     program_card_label = BooleanProperty(False)
 
     def open_p1(self):
         sm.current = "p1"
 
+    def open_explanations(self):
+        sm.current = 'explanation'
+
+
+class ChallengePopup(Popup):
+    pass
+
 
 class FootprintPopup(Popup):
     def display_footprint(self):
-        return str(get_footprint())
+        return "{:,.2f}".format(get_footprint())
 
 
 class P1ListItem(OneLineAvatarIconListItem):
@@ -138,16 +146,24 @@ class EditPopupCheckbox(Popup):
 
 
 class ProgramOneScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_list()
+
     def add_list(self):
         for i in range(1, 10):
             self.ids.p1_list.add_widget(P1ListItem(text="Day " + str(i)))
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.add_list()
     def to_main(self):
         sm.current = "main"
-     
+
+
+class ChallengeExplanationScreen(Screen):
+    def popup_open(self):
+        program_popup = P1Popup(title=self.text)
+        program_popup.ids.p1_popup_label.text = program_text['expl'][int(self.text.split(" ")[1])]
+        program_popup.open()
+
 
 class P1Popup(Popup):
     def popup_close(self):
@@ -184,6 +200,7 @@ class MainScreen(Screen):
         for key in weekly_indices:
             for i in range(4):
                 card = CarbonCarousel()
+                card.challenge_button = key == 'challenges'
                 self.ids[key].add_widget(card)
                 self.tips_and_challenges_cards[key].append(card)
 
@@ -613,10 +630,12 @@ class CarbonomixApp(MDApp):
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
         program_one = ProgramOneScreen(name='p1')
+        challenge_screen = ChallengeExplanationScreen(name='explanation')
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
         sm.add_widget(program_one)
+        sm.add_widget(challenge_screen)
 
         menu_items = [
             {

@@ -261,10 +261,10 @@
                         program_card_label: True
                     CarbonCarousel: 
                         program_one_text: False
-                        program_card_label: True
+                        #program_card_label: True
                     CarbonCarousel:
                         program_one_text: False
-                        program_card_label: True
+                        #program_card_label: True
 
             MDBottomNavigationItem:
                 name: 'edit'
@@ -393,12 +393,12 @@
                 halign: "center"
             MDIconButton: 
                 icon: "arrow-left"
-                pos_hint: {'center_x': 0.1, 'center_y': 0.5}
+                pos_hint: {'center_x': 0.1, 'center_y': 0.2}
                 on_release: 
                     root.parent.parent.load_previous()
             MDIconButton: 
                 icon: "arrow-right"
-                pos_hint: {'center_x': 0.9, 'center_y': 0.5}
+                pos_hint: {'center_x': 0.9, 'center_y': 0.2}
                 on_release: 
                     root.parent.parent.load_next() 
                     print(root.parent)
