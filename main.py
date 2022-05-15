@@ -390,7 +390,7 @@ class MainScreen(Screen):
         if row.ids.check.state == "down":
             self.selected_rows.append((current_rows_text[0] + row.index // 3, row))
         else:
-            if row in self.selected_rows:
+            if row in (r[-1] for r in self.selected_rows):
                 self.selected_rows.remove((current_rows_text[0] + row.index // 3, row))
 
     def data_table_button_pressed(self, function):
