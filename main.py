@@ -29,7 +29,7 @@ from datetime import datetime, timedelta, date
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 # Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
 week_interval = 7 * 24 * 60 * 60
 
@@ -646,9 +646,9 @@ class CarbonomixApp(MDApp):
             },
             {
                 "viewclass": "OneLineListItem",
-                "text": "Placeholder",
+                "text": "Change Theme",
                 "height": dp(40),
-                "on_release": lambda x="Placeholder": self.menu_callback2(x),
+                "on_release": lambda x="Change Theme": self.change_theme(x),
             }
         ]
 
@@ -737,7 +737,7 @@ class CarbonomixApp(MDApp):
         Clock.schedule_once(close_application, 4)
         close()
 
-    def menu_callback2(self, text_item):
+    def change_theme(self, text_item):
         self.snackbar.text = text_item
         self.snackbar.open()
 
