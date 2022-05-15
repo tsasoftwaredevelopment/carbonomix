@@ -69,6 +69,7 @@ class CarbonCarousel(MDCard):
     challenge_button = BooleanProperty(False)
     program_one_text = BooleanProperty(False)
     program_card_label = BooleanProperty(False)
+    program_two_text = BooleanProperty(False)
 
     def open_p1(self):
         sm.current = "p1"
@@ -156,6 +157,21 @@ class ProgramOneScreen(Screen):
 
     def to_main(self):
         sm.current = "main"
+
+
+class ProgramTwoScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_list()
+
+        def add_list(self):
+            for i in range(1, 10):
+                self.ids.p2_list.add_widget(P1ListItem(text="Day " + str(i)))
+
+        def to_main(self):
+            sm.current = "main"
+
+
 
 
 class ChallengeExplanationScreen(Screen):

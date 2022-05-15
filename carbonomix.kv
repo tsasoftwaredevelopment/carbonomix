@@ -261,10 +261,11 @@
                         program_card_label: True
                     CarbonCarousel: 
                         program_one_text: False
-                        #program_card_label: True
+                        program_two_text: True
+                        program_card_label: True
                     CarbonCarousel:
                         program_one_text: False
-                        #program_card_label: True
+                        program_card_label: True
 
             MDBottomNavigationItem:
                 name: 'edit'
@@ -389,7 +390,7 @@
         FloatLayout:
             MDLabel: 
                 id: card_label
-                text: "Environmental Philantrophy" if root.program_one_text else "Coming Soon"
+                text: "Environmental Philantrophy" if root.program_one_text else "Destination Clean Drip" if root.program_two_text else "Redefine Recycling"
                 halign: "center"
             MDIconButton: 
                 icon: "arrow-left"
@@ -611,7 +612,7 @@
         pos_hint: {'center_y': .5}
 
 
-<ProgramOneScreen>
+<ProgramTwoScreen>
     canvas: 
         Color:
             rgba: 1, 1, 1, 1 
@@ -619,13 +620,32 @@
             pos: self.pos
             size: self.size 
     MDLabel: 
-        text: "Environmental Philantrophy"
+        text: "Destination Clean Drip"
         font_size: 22
         pos_hint: {'center_y': 0.92}
         halign: "center"
     MDList: 
-        id: p1_list
+        id: p2_list
     MDIconButton: 
+        icon: "arrow-left-circle"
+        on_release: root.to_main()
+        pos_hint: {'center_x': 0.075, 'center_y': 0.95}
+
+<ProgramOneScreen>
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    MDLabel:
+        text: "Environmental Philantrophy"
+        font_size: 22
+        pos_hint: {'center_y': 0.92}
+        halign: "center"
+    MDList:
+        id: p1_list
+    MDIconButton:
         icon: "arrow-left-circle"
         on_release: root.to_main()
         pos_hint: {'center_x': 0.075, 'center_y': 0.95}
