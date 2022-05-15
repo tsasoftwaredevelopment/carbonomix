@@ -420,10 +420,11 @@ class MainScreen(Screen):
                     ) as ranked
                     WHERE row_number IN ({", ".join(str(index) for index in indices)})
                 )
-                RETURNING submitted_at, category_id
+                RETURNING submitted_at, category_id, value
                 """,
                 (1,)
             ).fetchall()
+
             for i in range(len(dates)):
                 if i > 0 and dates[i][0] == dates[i - 1][0]:
                     continue
@@ -448,6 +449,7 @@ class MainScreen(Screen):
                 if dates[i][0] != submitted_at_max:
                     update_footprint(tuple(), tuple(), submitted_at_max)
 
+            indices.sort(reverse=True)
             for index in indices:
                 self.data_table.remove_row(self.data_table.row_data[index - 1])
         elif function == "Edit":
