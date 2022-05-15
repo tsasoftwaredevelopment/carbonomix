@@ -268,3 +268,88 @@ def _recalculate_footprints(user_id=1):
         update_footprint(tuple(), tuple(), dates[i][0], user_id)
 
     print("Complete.")
+
+
+def _generate_data(user_id=1):
+    from random import uniform, randint
+    from datetime import datetime, timedelta
+
+    """ranges = [
+        ((80, 90), (40, 50)),  # electric_bill
+        ((20, 40), (50, 70)),  # gas_bill
+        (250, 450),  # oil_bill
+        (20000, 26000),  # mileage
+        (1, 4),  # flights_under_4
+        (0, 1),  # flights_over_4
+        (0, 1),  # recycles_newspaper
+        (0, 1),  # recycles_aluminum_tin
+    ]"""
+
+    """ranges = [
+        ((35, 60), (20, 40)),  # electric_bill
+        ((20, 35), (30, 50)),  # gas_bill
+        (200, 350),  # oil_bill
+        (18000, 23000),  # mileage
+        (1, 4),  # flights_under_4
+        (0, 2),  # flights_over_4
+        (0, 1),  # recycles_newspaper
+        (0, 1),  # recycles_aluminum_tin
+    ]"""
+
+    ranges = [
+        ((95, 105), (55, 65)),  # electric_bill
+        ((30, 50), (60, 80)),  # gas_bill
+        (290, 490),  # oil_bill
+        (24000, 30000),  # mileage
+        (1, 4),  # flights_under_4
+        (0, 1),  # flights_over_4
+        (0, 1),  # recycles_newspaper
+        (0, 1),  # recycles_aluminum_tin
+    ]
+
+    update("""DELETE FROM input_values""")
+    update("""DELETE FROM footprints""")
+
+    years = 20
+
+    date = datetime.now() - timedelta(days=365.25 * years)
+
+    for year in range(years):
+        yearly_category_indices = (3, 4, 5)
+        new_yearly_values = []
+        for category in yearly_category_indices:
+            new_yearly_values.append(uniform(*ranges[category]) if category == 3 else randint(*ranges[category]))
+
+        update_footprint(
+            new_yearly_values,
+            tuple(categories[i] for i in yearly_category_indices),
+            date,
+            user_id
+        )
+
+        for month in range(12):
+            print(date)
+            monthly_category_indices = (0, 1, 2, -1, -2)
+            new_monthly_values = []
+            for category in monthly_category_indices:
+                new_monthly_values.append(uniform(*ranges[category] if category not in (0, 1) else ranges[category][int(date.month in (12, 1, 2))]) if category >= 0 else randint(*ranges[category]))
+
+            update_footprint(
+                new_monthly_values,
+                tuple(categories[i] for i in monthly_category_indices),
+                date,
+                user_id
+            )
+            date += timedelta(days=(datetime(date.year, (date.month % 12) + 1, 1) - timedelta(days=1)).day)
+            r = (1/1.0009, 1/1.0017)
+            for i in range(2):
+                ranges[i] = ((ranges[i][0][0] * uniform(*r), ranges[i][0][1] * uniform(*r)), (ranges[i][1][0] * uniform(*r), ranges[i][1][1] * uniform(*r)))
+            for i in range(2, 3):
+                ranges[i] = (ranges[i][0] * uniform(*r), ranges[i][1] * uniform(*r))
+
+    print(ranges)
+    print(date)
+    print("Complete.")
+
+
+# _generate_data()
