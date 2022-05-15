@@ -285,7 +285,7 @@ def _generate_data(user_id=1):
         (0, 1),  # recycles_aluminum_tin
     ]"""
 
-    ranges = [
+    """ranges = [
         ((35, 60), (20, 40)),  # electric_bill
         ((20, 35), (30, 50)),  # gas_bill
         (200, 350),  # oil_bill
@@ -294,14 +294,27 @@ def _generate_data(user_id=1):
         (0, 2),  # flights_over_4
         (0, 1),  # recycles_newspaper
         (0, 1),  # recycles_aluminum_tin
+    ]"""
+
+    ranges = [
+        ((95, 105), (55, 65)),  # electric_bill
+        ((30, 50), (60, 80)),  # gas_bill
+        (290, 490),  # oil_bill
+        (24000, 30000),  # mileage
+        (1, 4),  # flights_under_4
+        (0, 1),  # flights_over_4
+        (0, 1),  # recycles_newspaper
+        (0, 1),  # recycles_aluminum_tin
     ]
 
     update("""DELETE FROM input_values""")
     update("""DELETE FROM footprints""")
 
-    date = datetime.now()
+    years = 20
 
-    for year in range(20):
+    date = datetime.now() - timedelta(days=365.25 * years)
+
+    for year in range(years):
         yearly_category_indices = (3, 4, 5)
         new_yearly_values = []
         for category in yearly_category_indices:
@@ -327,14 +340,15 @@ def _generate_data(user_id=1):
                 date,
                 user_id
             )
-            date -= timedelta(days=randint(29, 31))
-            r = (1.002, 1.015)
+            date += timedelta(days=(datetime(date.year, (date.month % 12) + 1, 1) - timedelta(days=1)).day)
+            r = (1/1.0009, 1/1.0017)
             for i in range(2):
                 ranges[i] = ((ranges[i][0][0] * uniform(*r), ranges[i][0][1] * uniform(*r)), (ranges[i][1][0] * uniform(*r), ranges[i][1][1] * uniform(*r)))
             for i in range(2, 3):
                 ranges[i] = (ranges[i][0] * uniform(*r), ranges[i][1] * uniform(*r))
 
     print(ranges)
+    print(date)
     print("Complete.")
 
 

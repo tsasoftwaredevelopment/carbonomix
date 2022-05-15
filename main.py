@@ -27,9 +27,9 @@ from datetime import datetime, timedelta, date
 
 
 # DEBUG = True means you're testing.
-DEBUG = False
+DEBUG = True
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 # Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
 week_interval = 7 * 24 * 60 * 60
 
@@ -255,7 +255,7 @@ class MainScreen(Screen):
             delta_time = timedelta(days=365 if date.today().year % 4 != 0 and date.today().year % 400 != 0 else 366)
         elif self.ids.constraint.text == "Past 10 Years":
             first_constraint += "10 year'"
-            delta_time = timedelta(days=365 * 10)  # Eventually incorporate leap years.
+            delta_time = timedelta(days=365.25 * 10)  # Eventually incorporate leap years.
 
         for i in range(len(self.ids.statistics.children) - 1, -1, -1):
             if self.ids.statistics.children[i] == self.ids.change_constraint:
@@ -285,10 +285,13 @@ class MainScreen(Screen):
             if end_index is None and dates[-1].month == datetime.now(tz).month - 1:
                 end_index = i  # Exclusive.
             if end_index is not None and (dates[-1].month == datetime.now(tz).month - 2 or i == len(footprint_data) - 1):
-                this_month = sum(values[:end_index]) / end_index
-                last_month = sum(values[end_index:i]) / (end_index - i) if i != len(footprint_data) - 1 else sum(
-                    values[end_index:i + 1]) / (end_index - i + 1)
-                increase = (this_month - last_month) / last_month * 100
+                if end_index == 0:
+                    increase = 0
+                else:
+                    this_month = sum(values[:end_index]) / end_index
+                    last_month = sum(values[end_index:i]) / (end_index - i) if i != len(footprint_data) - 1 else sum(
+                        values[end_index:i + 1]) / (end_index - i + 1)
+                    increase = (this_month - last_month) / last_month * 100
         ax.plot(plot_dates, plot_values, '-o', color='#2e43ff', markersize=2)
         plt.ylabel("Carbon Footprint (lbs CO2 / year)")
         plt.xlabel("Date")
@@ -322,7 +325,10 @@ class MainScreen(Screen):
                     dates.append(data[index][1])
                     values.append(data[index][2])
                     if last_value and increase is None:
-                        increase = (last_value - data[index][2]) / data[index][2] * 100
+                        if data[index][2] != 0:
+                            increase = (last_value - data[index][2]) / data[index][2] * 100
+                        else:
+                            increase = 100
                     if last_value is None:
                         last_value = data[index][2]
                     index += 1
