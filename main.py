@@ -86,6 +86,10 @@ class FootprintPopup(Popup):
         return "{:,.2f}".format(get_footprint())
 
 
+class ThemePopup(Popup):
+    pass
+
+
 class P1ListItem(OneLineAvatarIconListItem):
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
@@ -738,6 +742,8 @@ class CarbonomixApp(MDApp):
         close()
 
     def change_theme(self, text_item):
+        popup = ThemePopup()
+        popup.open()
         self.snackbar.text = text_item
         self.snackbar.open()
 
