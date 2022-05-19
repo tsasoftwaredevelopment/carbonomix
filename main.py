@@ -358,11 +358,9 @@ class MainScreen(Screen):
         index = first_index[0] + row.index // (first_index[1] - first_index[0] - 1)
         if row.ids.check.state == "down":
             self.selected_rows.append((index, row))
-            print("added.")
         else:
             if row in (r[-1] for r in self.selected_rows):
                 self.selected_rows.remove((index, row))
-                print("removed.")
 
     def uncheck_previous(self, first_index=None):
         if len(self.uncheck_rows) == 0:
