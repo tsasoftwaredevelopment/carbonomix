@@ -376,24 +376,27 @@ class MainScreen(Screen):
         index = first_index[0] + row.index // (first_index[1] - first_index[0] - 1)
         if row.ids.check.state == "down":
             self.selected_rows.append((index, row))
+            print("added.")
         else:
             if row in (r[-1] for r in self.selected_rows):
                 self.selected_rows.remove((index, row))
+                print("removed.")
 
     def uncheck_previous(self, first_index=None):
         if len(self.uncheck_rows) == 0:
             return
         first_index = first_index or self.get_first_index()
-        print(first_index)
-        print("Start:", self.uncheck_rows)
+        # print(first_index)
+        # print("Start:", self.uncheck_rows)
         for i in range(len(self.uncheck_rows) - 1, -1, -1):
             row = self.uncheck_rows[i]
             if first_index[0] <= row[0] <= first_index[1]:
-                print(row[0], row[1].ids.check.state)
-                row[1].ids.check.state = "normal"
-                print(row[1].ids.check.state)
+                # print(row[0], row[1].ids.check.state)
+                if row not in self.selected_rows:
+                    row[1].ids.check.state = "normal"
+                # print(row[1].ids.check.state)
                 self.uncheck_rows.remove(row)
-        print("Complete:", self.uncheck_rows)
+        # print("Complete:", self.uncheck_rows)
 
     def flip_page(self, direction):
         first_index = self.get_first_index()
@@ -412,19 +415,6 @@ class MainScreen(Screen):
         )
         self.data_table.bind(on_row_press=self.on_row_press)
 
-        def print_all_children(widget, index="", parent=None):
-            try:
-                print(index, type(widget))
-                print(widget.state)
-                widget.checkbox_icon_normal = "checkbox-blank-circle"
-                print(widget.text)
-            except:
-                pass
-            for i in range(len(widget.children)):
-                print_all_children(widget.children[i], index + "." + str(i), widget)
-
-        print_all_children(self.data_table, parent=self.data_table)
-
         self.data_table.children[0].children[0].children[0].bind(on_release=lambda x: self.flip_page(1))
         self.data_table.children[0].children[0].children[1].bind(on_release=lambda x: self.flip_page(-1))
         self.data_table.children[0].children[2].children[0].children[-1].children[1].remove_widget(self.data_table.children[0].children[2].children[0].children[-1].children[1].children[1])
@@ -432,15 +422,6 @@ class MainScreen(Screen):
         self.ids.data_table.add_widget(self.data_table)
         self.selected_rows = []
         self.uncheck_rows = []
-
-    def on_row_press(self, table, row):
-        first_index = self.get_first_index()
-        index = first_index[0] + row.index // (first_index[1] - first_index[0] - 1)
-        if row.ids.check.state == "down":
-            self.selected_rows.append((index, row))
-        else:
-            if row in (r[-1] for r in self.selected_rows):
-                self.selected_rows.remove((index, row))
 
     def data_table_button_pressed(self, function):
         rows = self.selected_rows
