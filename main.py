@@ -296,7 +296,7 @@ class MainScreen(Screen):
         plt.ylabel("Carbon Footprint (lbs CO2 / year)")
         plt.xlabel("Date")
         plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
-        ax.set_xticklabels(dates, rotation=45, ha='right')
+        ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
         self.ids.statistics.add_widget(
             GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0), "Carbon Footprint"))
@@ -340,7 +340,7 @@ class MainScreen(Screen):
                 plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
                 plt.xlabel("Date")
                 plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
-                ax.set_xticklabels(dates, rotation=45, ha='right')
+                ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
                 ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
                 self.ids.statistics.add_widget(
                     GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
