@@ -1,0 +1,77 @@
+
+programs:
+  p1:
+    w1:
+      - "Program 1, week 1, task 1 text."
+      - "Program 1, week 1, task 2 text."
+      - "Program 1, week 1, task 3 text."
+      - "Program 1, week 1, task 4 text."
+      - "Program 1, week 1, task 5 text."
+    w2:
+      - "Program 1, week 2, task 1 text."
+      - "Program 1, week 2, task 2 text."
+      - "Program 1, week 2, task 3 text."
+      - "Program 1, week 2, task 4 text."
+      - "Program 1, week 2, task 5 text."
+    w3:
+      - "Program 1, week 3, task 1 text."
+      - "Program 1, week 3, task 2 text."
+      - "Program 1, week 3, task 3 text."
+      - "Program 1, week 3, task 4 text."
+      - "Program 1, week 3, task 5 text."
+    w4:
+      - "Program 1, week 4, task 1 text."
+      - "Program 1, week 4, task 2 text."
+      - "Program 1, week 4, task 3 text."
+      - "Program 1, week 4, task 4 text."
+      - "Program 1, week 4, task 5 text."
+  p2:
+    w1:
+      - "Program 2, week 1, task 1 text."
+      - "Program 2, week 1, task 2 text."
+      - "Program 2, week 1, task 3 text."
+      - "Program 2, week 1, task 4 text."
+      - "Program 2, week 1, task 5 text."
+    w2:
+      - "Program 2, week 2, task 1 text."
+      - "Program 2, week 2, task 2 text."
+      - "Program 2, week 2, task 3 text."
+      - "Program 2, week 2, task 4 text."
+      - "Program 2, week 2, task 5 text."
+    w3:
+      - "Program 2, week 3, task 1 text."
+      - "Program 2, week 3, task 2 text."
+      - "Program 2, week 3, task 3 text."
+      - "Program 2, week 3, task 4 text."
+      - "Program 2, week 3, task 5 text."
+    w4:
+      - "Program 2, week 4, task 1 text."
+      - "Program 2, week 4, task 2 text."
+      - "Program 2, week 4, task 3 text."
+      - "Program 2, week 4, task 4 text."
+      - "Program 2, week 4, task 5 text."
+  p3:
+    w1:
+      - "Program 3, week 1, task 1 text."
+      - "Program 3, week 1, task 2 text."
+      - "Program 3, week 1, task 3 text."
+      - "Program 3, week 1, task 4 text."
+      - "Program 3, week 1, task 5 text."
+    w2:
+      - "Program 3, week 2, task 1 text."
+      - "Program 3, week 2, task 2 text."
+      - "Program 3, week 2, task 3 text."
+      - "Program 3, week 2, task 4 text."
+      - "Program 3, week 2, task 5 text."
+    w3:
+      - "Program 3, week 3, task 1 text."
+      - "Program 3, week 3, task 2 text."
+      - "Program 3, week 3, task 3 text."
+      - "Program 3, week 3, task 4 text."
+      - "Program 3, week 3, task 5 text."
+    w4:
+      - "Program 3, week 4, task 1 text."
+      - "Program 3, week 4, task 2 text."
+      - "Program 3, week 4, task 3 text."
+      - "Program 3, week 4, task 4 text."
+      - "Program 3, week 4, task 5 text."

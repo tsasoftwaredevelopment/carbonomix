@@ -18,12 +18,13 @@ from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.pickers import MDDatePicker
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
-from programs import program_text, weekly_indices
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta, date
+
+from programs import program_text
 
 
 # DEBUG = True means you're testing.
@@ -89,7 +90,7 @@ class FootprintPopup(Popup):
 class P1ListItem(OneLineAvatarIconListItem):
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = program_text[1][int(self.text.split(" ")[1])]
+        program_popup.ids.p1_popup_label.text = "sdfkljdsfkljlkdsfj"
         program_popup.open()
 
 
@@ -161,7 +162,7 @@ class ProgramOneScreen(Screen):
 class ChallengeExplanationScreen(Screen):
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = program_text['expl'][int(self.text.split(" ")[1])]
+        program_popup.ids.p1_popup_label.text = "sklfjkjlsffkdl"
         program_popup.open()
 
 
@@ -191,20 +192,6 @@ class MainScreen(Screen):
             width_mult=3,
             max_height=dp(150),
         )
-
-        self.tips_and_challenges_cards = {
-            "tips": [],
-            "challenges": []
-        }
-
-        for key in weekly_indices:
-            for i in range(4):
-                card = CarbonCarousel()
-                card.challenge_button = key == 'challenges'
-                self.ids[key].add_widget(card)
-                self.tips_and_challenges_cards[key].append(card)
-
-        self.rotate_weekly_text()
 
     def new_data_table_size(self):
         new_values = (
@@ -343,13 +330,6 @@ class MainScreen(Screen):
             self.ids.statistics.add_widget(
                 GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
             plt.close(fig)
-
-    def rotate_weekly_text(self):
-        for key in weekly_indices:
-            weekly_indices[key] %= len(program_text[key])
-            for i in range(len(self.tips_and_challenges_cards[key])):
-                self.tips_and_challenges_cards[key][i].ids.card_label.text = program_text[key][weekly_indices[key] + 1][i]
-            weekly_indices[key] += 1
 
     def get_data_table_row_data(self):
         data = query(
@@ -713,8 +693,6 @@ class CarbonomixApp(MDApp):
             buttons=[MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1, 1, 1, 1))]
         )
         self.snackbar.size_hint_x = (Window.width - (self.snackbar.snackbar_x * 2)) / Window.width
-
-        Clock.schedule_interval(lambda dt: main_screen.rotate_weekly_text(), week_interval)
 
         def start_app(dt=None):
             sm.current = 'welcome' if always_show_questions or not query(
