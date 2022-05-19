@@ -366,6 +366,11 @@ class MainScreen(Screen):
 
         return row_data
 
+    def get_first_index(self):
+        current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
+        current_rows_text = tuple(int(x) for x in current_rows_text)
+        return current_rows_text
+
     def display_data_table(self):
         self.data_table = MDDataTable(
             check=True,
@@ -384,14 +389,13 @@ class MainScreen(Screen):
         self.selected_rows = []
 
     def on_row_press(self, table, row):
-        current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
-        current_rows_text = tuple(int(x) for x in current_rows_text)
-
+        first_index = self.get_first_index()
+        index = first_index[0] + row.index // (first_index[1] - first_index[0] - 1)
         if row.ids.check.state == "down":
-            self.selected_rows.append((current_rows_text[0] + row.index // 3, row))
+            self.selected_rows.append((index, row))
         else:
             if row in (r[-1] for r in self.selected_rows):
-                self.selected_rows.remove((current_rows_text[0] + row.index // 3, row))
+                self.selected_rows.remove((index, row))
 
     def data_table_button_pressed(self, function):
         rows = self.selected_rows
