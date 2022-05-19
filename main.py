@@ -334,14 +334,16 @@ class MainScreen(Screen):
                     index += 1
                 else:
                     break
-            ax.plot(dates, values, '-o', color='#2e43ff', markersize=2)
-            plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
-            plt.xlabel("Date")
-            plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
-            ax.set_xticklabels(dates, rotation=45, ha='right')
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
-            self.ids.statistics.add_widget(
-                GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
+
+            if len(dates) != 0:
+                ax.plot(dates, values, '-o', color='#2e43ff', markersize=2)
+                plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
+                plt.xlabel("Date")
+                plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
+                ax.set_xticklabels(dates, rotation=45, ha='right')
+                ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
+                self.ids.statistics.add_widget(
+                    GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
             plt.close(fig)
 
     def rotate_weekly_text(self):
