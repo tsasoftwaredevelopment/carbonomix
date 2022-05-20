@@ -11,11 +11,12 @@ from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.list import OneLineAvatarIconListItem
+from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.selectioncontrol import MDCheckbox
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 from programs import program_text, weekly_indices
@@ -29,7 +30,7 @@ from datetime import datetime, timedelta, date
 # DEBUG = True means you're testing.
 DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = True
+always_show_questions = False
 # Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
 week_interval = 7 * 24 * 60 * 60
 
@@ -87,11 +88,37 @@ class FootprintPopup(Popup):
         return "{:,.2f}".format(get_footprint())
 
 
+class TaskScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_task_list()
+
+    def add_task_list(self):
+        for i in range(5):
+            self.ids.screen_of_tasks.add_widget(TaskListItem())
+    def to_p1(self):
+        sm.current = 'p1'
+
+
+
+class TaskListItem(OneLineAvatarIconListItem):
+    def box_active(self):
+        print("checkbox activated")
+        #TODO: Database function where checkbox is registered as activated :)
+
+class RightCheckbox(IRightBodyTouch, MDCheckbox):
+    pass
+
+
 class P1ListItem(OneLineAvatarIconListItem):
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
         program_popup.ids.p1_popup_label.text = program_text[1][int(self.text.split(" ")[1])]
         program_popup.open()
+
+    def screen_select(self):
+        sm.current = 'task'
+
 
 
 class EditListItem(OneLineAvatarIconListItem):
@@ -152,8 +179,8 @@ class ProgramOneScreen(Screen):
         self.add_list()
 
     def add_list(self):
-        for i in range(1, 10):
-            self.ids.p1_list.add_widget(P1ListItem(text="Day " + str(i)))
+        for i in range(1, 5):
+            self.ids.p1_list.add_widget(P1ListItem(text="Week " + str(i)))
 
     def to_main(self):
         sm.current = "main"
@@ -165,8 +192,9 @@ class ProgramTwoScreen(Screen):
         self.add_list()
 
         def add_list(self):
-            for i in range(1, 10):
+            for i in range(1, 4):
                 self.ids.p2_list.add_widget(P1ListItem(text="Day " + str(i)))
+
 
         def to_main(self):
             sm.current = "main"
@@ -175,10 +203,12 @@ class ProgramTwoScreen(Screen):
 
 
 class ChallengeExplanationScreen(Screen):
+    '''
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
         program_popup.ids.p1_popup_label.text = program_text['expl'][int(self.text.split(" ")[1])]
         program_popup.open()
+    '''
 
 
 class P1Popup(Popup):
@@ -647,11 +677,13 @@ class CarbonomixApp(MDApp):
         main_screen = MainScreen(name='main')
         program_one = ProgramOneScreen(name='p1')
         challenge_screen = ChallengeExplanationScreen(name='explanation')
+        task_screen = TaskScreen(name="task")
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
         sm.add_widget(program_one)
         sm.add_widget(challenge_screen)
+        sm.add_widget(task_screen)
 
         menu_items = [
             {

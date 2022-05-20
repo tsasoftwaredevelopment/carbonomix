@@ -3,19 +3,22 @@ weekly_indices = {
     'challenges': 0,
 }
 
+#program_text =
+
 program_text = {
     1: {  # Program 1
-        1: "Do not use any non-recyclable items today. ",
+        1: [
+            "Do not use any non-recyclable items today. ",
+            "p1w1t1",
+            "p1w1t2",
+            "p1w1t3",
+            "p1w1t4"
+        ],
         2: "Do not use any straws or plastic water bottles today.  ",
         3: "Use alternative transportation to get to your destinations today.(Bike, Train, Carpool ,Walking)",
-        4: "Text for Day 4.",
-        5: "Text for Day 5.",
-        6: "Text for Day 6.",
-        7: "Text for Day 7.",
-        8: "Text for Day 8.",
-        9: "Text for Day 9.",
-        10: "Text for Day 10."
+        4: "Text for Day 4."
     },
+    2: {},
     "tips": {  # Four weekly.
         1: [
             "For any travel under a mile, use your legs!",
