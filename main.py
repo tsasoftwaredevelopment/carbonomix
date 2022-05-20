@@ -19,16 +19,17 @@ from kivymd.uix.picker import MDDatePicker
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
-from programs import program_text, weekly_indices
 
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta, date
 
+from programs import program_text
+
 
 # DEBUG = True means you're testing.
-DEBUG = False
+DEBUG = True
 # Set this to True if you want to see the questions again on the welcome screen.
 always_show_questions = False
 # Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
@@ -113,7 +114,7 @@ class RightCheckbox(IRightBodyTouch, MDCheckbox):
 class P1ListItem(OneLineAvatarIconListItem):
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = program_text[1][int(self.text.split(" ")[1])]
+        program_popup.ids.p1_popup_label.text = "sdfkljdsfkljlkdsfj"
         program_popup.open()
 
     def screen_select(self):
@@ -206,7 +207,7 @@ class ChallengeExplanationScreen(Screen):
     '''
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = program_text['expl'][int(self.text.split(" ")[1])]
+        program_popup.ids.p1_popup_label.text = "sklfjkjlsffkdl"
         program_popup.open()
     '''
 
@@ -237,20 +238,6 @@ class MainScreen(Screen):
             width_mult=3,
             max_height=dp(150),
         )
-
-        self.tips_and_challenges_cards = {
-            "tips": [],
-            "challenges": []
-        }
-
-        for key in weekly_indices:
-            for i in range(4):
-                card = CarbonCarousel()
-                card.challenge_button = key == 'challenges'
-                self.ids[key].add_widget(card)
-                self.tips_and_challenges_cards[key].append(card)
-
-        self.rotate_weekly_text()
 
     def new_data_table_size(self):
         new_values = (
@@ -301,7 +288,7 @@ class MainScreen(Screen):
             delta_time = timedelta(days=365 if date.today().year % 4 != 0 and date.today().year % 400 != 0 else 366)
         elif self.ids.constraint.text == "Past 10 Years":
             first_constraint += "10 year'"
-            delta_time = timedelta(days=365 * 10)  # Eventually incorporate leap years.
+            delta_time = timedelta(days=365.25 * 10)  # Eventually incorporate leap years.
 
         for i in range(len(self.ids.statistics.children) - 1, -1, -1):
             if self.ids.statistics.children[i] == self.ids.change_constraint:
@@ -331,15 +318,18 @@ class MainScreen(Screen):
             if end_index is None and dates[-1].month == datetime.now(tz).month - 1:
                 end_index = i  # Exclusive.
             if end_index is not None and (dates[-1].month == datetime.now(tz).month - 2 or i == len(footprint_data) - 1):
-                this_month = sum(values[:end_index]) / end_index
-                last_month = sum(values[end_index:i]) / (end_index - i) if i != len(footprint_data) - 1 else sum(
-                    values[end_index:i + 1]) / (end_index - i + 1)
-                increase = (this_month - last_month) / last_month * 100
+                if end_index == 0:
+                    increase = 0
+                else:
+                    this_month = sum(values[:end_index]) / end_index
+                    last_month = sum(values[end_index:i]) / (end_index - i) if i != len(footprint_data) - 1 else sum(
+                        values[end_index:i + 1]) / (end_index - i + 1)
+                    increase = (this_month - last_month) / last_month * 100
         ax.plot(plot_dates, plot_values, '-o', color='#2e43ff', markersize=2)
         plt.ylabel("Carbon Footprint (lbs CO2 / year)")
         plt.xlabel("Date")
         plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
-        ax.set_xticklabels(dates, rotation=45, ha='right')
+        ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
         self.ids.statistics.add_widget(
             GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0), "Carbon Footprint"))
@@ -368,28 +358,26 @@ class MainScreen(Screen):
                     dates.append(data[index][1])
                     values.append(data[index][2])
                     if last_value and increase is None:
-                        increase = (last_value - data[index][2]) / data[index][2] * 100
+                        if data[index][2] != 0:
+                            increase = (last_value - data[index][2]) / data[index][2] * 100
+                        else:
+                            increase = 100
                     if last_value is None:
                         last_value = data[index][2]
                     index += 1
                 else:
                     break
-            ax.plot(dates, values, '-o', color='#2e43ff', markersize=2)
-            plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
-            plt.xlabel("Date")
-            plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
-            ax.set_xticklabels(dates, rotation=45, ha='right')
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
-            self.ids.statistics.add_widget(
-                GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
-            plt.close(fig)
 
-    def rotate_weekly_text(self):
-        for key in weekly_indices:
-            weekly_indices[key] %= len(program_text[key])
-            for i in range(len(self.tips_and_challenges_cards[key])):
-                self.tips_and_challenges_cards[key][i].ids.card_label.text = program_text[key][weekly_indices[key] + 1][i]
-            weekly_indices[key] += 1
+            if len(dates) != 0:
+                ax.plot(dates, values, '-o', color='#2e43ff', markersize=2)
+                plt.ylabel(category_names[i] + (" ($)" if i <= 3 else " (mpg)" if i == 4 else ""))
+                plt.xlabel("Date")
+                plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
+                ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
+                ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
+                self.ids.statistics.add_widget(
+                    GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), category_names[i]))
+            plt.close(fig)
 
     def get_data_table_row_data(self):
         data = query(
@@ -406,6 +394,41 @@ class MainScreen(Screen):
 
         return row_data
 
+    def get_first_index(self):
+        current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
+        current_rows_text = tuple(int(x) for x in current_rows_text)
+        return current_rows_text
+
+    def on_row_press(self, table, row):
+        first_index = self.get_first_index()
+        index = first_index[0] + row.index // (first_index[1] - first_index[0] - 1)
+        if row.ids.check.state == "down":
+            self.selected_rows.append((index, row))
+        else:
+            if row in (r[-1] for r in self.selected_rows):
+                self.selected_rows.remove((index, row))
+
+    def uncheck_previous(self, first_index=None):
+        if len(self.uncheck_rows) == 0:
+            return
+        first_index = first_index or self.get_first_index()
+        # print(first_index)
+        # print("Start:", self.uncheck_rows)
+        for i in range(len(self.uncheck_rows) - 1, -1, -1):
+            row = self.uncheck_rows[i]
+            if first_index[0] <= row[0] <= first_index[1]:
+                # print(row[0], row[1].ids.check.state)
+                if row not in self.selected_rows:
+                    row[1].ids.check.state = "normal"
+                # print(row[1].ids.check.state)
+                self.uncheck_rows.remove(row)
+        # print("Complete:", self.uncheck_rows)
+
+    def flip_page(self, direction):
+        first_index = self.get_first_index()
+        difference = first_index[1] - first_index[0] + 1
+        self.uncheck_previous((first_index[0] + direction * difference, first_index[1] + direction * difference))
+
     def display_data_table(self):
         self.data_table = MDDataTable(
             check=True,
@@ -418,20 +441,13 @@ class MainScreen(Screen):
         )
         self.data_table.bind(on_row_press=self.on_row_press)
 
+        self.data_table.children[0].children[0].children[0].bind(on_release=lambda x: self.flip_page(1))
+        self.data_table.children[0].children[0].children[1].bind(on_release=lambda x: self.flip_page(-1))
         self.data_table.children[0].children[2].children[0].children[-1].children[1].remove_widget(self.data_table.children[0].children[2].children[0].children[-1].children[1].children[1])
         self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text = " " * 12 + self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text
         self.ids.data_table.add_widget(self.data_table)
         self.selected_rows = []
-
-    def on_row_press(self, table, row):
-        current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
-        current_rows_text = tuple(int(x) for x in current_rows_text)
-
-        if row.ids.check.state == "down":
-            self.selected_rows.append((current_rows_text[0] + row.index // 3, row))
-        else:
-            if row in self.selected_rows:
-                self.selected_rows.remove((current_rows_text[0] + row.index // 3, row))
+        self.uncheck_rows = []
 
     def data_table_button_pressed(self, function):
         rows = self.selected_rows
@@ -443,9 +459,10 @@ class MainScreen(Screen):
             self.ids.error_text.text += "Please only select one row to edit."
             return
 
-        for row in self.selected_rows:
-            row[1].ids.check.state = "normal"
-        self.selected_rows = []
+        if function != "Add":
+            self.uncheck_rows = self.selected_rows.copy()
+            self.selected_rows = []
+            self.uncheck_previous()
 
         if function == "Delete":
             indices = [row[0] for row in rows]
@@ -460,10 +477,11 @@ class MainScreen(Screen):
                     ) as ranked
                     WHERE row_number IN ({", ".join(str(index) for index in indices)})
                 )
-                RETURNING submitted_at, category_id
+                RETURNING submitted_at, category_id, value
                 """,
                 (1,)
             ).fetchall()
+
             for i in range(len(dates)):
                 if i > 0 and dates[i][0] == dates[i - 1][0]:
                     continue
@@ -488,6 +506,7 @@ class MainScreen(Screen):
                 if dates[i][0] != submitted_at_max:
                     update_footprint(tuple(), tuple(), submitted_at_max)
 
+            indices.sort(reverse=True)
             for index in indices:
                 self.data_table.remove_row(self.data_table.row_data[index - 1])
         elif function == "Edit":
@@ -626,6 +645,9 @@ class MainScreen(Screen):
             date_dialog.bind(on_save=on_save)
             date_dialog.open()
 
+        if function != "Add":
+            self.uncheck_previous()
+
 
 class TableButton(MDRaisedButton):
     pass
@@ -719,8 +741,6 @@ class CarbonomixApp(MDApp):
             buttons=[MDFlatButton(text="[color=#ffffff]OK[/color]", text_color=(1, 1, 1, 1))]
         )
         self.snackbar.size_hint_x = (Window.width - (self.snackbar.snackbar_x * 2)) / Window.width
-
-        Clock.schedule_interval(lambda dt: main_screen.rotate_weekly_text(), week_interval)
 
         def start_app(dt=None):
             sm.current = 'welcome' if always_show_questions or not query(
