@@ -155,6 +155,10 @@ class ThemePopup(Popup):
     pass
 
 
+class ModePopup(Popup):
+    pass
+
+
 class P1ListItem(OneLineAvatarIconListItem):
     def popup_open(self):
         program_popup = P1Popup(title=self.text)
@@ -719,9 +723,15 @@ class CarbonomixApp(MDApp):
             },
             {
                 "viewclass": "OneLineListItem",
-                "text": "Change Theme",
+                "text": "Change Color Theme",
                 "height": dp(40),
-                "on_release": lambda x="Change Theme": self.change_theme(x),
+                "on_release": lambda x="Change Color Theme": self.change_theme(x),
+            },
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Change Mode Theme",
+                "height": dp(40),
+                "on_release": lambda x="Change Mode Theme": self.change_mode(x),
             }
         ]
 
@@ -812,6 +822,13 @@ class CarbonomixApp(MDApp):
 
     def change_theme(self, text_item):
         popup = ThemePopup()
+        popup.open()
+
+        self.snackbar.text = text_item
+        self.snackbar.open()
+
+    def change_mode(self, text_item):
+        popup = ModePopup()
         popup.open()
 
         self.snackbar.text = text_item
