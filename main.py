@@ -15,7 +15,7 @@ from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
@@ -113,7 +113,22 @@ class TaskListItem(OneLineAvatarIconListItem):
         self.task = task
 
     def if_active(self, state):
-        print("program " + str(self.parent.parent.program) + ", Week " + str(self.parent.parent.week) + ", Task " + str(self.task) + ":", state)
+        if state:
+            command = """
+                    INSERT INTO completed_tasks (user_id, program_id, week_id, task_id)
+                    VALUES (%s, %s, %s, %s)
+                    """
+        else:
+            command = """
+                DELETE FROM completed_tasks
+                WHERE user_id = %s
+                AND program_id = %s
+                AND week_id = %s
+                AND task_id = %s
+                """
+
+        update(command, (1, self.parent.parent.program, self.parent.parent.week, self.task))
+
 
 class RightCheckbox(IRightBodyTouch, MDCheckbox):
     pass
@@ -250,7 +265,7 @@ class MainScreen(Screen):
         pop_up.open()
 
     def update_values(self):
-        self.ids.footprint_label.text = "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
+        self.ids.footprint_label.text = "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint() or 0)
         values = get_current_values()
         format = tuple(category_names[i] + ": " +
                        category_value_formats[i] for i in
