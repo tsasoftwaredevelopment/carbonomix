@@ -16,6 +16,8 @@ from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.pickers import MDColorPicker
+from typing import Union
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 from programs import program_text, weekly_indices
@@ -738,7 +740,6 @@ class CarbonomixApp(MDApp):
         self.menu = MDDropdownMenu(
             position="bottom",
             hor_growth="left",
-            # background_color = self.theme_cls.primary_color,
             header_cls=MenuHeader(),
             items=menu_items,
             width_mult=4,
@@ -821,9 +822,28 @@ class CarbonomixApp(MDApp):
         close()
 
     def change_theme(self, text_item):
-        popup = ThemePopup()
-        popup.open()
 
+        def open_color_picker(self):
+            color_picker = MDColorPicker(size_hint=(0.45, 0.85))
+            color_picker.open()
+            color_picker.bind(
+                on_select_color=self.on_select_color,
+                on_release=self.get_selected_color,
+            )
+
+        def update_color(self, color: list) -> None:
+            self.root.ids.toolbar.md_bg_color = color
+
+        def get_selected_color(self, instance_color_picker: MDColorPicker, type_color: str, selected_color: Union[list, str],):
+            # Return selected color
+            print(f"Selected color is {selected_color}")
+            self.update_color(selected_color[:-1] + [1])
+
+        def on_select_color(self, instance_gradient_tab, color: list) -> None:
+            # this will be called when the gradient image is selected
+            print("shit")
+
+        open_color_picker(self)
         self.snackbar.text = text_item
         self.snackbar.open()
 
@@ -833,7 +853,6 @@ class CarbonomixApp(MDApp):
 
         self.snackbar.text = text_item
         self.snackbar.open()
-
 
 if __name__ == '__main__':
     create_tables()
