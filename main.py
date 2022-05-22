@@ -843,27 +843,26 @@ class CarbonomixApp(MDApp):
 
     def change_theme(self, text_item):
 
-        def open_color_picker(self):
-            color_picker = MDColorPicker(size_hint=(0.45, 0.85))
+        def on_select_color(instance_gradient_tab, color: list) -> None:
+            print("Gradient Image Selected")
+
+        def get_selected_color(instance_color_picker: MDColorPicker, type_color: str, selected_color: Union[list, str],):
+            # Return Selected Color
+            print(f"Selected color is {selected_color}")
+            update_color(selected_color[:-1] + [1])
+
+        def update_color(color: list) -> None:
+            sm.current_screen.ids.toolbar.md_bg_color = color
+
+        def open_color_picker():
+            color_picker = MDColorPicker(size_hint=(0.85, 0.85))
             color_picker.open()
             color_picker.bind(
-                on_select_color=self.on_select_color,
-                on_release=self.get_selected_color,
+                on_select_color=on_select_color,
+                on_release=get_selected_color,
             )
 
-        def update_color(self, color: list) -> None:
-            self.root.ids.toolbar.md_bg_color = color
-
-        def get_selected_color(self, instance_color_picker: MDColorPicker, type_color: str, selected_color: Union[list, str],):
-            # Return selected color
-            print(f"Selected color is {selected_color}")
-            self.update_color(selected_color[:-1] + [1])
-
-        def on_select_color(self, instance_gradient_tab, color: list) -> None:
-            # this will be called when the gradient image is selected
-            print("shit")
-
-        open_color_picker(self)
+        open_color_picker()             
         self.snackbar.text = text_item
         self.snackbar.open()
 
