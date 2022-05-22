@@ -76,7 +76,8 @@ def create_tables():
         """
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY UNIQUE NOT NULL,
-            name VARCHAR(100)
+            username VARCHAR(100) UNIQUE NOT NULL,
+            password VARCHAR(60) NOT NULL
         )
         """,
         """
@@ -108,11 +109,6 @@ def create_tables():
         """,
     )
     upsert_statements = (
-        """
-        INSERT INTO users (id, name)
-        VALUES (1, 'Test User')
-        ON CONFLICT (id) DO NOTHING
-        """,
         """
         INSERT INTO categories (name)
         VALUES
