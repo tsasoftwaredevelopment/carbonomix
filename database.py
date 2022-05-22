@@ -110,11 +110,6 @@ def create_tables():
     )
     upsert_statements = (
         """
-        INSERT INTO users (id, name)
-        VALUES (1, 'Test User')
-        ON CONFLICT (id) DO NOTHING
-        """,
-        """
         INSERT INTO categories (name)
         VALUES
             ('electric_bill'),
