@@ -159,7 +159,11 @@ class ThemePopup(Popup):
 
 
 class ModePopup(Popup):
-    pass
+    def toggle_mode(self, state):
+        if state:
+            print("Toggle dark mode")
+        else:
+            print("Toggle light mode")
 
 
 class P1ListItem(OneLineAvatarIconListItem):
