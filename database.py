@@ -323,7 +323,7 @@ def _generate_data(user_id=1):
             user_id
         )
 
-        for month in range(12):
+        for month in range(12 + (year == years - 1)):
             print(date)
             monthly_category_indices = (0, 1, 2, -1, -2)
             new_monthly_values = []

@@ -261,32 +261,39 @@ class MainScreen(Screen):
         fig, ax = plt.subplots()
         dates, values = [], []
         plot_dates, plot_values = [], []
-        end_index, increase = None, None
+
+        start_month, start_date, increase = None, None, None
+        if len(footprint_data) > 0:
+            tz = footprint_data[0][0].tzinfo
+            current_date = footprint_data[0][0].year * 100 + footprint_data[0][0].month
+        else:
+            tz, current_date = None, None
+
         for i in range(len(footprint_data)):
-            tz = footprint_data[i][0].tzinfo
             if not delta_time or footprint_data[i][0] > datetime.now(tz) - delta_time:
                 plot_dates.append(footprint_data[i][0])
                 plot_values.append(footprint_data[i][1])
             dates.append(footprint_data[i][0])
             values.append(footprint_data[i][1])
-            if end_index is None and dates[-1].month == datetime.now(tz).month - 1:
-                end_index = i  # Exclusive.
-            if end_index is not None and (dates[-1].month == datetime.now(tz).month - 2 or i == len(footprint_data) - 1):
-                if end_index == 0:
-                    increase = 0
-                else:
-                    this_month = sum(values[:end_index]) / end_index
-                    last_month = sum(values[end_index:i]) / (end_index - i) if i != len(footprint_data) - 1 else sum(
-                        values[end_index:i + 1]) / (end_index - i + 1)
-                    increase = (this_month - last_month) / last_month * 100
-        ax.plot(plot_dates, plot_values, '-o', color='#2e43ff', markersize=2)
-        plt.ylabel("Carbon Footprint (lbs CO2 / year)")
-        plt.xlabel("Date")
-        plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
-        ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
-        self.ids.statistics.add_widget(
-            GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0), "Carbon Footprint"))
+            if start_month is None and dates[-1].year * 100 + dates[-1].month < current_date:
+                start_month = i
+                start_date = dates[-1].year * 100 + dates[-1].month
+            if start_month is not None and increase is None and (dates[-1].year * 100 + dates[-1].month < start_date or i == len(footprint_data) - 1):
+                if start_month == i:
+                    i += 1
+                this_month = sum(values[:start_month]) / len(values[:start_month])
+                last_month = sum(values[start_month:i]) / len(values[start_month:i])
+                increase = (this_month - last_month) / last_month * 100
+
+        if len(plot_dates) != 0:
+            ax.plot(plot_dates, plot_values, '-o', color='#2e43ff', markersize=2)
+            plt.ylabel("Carbon Footprint (lbs CO2 / year)")
+            plt.xlabel("Date")
+            plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
+            ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
+            self.ids.statistics.add_widget(
+                GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), "Carbon Footprint"))
         plt.close(fig)
 
         data = query(
@@ -351,37 +358,16 @@ class MainScreen(Screen):
     def get_first_index(self):
         current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
         current_rows_text = tuple(int(x) for x in current_rows_text)
-        return current_rows_text
+        return current_rows_text[0]
 
     def on_row_press(self, table, row):
         first_index = self.get_first_index()
-        index = first_index[0] + row.index // (first_index[1] - first_index[0] - 1)
+        index = first_index + row.index // (self.data_table.table_data.rows_num - 2)
         if row.ids.check.state == "down":
             self.selected_rows.append((index, row))
         else:
-            if row in (r[-1] for r in self.selected_rows):
+            if (index, row) in self.selected_rows:
                 self.selected_rows.remove((index, row))
-
-    def uncheck_previous(self, first_index=None):
-        if len(self.uncheck_rows) == 0:
-            return
-        first_index = first_index or self.get_first_index()
-        # print(first_index)
-        # print("Start:", self.uncheck_rows)
-        for i in range(len(self.uncheck_rows) - 1, -1, -1):
-            row = self.uncheck_rows[i]
-            if first_index[0] <= row[0] <= first_index[1]:
-                # print(row[0], row[1].ids.check.state)
-                if row not in self.selected_rows:
-                    row[1].ids.check.state = "normal"
-                # print(row[1].ids.check.state)
-                self.uncheck_rows.remove(row)
-        # print("Complete:", self.uncheck_rows)
-
-    def flip_page(self, direction):
-        first_index = self.get_first_index()
-        difference = first_index[1] - first_index[0] + 1
-        self.uncheck_previous((first_index[0] + direction * difference, first_index[1] + direction * difference))
 
     def display_data_table(self):
         self.data_table = MDDataTable(
@@ -395,13 +381,10 @@ class MainScreen(Screen):
         )
         self.data_table.bind(on_row_press=self.on_row_press)
 
-        self.data_table.children[0].children[0].children[0].bind(on_release=lambda x: self.flip_page(1))
-        self.data_table.children[0].children[0].children[1].bind(on_release=lambda x: self.flip_page(-1))
         self.data_table.children[0].children[2].children[0].children[-1].children[1].remove_widget(self.data_table.children[0].children[2].children[0].children[-1].children[1].children[1])
         self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text = " " * 12 + self.data_table.children[0].children[2].children[0].children[-1].children[1].children[0].text
         self.ids.data_table.add_widget(self.data_table)
         self.selected_rows = []
-        self.uncheck_rows = []
 
     def data_table_button_pressed(self, function):
         rows = self.selected_rows
@@ -414,9 +397,8 @@ class MainScreen(Screen):
             return
 
         if function != "Add":
-            self.uncheck_rows = self.selected_rows.copy()
             self.selected_rows = []
-            self.uncheck_previous()
+            self.data_table.table_data.select_all("normal")
 
         if function == "Delete":
             indices = [row[0] for row in rows]
@@ -598,9 +580,6 @@ class MainScreen(Screen):
 
             date_dialog.bind(on_save=on_save)
             date_dialog.open()
-
-        if function != "Add":
-            self.uncheck_previous()
 
 
 class TableButton(MDRaisedButton):
