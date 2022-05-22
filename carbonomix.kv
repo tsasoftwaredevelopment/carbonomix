@@ -567,28 +567,6 @@
             size_hint: 0.8, 0.35
             pos_hint: {"center_x": 0.5, "center_y": 0.25}
 
-<ThemePopup>
-    auto_dismiss: False
-    size_hint: 0.75, 0.5
-    halign: "center"
-    title: "Change Color Theme:"
-    title_align: "center"
-    title_size: 30
-    separator_height: 3
-    separator_color: 0, 0, 0, 1
-    title_color: 0, 0, 0, 1
-    background: ""
-    radius: [20]
-    FloatLayout:
-        MDCard:
-            size: self.size
-            pos_hint: {'center_x': .5, 'center_y': .5}
-            radius: [20]
-        MDLabel:
-            text: "Dark Mode:"
-            pos_hint: {'center_x': .775, 'center_y': .9}
-            font_size: 24
-
 <ModePopup>
     auto_dismiss: False
     size_hint: 0.75, 0.5
