@@ -360,7 +360,7 @@ class MainScreen(Screen):
         if row.ids.check.state == "down":
             self.selected_rows.append((index, row))
         else:
-            if row in (r[-1] for r in self.selected_rows):
+            if (index, row) in self.selected_rows:
                 self.selected_rows.remove((index, row))
 
     def display_data_table(self):
