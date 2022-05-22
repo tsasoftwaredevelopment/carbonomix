@@ -230,8 +230,6 @@
                     text: "Programs"
                     pos_hint: {'left': 0.15, 'center_y':.3 }
 
-#delete
-
                 MDCarousel:
                     id: programs
                     size_hint: 0.85, 0.25 
@@ -681,6 +679,7 @@
 
 <TaskScreen>
     MDList:
+        size_hint: 1, 1
         id: screen_of_tasks
     MDIconButton:
         icon: "arrow-left-circle"
@@ -689,7 +688,7 @@
 
 
 <TaskListItem>
-    text: 'placeholder'
+    size_hint: 1, 0.2
+    font_size: 40
     RightCheckbox:
         on_active: root.if_active(self.active)
-
