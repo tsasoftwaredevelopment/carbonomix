@@ -108,7 +108,12 @@ def create_tables():
         ON footprints (submitted_at DESC)
         """,
     )
-    upsert_statements = (
+    upsert_statements = (  # TODO: Re-hash password.
+        """
+        INSERT INTO users (username, password)
+        VALUES ('test', 'kljsdfjkldsf')
+        ON CONFLICT (username) DO NOTHING
+        """,
         """
         INSERT INTO categories (name)
         VALUES
