@@ -224,30 +224,13 @@
             MDBottomNavigationItem:
                 name: 'home'
                 text: "Carbon"
-                icon: 'earth' 
-                Label: 
-                    text: "Weekly Tips"
-                    pos_hint: {'left': 0.15, 'center_y':.95 }
-                Label: 
-                    text: "Weekly Challenges"
-                    pos_hint: {'left': 0.15, 'center_y':.625 }
+                icon: 'earth'
+
                 Label: 
                     text: "Programs"
                     pos_hint: {'left': 0.15, 'center_y':.3 }
 
-                MDCarousel:
-                    id: tips
-                    size_hint: 0.85, 0.25 
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.8}
-                    opacity: 1
-                    direction: 'right'
 #delete
-                MDCarousel:
-                    id: challenges
-                    size_hint: 0.85, 0.25 
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.475}
-                    opacity: 1
-                    direction: 'right'
 
                 MDCarousel:
                     id: programs
@@ -257,15 +240,11 @@
                     direction: 'right'
 
                     CarbonCarousel:
-                        program_one_text: True
-                        program_card_label: True
+                        program_number: 1
                     CarbonCarousel: 
-                        program_one_text: False
-                        program_two_text: True
-                        program_card_label: True
+                        program_number: 2
                     CarbonCarousel:
-                        program_one_text: False
-                        program_card_label: True
+                        program_number: 3
 
             MDBottomNavigationItem:
                 name: 'edit'
@@ -390,7 +369,7 @@
         FloatLayout:
             MDLabel: 
                 id: card_label
-                text: "Environmental Philantrophy" if root.program_one_text else "Destination Clean Drip" if root.program_two_text else "Redefine Recycling"
+                text: "replace"
                 halign: "center"
             MDIconButton: 
                 icon: "arrow-left"
@@ -404,12 +383,11 @@
                     root.parent.parent.load_next() 
                     print(root.parent)
             MDRaisedButton:
-                opacity: 1 if root.program_card_label else 0
                 text: "View"
                 text_color: 0, 0, 0, 1
                 md_bg_color: 1, 150/255,79/255, 1
                 pos_hint: {'center_x': 0.5, 'center_y': 0.2}
-                on_release: root.open_p1()
+                on_release: root.open_p1(root.program_number)
 
 
 <GraphItem>
@@ -639,7 +617,7 @@
             pos: self.pos
             size: self.size
     MDLabel:
-        text: "Environmental Philantrophy"
+        id: program_screen_title
         font_size: 22
         pos_hint: {'center_y': 0.92}
         halign: "center"
@@ -655,6 +633,9 @@
     IconRightWidget:
         icon: "card-text"
         on_release: root.screen_select()
+
+
+
 
 
 
@@ -708,6 +689,9 @@
 
 
 <TaskListItem>
-    text: 'This needs to be pulled from the yaml file'
+    text: 'placeholder'
+    size_hint: None, None
+    size: 300, 50
     RightCheckbox:
-        on_active: root.box_active()
+        on_active: root.if_active(self.active)
+
