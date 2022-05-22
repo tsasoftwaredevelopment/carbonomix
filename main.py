@@ -261,33 +261,39 @@ class MainScreen(Screen):
         fig, ax = plt.subplots()
         dates, values = [], []
         plot_dates, plot_values = [], []
-        end_index, increase = None, None
+
+        start_month, start_date, increase = None, None, None
+        if len(footprint_data) > 0:
+            tz = footprint_data[0][0].tzinfo
+            current_date = footprint_data[0][0].year * 100 + footprint_data[0][0].month
+        else:
+            tz, current_date = None, None
+
         for i in range(len(footprint_data)):
-            tz = footprint_data[i][0].tzinfo
             if not delta_time or footprint_data[i][0] > datetime.now(tz) - delta_time:
                 plot_dates.append(footprint_data[i][0])
                 plot_values.append(footprint_data[i][1])
             dates.append(footprint_data[i][0])
             values.append(footprint_data[i][1])
-            if end_index is None and dates[-1].month == datetime.now(tz).month - 1:
-                end_index = i  # Exclusive.
-            if end_index is not None and (dates[-1].month == datetime.now(tz).month - 2 or i == len(footprint_data) - 1):
-                if end_index == 0:
-                    increase = 0
-                else:
-                    this_month = sum(values[:end_index]) / end_index
-                    last_month = sum(values[end_index:i]) / (end_index - i) if i != len(footprint_data) - 1 else sum(
-                        values[end_index:i + 1]) / (end_index - i + 1)
-                    increase = (this_month - last_month) / last_month * 100
+            if start_month is None and dates[-1].year * 100 + dates[-1].month < current_date:
+                start_month = i
+                start_date = dates[-1].year * 100 + dates[-1].month
+            if start_month is not None and increase is None and (dates[-1].year * 100 + dates[-1].month < start_date or i == len(footprint_data) - 1):
+                if start_month == i:
+                    i += 1
+                this_month = sum(values[:start_month]) / len(values[:start_month])
+                last_month = sum(values[start_month:i]) / len(values[start_month:i])
+                increase = (this_month - last_month) / last_month * 100
+
         if len(plot_dates) != 0:
             ax.plot(plot_dates, plot_values, '-o', color='#2e43ff', markersize=2)
             plt.ylabel("Carbon Footprint (lbs CO2 / year)")
             plt.xlabel("Date")
             plt.subplots_adjust(left=0.2, right=0.95, top=0.9, bottom=0.3)
             ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
-            ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y %b-%d'))
+            ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %Y'))
             self.ids.statistics.add_widget(
-                GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0), "Carbon Footprint"))
+                GraphItem(FigureCanvasKivyAgg(plt.gcf()), round(increase or 0, 2), "Carbon Footprint"))
         plt.close(fig)
 
         data = query(
