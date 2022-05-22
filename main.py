@@ -11,11 +11,12 @@ from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.list import OneLineAvatarIconListItem
+from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.selectioncontrol import MDCheckbox
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 
@@ -67,12 +68,11 @@ class WelcomeScreen(Screen):
 
 
 class CarbonCarousel(MDCard):
-    challenge_button = BooleanProperty(False)
-    program_one_text = BooleanProperty(False)
-    program_card_label = BooleanProperty(False)
+    program_number = NumericProperty(0)
 
-    def open_p1(self):
+    def open_p1(self, program):
         sm.current = "p1"
+        sm.current_screen.set_program(program)
 
     def open_explanations(self):
         sm.current = 'explanation'
@@ -87,11 +87,48 @@ class FootprintPopup(Popup):
         return "{:,.2f}".format(get_footprint())
 
 
+class TaskScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def set_program(self, program):
+        self.program = program
+
+    def set_week(self, week):
+        self.week = week
+        self.add_task_list()
+
+    def add_task_list(self):
+        self.ids.screen_of_tasks.clear_widgets()
+        for task in range(5):
+            self.ids.screen_of_tasks.add_widget(TaskListItem(task=task + 1, text=program_text[self.program][self.week][task + 1]))
+
+    def to_p1(self):
+        sm.current = 'p1'
+
+
+class TaskListItem(OneLineAvatarIconListItem):
+    def __init__(self, task, **kwargs):
+        super().__init__(**kwargs)
+        self.task = task
+
+    def if_active(self, state):
+        print("program " + str(self.parent.parent.program) + ", Week " + str(self.parent.parent.week) + ", Task " + str(self.task) + ":", state)
+
+class RightCheckbox(IRightBodyTouch, MDCheckbox):
+    pass
+
+
 class P1ListItem(OneLineAvatarIconListItem):
-    def popup_open(self):
-        program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = "sdfkljdsfkljlkdsfj"
-        program_popup.open()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.program = None
+
+
+    def screen_select(self):
+        sm.current = 'task'
+        sm.current_screen.set_program(self.program)
+        sm.current_screen.set_week(int(self.text.split(" ")[-1]))
 
 
 class EditListItem(OneLineAvatarIconListItem):
@@ -149,26 +186,21 @@ class EditPopupCheckbox(Popup):
 class ProgramOneScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.week_items = []
         self.add_list()
 
     def add_list(self):
-        for i in range(1, 10):
-            self.ids.p1_list.add_widget(P1ListItem(text="Day " + str(i)))
+        for i in range(1, 5):
+            self.week_items.append(P1ListItem(text="Week " + str(i)))
+            self.ids.p1_list.add_widget(self.week_items[-1])
+
+    def set_program(self, program):
+        self.ids.program_screen_title.text = ("Environmental Philantrophy", "Destination Clean Drip", "Redefine Recycling")[program - 1]
+        for item in self.week_items:
+            item.program = program
 
     def to_main(self):
         sm.current = "main"
-
-
-class ChallengeExplanationScreen(Screen):
-    def popup_open(self):
-        program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = "sklfjkjlsffkdl"
-        program_popup.open()
-
-
-class P1Popup(Popup):
-    def popup_close(self):
-        self.dismiss()
 
 
 class ExitScreen(Screen):
@@ -631,12 +663,12 @@ class CarbonomixApp(MDApp):
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
         program_one = ProgramOneScreen(name='p1')
-        challenge_screen = ChallengeExplanationScreen(name='explanation')
+        task_screen = TaskScreen(name="task")
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
         sm.add_widget(program_one)
-        sm.add_widget(challenge_screen)
+        sm.add_widget(task_screen)
 
         menu_items = [
             {

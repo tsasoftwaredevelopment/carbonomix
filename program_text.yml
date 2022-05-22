@@ -2,7 +2,7 @@
 programs:
   p1:
     w1:
-      - "Program 1, week 1, task 1 text."
+      - "Don't die today."
       - "Program 1, week 1, task 2 text."
       - "Program 1, week 1, task 3 text."
       - "Program 1, week 1, task 4 text."
