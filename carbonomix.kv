@@ -367,9 +367,9 @@
         md_bg_color: 177/255, 156/255, 217/255, 1
         #radius: [20]
         FloatLayout:
-            MDLabel: 
+            MDLabel:
                 id: card_label
-                text: "replace"
+                text: ("Environmental Philanthropy", "Destination Clean Drip", "Redefine Recycling")[root.program_number - 1]
                 halign: "center"
             MDIconButton: 
                 icon: "arrow-left"
@@ -690,8 +690,6 @@
 
 <TaskListItem>
     text: 'placeholder'
-    size_hint: None, None
-    size: 300, 50
     RightCheckbox:
         on_active: root.if_active(self.active)
 

@@ -101,19 +101,19 @@ class TaskScreen(Screen):
     def add_task_list(self):
         self.ids.screen_of_tasks.clear_widgets()
         for task in range(5):
-            self.ids.screen_of_tasks.add_widget(TaskListItem(text=program_text[self.program][self.week][task + 1]))
+            self.ids.screen_of_tasks.add_widget(TaskListItem(task=task + 1, text=program_text[self.program][self.week][task + 1]))
 
     def to_p1(self):
         sm.current = 'p1'
 
 
 class TaskListItem(OneLineAvatarIconListItem):
-    def if_active(self, state):
-        if state:
-            print (self.parent.parent.program + self.parent.parent.week)
-        else:
-            print("not selected")
+    def __init__(self, task, **kwargs):
+        super().__init__(**kwargs)
+        self.task = task
 
+    def if_active(self, state):
+        print("program " + str(self.parent.parent.program) + ", Week " + str(self.parent.parent.week) + ", Task " + str(self.task) + ":", state)
 
 class RightCheckbox(IRightBodyTouch, MDCheckbox):
     pass
