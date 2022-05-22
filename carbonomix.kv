@@ -568,8 +568,7 @@
             pos_hint: {"center_x": 0.5, "center_y": 0.25}
 
 <ModePopup>
-    auto_dismiss: False
-    size_hint: 0.75, 0.5
+    size_hint: 0.75, 0.25
     halign: "center"
     title: "Toggle Mode:"
     title_align: "center"
@@ -586,8 +585,12 @@
             radius: [20]
         MDLabel:
             text: "Dark Mode:"
-            pos_hint: {'center_x': .775, 'center_y': .9}
+            pos_hint: {'center_x': .775, 'center_y': .8}
             font_size: 24
+        MDSwitch:
+            on_active: root.toggle_mode(self.active)
+            pos_hint: {'center_x': .5, 'center_y': .35}
+            width: dp(64)
 
 
 <EditListItem>
