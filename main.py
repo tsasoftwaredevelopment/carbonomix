@@ -352,11 +352,11 @@ class MainScreen(Screen):
     def get_first_index(self):
         current_rows_text = self.data_table.children[0].children[0].children[2].text.split(" ")[0].split("-")
         current_rows_text = tuple(int(x) for x in current_rows_text)
-        return current_rows_text[0], self.data_table.table_data.rows_num
+        return current_rows_text[0]
 
     def on_row_press(self, table, row):
         first_index = self.get_first_index()
-        index = first_index[0] + row.index // (first_index[1] - first_index[0] - 1)
+        index = first_index + row.index // (self.data_table.table_data.rows_num - 2)
         if row.ids.check.state == "down":
             self.selected_rows.append((index, row))
         else:
