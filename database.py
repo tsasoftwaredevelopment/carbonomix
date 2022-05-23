@@ -86,6 +86,7 @@ def create_tables():
             submitted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             category_id SMALLINT NOT NULL,
             value DECIMAL NOT NULL,
+            PRIMARY KEY (user_id, submitted_at, category_id),
             FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
@@ -107,8 +108,23 @@ def create_tables():
         CREATE INDEX IF NOT EXISTS index_newest
         ON footprints (submitted_at DESC)
         """,
+        """
+        CREATE TABLE IF NOT EXISTS completed_tasks (
+            user_id INTEGER NOT NULL,
+            program_id SMALLINT NOT NULL,
+            week_id SMALLINT NOT NULL,
+            task_id SMALLINT NOT NULL,
+            PRIMARY KEY (user_id, program_id, week_id, task_id),
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+        """,
     )
-    upsert_statements = (
+    upsert_statements = (  # TODO: Re-hash password.
+        """
+        INSERT INTO users (username, password)
+        VALUES ('test', 'kljsdfjkldsf')
+        ON CONFLICT (username) DO NOTHING
+        """,
         """
         INSERT INTO categories (name)
         VALUES
@@ -323,7 +339,7 @@ def _generate_data(user_id=1):
             user_id
         )
 
-        for month in range(12):
+        for month in range(12 + (year == years - 1)):
             print(date)
             monthly_category_indices = (0, 1, 2, -1, -2)
             new_monthly_values = []
