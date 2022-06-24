@@ -362,29 +362,32 @@
 <CarbonCarousel>
     MDCard:
         id: carousel_card
-        md_bg_color: 177/255, 156/255, 217/255, 1
-        radius: [20]
+        background: ("images/Environmental Philanthropy.png", "images/Destination Clean Drip.png", "images/Redefine Recycling.png")[root.program_number - 1]
+        radius: [10]
         FloatLayout:
             MDLabel:
                 id: card_label
-                text: ("Environmental Philanthropy", "Destination Clean Drip", "Redefine Recycling")[root.program_number - 1]
+                #text: ("Environmental Philanthropy", "Destination Clean Drip", "Redefine Recycling")[root.program_number - 1]
                 halign: "center"
-            MDIconButton: 
+            MDFloatingActionButton:
+                #TODO: Coloring of buttons (Afshaal)
                 icon: "arrow-left"
-                pos_hint: {'center_x': 0.1, 'center_y': 0.2}
+                pos_hint: {'center_x': 0.1, 'center_y': 0.4}
                 on_release: 
                     root.parent.parent.load_previous()
-            MDIconButton: 
+            MDFloatingActionButton:
+                #TODO: Coloring of buttons (Afshaal)
                 icon: "arrow-right"
-                pos_hint: {'center_x': 0.9, 'center_y': 0.2}
+                pos_hint: {'center_x': 0.9, 'center_y': 0.4}
                 on_release: 
                     root.parent.parent.load_next() 
                     print(root.parent)
-            MDRaisedButton:
+            MDFillRoundFlatButton:
                 text: "View"
                 text_color: 0, 0, 0, 1
                 md_bg_color: 1, 150/255,79/255, 1
-                pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+                pos_hint: {'center_x': 0.5, 'center_y': 0.06}
+                size: self.size
                 on_release: root.open_p1(root.program_number)
 
 
@@ -602,6 +605,7 @@
         halign: "center"
     MDList:
         id: p1_list
+        size_hint: 1, 1
     MDIconButton:
         icon: "arrow-left-circle"
         on_release: root.to_main()
@@ -609,6 +613,8 @@
 
 
 <P1ListItem>
+    size_hint: 1, 0.25
+    text_size: self.width, None
     IconRightWidget:
         icon: "card-text"
         on_release: root.screen_select()
@@ -626,5 +632,9 @@
 
 <TaskListItem>
     size_hint: 1, 0.2
+    text_size: self.width, None
+    secondary_text: " "
+    tertiary_text: " "
     RightCheckbox:
         on_active: root.if_active(self.active)
+        pos_hint: [

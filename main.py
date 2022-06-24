@@ -11,11 +11,11 @@ from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
+from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem, TwoLineAvatarIconListItem, ThreeLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.picker import MDDatePicker
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
@@ -101,13 +101,13 @@ class TaskScreen(Screen):
     def add_task_list(self):
         self.ids.screen_of_tasks.clear_widgets()
         for task in range(5):
-            self.ids.screen_of_tasks.add_widget(TaskListItem(task=task + 1, text=program_text[self.program][self.week][task + 1]))
+            self.ids.screen_of_tasks.add_widget(TaskListItem(task=task + 1, text="[size=13]" + program_text[self.program][self.week][task + 1] + "[/size]"))
 
     def to_p1(self):
         sm.current = 'p1'
 
 
-class TaskListItem(OneLineAvatarIconListItem):
+class TaskListItem(ThreeLineAvatarIconListItem):
     def __init__(self, task, **kwargs):
         super().__init__(**kwargs)
         self.task = task
@@ -206,7 +206,7 @@ class ProgramOneScreen(Screen):
 
     def add_list(self):
         for i in range(1, 5):
-            self.week_items.append(P1ListItem(text="Week " + str(i)))
+            self.week_items.append(P1ListItem(text="[size=13]" + "Week " + str(i)))
             self.ids.p1_list.add_widget(self.week_items[-1])
 
     def set_program(self, program):
