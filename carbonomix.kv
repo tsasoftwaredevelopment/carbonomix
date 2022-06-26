@@ -257,12 +257,17 @@
                     do_scroll_y: True
                     FloatLayout: 
                         size_hint_y: 1.2
+                        MDIconButton:
+                            icon: 'help-circle'
+                            on_press:
+                                InfoPopup().open()
+
                         MDCard: 
-                            size_hint: 0.6, 0.17
+                            size_hint: 0.5, 0.17
                             md_bg_color: 177/255, 156/255, 217/255, 1
                             pos_hint: {'center_x': 0.5, 'center_y': 0.885}
                             border_radius: 20
-                            radius: [15]
+                            #radius: [10]
                             MDLabel:
                                 id: footprint_label
                                 halign: "center"
@@ -636,5 +641,64 @@
     secondary_text: " "
     tertiary_text: " "
     RightCheckbox:
-        on_active: root.if_active(self.active)
-        pos_hint: [
+        id: task_checkbox
+        on_active:
+            root.if_active(self.active)
+        active: root.is_checked
+
+
+<WeekCompletePopup>
+    size_hint: 0.7, 0.4
+    halign: "center"
+    valign: "center"
+    title: "Congrats!"
+    title_align: "center"
+    title_size: 30
+    separator_height: 3
+    separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
+    background: ""
+
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        MDLabel:
+            text: "You have completed this week!"
+            font_size: 26
+            halign: "center"
+            text_color_active: 5, 5, 5, 5
+        MDFillRoundFlatButton:
+            text: "Back to Program!"
+            font_size: 14
+            md_bg_color: 1, 150/255,79/255, 1
+            size_hint: .825, .275
+            pos_hint: {'center_x': 0.5}
+            on_release:
+                root.dismiss()
+
+
+<InfoPopup>
+    size_hint: 0.3, 0.15
+    halign: "center"
+    valign: "center"
+    title: "Info"
+    title_align: "center"
+    title_size: 15
+    separator_height: 3
+    separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
+    background: ""
+
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        MDLabel:
+            text: "reccomended/average"
+            font_size: 26
+            halign: "center"
+            text_color_active: 5, 5, 5, 5
+        MDIconButton:
+            icon: 'close-thick'
+            size_hint: 0.02, 0.02
+            on_press:
+                root.dismiss()

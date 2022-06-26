@@ -87,6 +87,10 @@ class FootprintPopup(Popup):
         return "{:,.2f}".format(get_footprint())
 
 
+class InfoPopup(Popup):
+    pass
+
+
 class TaskScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -100,25 +104,49 @@ class TaskScreen(Screen):
 
     def add_task_list(self):
         self.ids.screen_of_tasks.clear_widgets()
+        self.checked = query(
+            """
+            SELECT task_id
+            FROM completed_tasks
+            WHERE user_id = %s
+            AND program_id = %s
+            AND week_id = %s
+            """,
+            (1, self.program, self.week)
+        )
+        self.checked = list(c[0] for c in self.checked)
+        if len(self.checked) == 5:
+            WeekCompletePopup().open()
         for task in range(5):
-            self.ids.screen_of_tasks.add_widget(TaskListItem(task=task + 1, text="[size=13]" + program_text[self.program][self.week][task + 1] + "[/size]"))
+            task_item = TaskListItem(task=task + 1, text="[size=13]" + program_text[self.program][self.week][task + 1] + "[/size]", is_checked=task + 1 in self.checked)
+            self.ids.screen_of_tasks.add_widget(task_item)
+
+        #if len(checked) == 5:
+            #WeekCompletePopup().open()
+
 
     def to_p1(self):
         sm.current = 'p1'
 
 
 class TaskListItem(ThreeLineAvatarIconListItem):
+    is_checked = BooleanProperty(False)
+
     def __init__(self, task, **kwargs):
         super().__init__(**kwargs)
         self.task = task
 
     def if_active(self, state):
         if state:
+            self.parent.parent.checked.append(self.task)
             command = """
                     INSERT INTO completed_tasks (user_id, program_id, week_id, task_id)
                     VALUES (%s, %s, %s, %s)
                     """
+            if len(self.parent.parent.checked) == 5:
+                WeekCompletePopup().open()
         else:
+            self.parent.parent.checked.remove(self.task)
             command = """
                 DELETE FROM completed_tasks
                 WHERE user_id = %s
@@ -128,6 +156,10 @@ class TaskListItem(ThreeLineAvatarIconListItem):
                 """
 
         update(command, (1, self.parent.parent.program, self.parent.parent.week, self.task))
+
+
+
+
 
 
 class RightCheckbox(IRightBodyTouch, MDCheckbox):
@@ -144,6 +176,10 @@ class P1ListItem(OneLineAvatarIconListItem):
         sm.current = 'task'
         sm.current_screen.set_program(self.program)
         sm.current_screen.set_week(int(self.text.split(" ")[-1]))
+
+
+class WeekCompletePopup(Popup):
+    pass
 
 
 class EditListItem(OneLineAvatarIconListItem):
