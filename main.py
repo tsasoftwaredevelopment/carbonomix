@@ -96,6 +96,11 @@ class FootprintPopup(Popup):
 
 
 class InfoPopup(Popup):
+    def to_main(self):
+        sm.current = "main"
+
+
+class ProgramCompletePopup(Popup):
     pass
 
 
