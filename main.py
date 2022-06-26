@@ -73,6 +73,7 @@ class CarbonCarousel(MDCard):
     def open_p1(self, program):
         sm.current = "p1"
         sm.current_screen.set_program(program)
+        #TODO: call ProgramCompletePopup if all 20 tasks finished
 
     def open_explanations(self):
         sm.current = 'explanation'
@@ -117,6 +118,7 @@ class TaskScreen(Screen):
         self.checked = list(c[0] for c in self.checked)
         if len(self.checked) == 5:
             WeekCompletePopup().open()
+        #TODO: Add function that when all 20 are clicked immediately shows ProgramCompletePopup
         for task in range(5):
             task_item = TaskListItem(task=task + 1, text="[size=13]" + program_text[self.program][self.week][task + 1] + "[/size]", is_checked=task + 1 in self.checked)
             self.ids.screen_of_tasks.add_widget(task_item)
