@@ -16,6 +16,8 @@ from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.pickers import MDColorPicker
+from typing import Union
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
 
@@ -36,6 +38,71 @@ week_interval = 7 * 24 * 60 * 60
 
 sm: ScreenManager
 plt.rcParams.update({'font.size': 8})
+
+colors = {
+    "Teal": {
+        "50": "e4f8f9",
+        "100": "bdedf0",
+        "200": "97e2e8",
+        "300": "79d5de",
+        "400": "6dcbd6",
+        "500": "6ac2cf",
+        "600": "63b2bc",
+        "700": "5b9ca3",
+        "800": "54888c",
+        "900": "486363",
+        "A100": "bdedf0",
+        "A200": "97e2e8",
+        "A400": "6dcbd6",
+        "A700": "5b9ca3",
+    },
+    "Blue": {
+        "50": "e3f3f8",
+        "100": "b9e1ee",
+        "200": "91cee3",
+        "300": "72bad6",
+        "400": "62acce",
+        "500": "589fc6",
+        "600": "5191b8",
+        "700": "487fa5",
+        "800": "426f91",
+        "900": "35506d",
+        "A100": "b9e1ee",
+        "A200": "91cee3",
+        "A400": "62acce",
+        "A700": "487fa5",
+    },
+    "Red": {
+        "50": "FFEBEE",
+        "100": "FFCDD2",
+        "200": "EF9A9A",
+        "300": "E57373",
+        "400": "EF5350",
+        "500": "F44336",
+        "600": "E53935",
+        "700": "D32F2F",
+        "800": "C62828",
+        "900": "B71C1C",
+        "A100": "FF8A80",
+        "A200": "FF5252",
+        "A400": "FF1744",
+        "A700": "D50000",
+    },
+    "Light": {
+        "StatusBar": "E0E0E0",
+        "AppBar": "F5F5F5",
+        "Background": "FAFAFA",
+        "CardsDialogs": "FFFFFF",
+        "FlatButtonDown": "cccccc",
+    },
+    "Dark": {
+        "StatusBar": "000000",
+        "AppBar": "212121",
+        "Background": "303030",
+        "CardsDialogs": "424242",
+        "FlatButtonDown": "999999",
+    }
+}
 
 
 class StartingScreen(Screen):
@@ -85,6 +152,18 @@ class ChallengePopup(Popup):
 class FootprintPopup(Popup):
     def display_footprint(self):
         return "{:,.2f}".format(get_footprint())
+
+
+class ThemePopup(Popup):
+    pass
+
+
+class ModePopup(Popup):
+    def toggle_mode(self, state):
+        if state:
+            print("Toggle dark mode")
+        else:
+            print("Toggle light mode")
 
 
 class P1ListItem(OneLineAvatarIconListItem):
@@ -626,6 +705,10 @@ class CarbonomixApp(MDApp):
         fade = FadeTransition()
         fade.duration = 0 if DEBUG else 1.5
 
+        # some color shit here lo
+        self.theme_cls.primary_palette = "Green"
+        self.theme_cls.primary_hue = "500"
+
         sm = ScreenManager(transition=fade)
         starting_screen = StartingScreen(name='starting')
         welcome_screen = WelcomeScreen(name='welcome')
@@ -647,16 +730,21 @@ class CarbonomixApp(MDApp):
             },
             {
                 "viewclass": "OneLineListItem",
-                "text": "Placeholder",
+                "text": "Change Color Theme",
                 "height": dp(40),
-                "on_release": lambda x="Placeholder": self.menu_callback2(x),
+                "on_release": lambda x="Change Color Theme": self.change_theme(x),
+            },
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Change Mode Theme",
+                "height": dp(40),
+                "on_release": lambda x="Change Mode Theme": self.change_mode(x),
             }
         ]
 
         self.menu = MDDropdownMenu(
             position="bottom",
             hor_growth="left",
-            # background_color = self.theme_cls.primary_color,
             header_cls=MenuHeader(),
             items=menu_items,
             width_mult=4,
@@ -736,10 +824,40 @@ class CarbonomixApp(MDApp):
         Clock.schedule_once(close_application, 4)
         close()
 
-    def menu_callback2(self, text_item):
+    def change_theme(self, text_item):
+
+        def on_select_color(instance_gradient_tab, color: list) -> None:
+            print("Gradient Image Selected")
+
+        def get_selected_color(instance_color_picker: MDColorPicker, type_color: str, selected_color: Union[list, str],):
+            # Return Selected Color
+            print(f"Selected color is {selected_color}")
+            update_color(selected_color[:-1] + [1])
+
+        def update_color(color: list) -> None:
+            sm.current_screen.ids.toolbar.md_bg_color = color
+            sm.current_screen.ids.toolbar.new_value = color
+            sm.current_screen.ids.tabs.panel_color = color
+            sm.current_screen.ids.tabs.text_color_active = color # darken the color value somehow
+
+        def open_color_picker():
+            color_picker = MDColorPicker(size_hint=(0.85, 0.85))
+            color_picker.open()
+            color_picker.bind(
+                on_select_color=on_select_color,
+                on_release=get_selected_color,
+            )
+
+        open_color_picker()             
         self.snackbar.text = text_item
         self.snackbar.open()
 
+    def change_mode(self, text_item):
+        popup = ModePopup()
+        popup.open()
+
+        self.snackbar.text = text_item
+        self.snackbar.open()
 
 if __name__ == '__main__':
     create_tables()
