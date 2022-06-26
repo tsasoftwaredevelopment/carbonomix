@@ -858,6 +858,8 @@ class CarbonomixApp(MDApp):
         def update_color(color: list) -> None:
             sm.current_screen.ids.toolbar.md_bg_color = color
             sm.current_screen.ids.toolbar.new_value = color
+            sm.current_screen.ids.tabs.panel_color = color
+            sm.current_screen.ids.tabs.text_color_active = color # darken the color value somehow
 
         def open_color_picker():
             color_picker = MDColorPicker(size_hint=(0.85, 0.85))
