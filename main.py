@@ -15,7 +15,7 @@ from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem, TwoLineA
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.picker import MDDatePicker
+from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
@@ -61,7 +61,6 @@ class WelcomeScreen(Screen):
                 return
             values.append(value.children[3].state == 'down')
 
-        # TODO: Add some loading indicator here so the user knows something is happening.
         update_footprint(values=values)
         FootprintPopup().open()
         sm.transition = SlideTransition(direction='left')
@@ -73,7 +72,15 @@ class CarbonCarousel(MDCard):
     def open_p1(self, program):
         sm.current = "p1"
         sm.current_screen.set_program(program)
-        #TODO: call ProgramCompletePopup if all 20 tasks finished
+        if query(
+                """
+                SELECT COUNT(program_id)
+                FROM completed_tasks
+                WHERE program_id = %s
+                """,
+                (program,)
+        ).fetchone()[0] == 5 * 4:
+            ProgramCompletePopup().open()
 
     def open_explanations(self):
         sm.current = 'explanation'
@@ -123,14 +130,9 @@ class TaskScreen(Screen):
         self.checked = list(c[0] for c in self.checked)
         if len(self.checked) == 5:
             WeekCompletePopup().open()
-        #TODO: Add function that when all 20 are clicked immediately shows ProgramCompletePopup
         for task in range(5):
             task_item = TaskListItem(task=task + 1, text="[size=13]" + program_text[self.program][self.week][task + 1] + "[/size]", is_checked=task + 1 in self.checked)
             self.ids.screen_of_tasks.add_widget(task_item)
-
-        #if len(checked) == 5:
-            #WeekCompletePopup().open()
-
 
     def to_p1(self):
         sm.current = 'p1'
@@ -152,6 +154,15 @@ class TaskListItem(ThreeLineAvatarIconListItem):
                     """
             if len(self.parent.parent.checked) == 5:
                 WeekCompletePopup().open()
+                if query(
+                        """
+                        SELECT COUNT(program_id)
+                        FROM completed_tasks
+                        WHERE program_id = %s
+                        """,
+                        (self.parent.parent.program,)
+                ).fetchone()[0] == 5 * 4:
+                    ProgramCompletePopup().open()
         else:
             self.parent.parent.checked.remove(self.task)
             command = """
@@ -163,10 +174,6 @@ class TaskListItem(ThreeLineAvatarIconListItem):
                 """
 
         update(command, (1, self.parent.parent.program, self.parent.parent.week, self.task))
-
-
-
-
 
 
 class RightCheckbox(IRightBodyTouch, MDCheckbox):
