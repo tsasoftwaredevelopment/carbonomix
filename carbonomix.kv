@@ -702,3 +702,40 @@
             size_hint: 0.02, 0.02
             on_press:
                 root.dismiss()
+
+<ProgramCompletePopup>
+    size_hint: 0.7, 0.4
+    halign: "center"
+    valign: "center"
+    title: "Congrats!"
+    title_align: "center"
+    title_size: 30
+    separator_height: 3
+    separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
+    background: ""
+
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        MDLabel:
+            text: "You have completed this Program!"
+            font_size: 26
+            halign: "center"
+            text_color_active: 5, 5, 5, 5
+        MDFillRoundFlatButton:
+            text: "Back to Main"
+            font_size: 14
+            md_bg_color: 1, 150/255,79/255, 1
+            size_hint: .825, .275
+            pos_hint: {'center_x': 0.5}
+            on_release:
+                root.to_main()
+        MDFillRoundFlatButton:
+            text: "View Program"
+            font_size: 14
+            md_bg_color: 1, 150/255,79/255, 1
+            size_hint: .825, .275
+            pos_hint: {'center_x': 0.5}
+            on_release:
+                root.dismiss()
