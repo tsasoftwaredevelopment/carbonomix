@@ -15,7 +15,7 @@ from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem, TwoLineA
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.picker import MDDatePicker
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from database import close, update, query, create_tables, update_footprint, get_footprint, get_current_values, categories, category_names, category_value_formats
@@ -101,7 +101,8 @@ class InfoPopup(Popup):
 
 
 class ProgramCompletePopup(Popup):
-    pass
+    def to_main(self):
+        sm.current = "main"
 
 
 class TaskScreen(Screen):
@@ -256,7 +257,7 @@ class ProgramOneScreen(Screen):
 
     def add_list(self):
         for i in range(1, 5):
-            self.week_items.append(P1ListItem(text="[size=13]" + "Week " + str(i)))
+            self.week_items.append(P1ListItem(text="[size=20]" + "Week " + str(i)))
             self.ids.p1_list.add_widget(self.week_items[-1])
 
     def set_program(self, program):
@@ -677,6 +678,9 @@ class MainScreen(Screen):
 
             date_dialog.bind(on_save=on_save)
             date_dialog.open()
+
+    def info_popup_open(self):
+        InfoPopup().open()
 
 
 class TableButton(MDRaisedButton):
