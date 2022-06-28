@@ -369,12 +369,11 @@
 <CarbonCarousel>
     MDCard:
         id: carousel_card
-        background: ("images/Environmental Philanthropy.png", "images/Destination Clean Drip.png", "images/Redefine Recycling.png")[root.program_number - 1]
+        background: ("images/Environmental Philanthropy.png", "images/Green Peace.png", "images/Climate Conservation Corps.png")[root.program_number - 1]
         radius: [10]
         FloatLayout:
             MDLabel:
                 id: card_label
-                #text: ("Environmental Philanthropy", "Destination Clean Drip", "Redefine Recycling")[root.program_number - 1]
                 halign: "center"
             MDFloatingActionButton:
                 #TODO: Coloring of buttons (Afshaal)
@@ -387,8 +386,7 @@
                 icon: "arrow-right"
                 pos_hint: {'center_x': 0.9, 'center_y': 0.4}
                 on_release: 
-                    root.parent.parent.load_next() 
-                    print(root.parent)
+                    root.parent.parent.load_next()
             MDFillRoundFlatButton:
                 text: "View"
                 text_color: 0, 0, 0, 1

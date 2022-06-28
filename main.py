@@ -257,11 +257,11 @@ class ProgramOneScreen(Screen):
 
     def add_list(self):
         for i in range(1, 5):
-            self.week_items.append(P1ListItem(text="[size=20]" + "Week " + str(i)))
+            self.week_items.append(P1ListItem(text="[size=17]" + "             Week " + str(i)))
             self.ids.p1_list.add_widget(self.week_items[-1])
 
     def set_program(self, program):
-        self.ids.program_screen_title.text = ("Environmental Philantrophy", "Destination Clean Drip", "Redefine Recycling")[program - 1]
+        self.ids.program_screen_title.text = ("Environmental Philanthrophy", "Green Peace", "Climate Conservation Corps")[program - 1]
         for item in self.week_items:
             item.program = program
 
