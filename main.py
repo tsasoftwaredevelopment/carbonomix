@@ -869,6 +869,7 @@ class CarbonomixApp(MDApp):
             # Return Selected Color
             print(f"Selected color is {selected_color}")
             update_color(selected_color[:-1] + [1])
+            self.menu.dismiss()
 
         def update_color(color: list) -> None:
             sm.current_screen.ids.toolbar.md_bg_color = color
