@@ -31,11 +31,9 @@ from data import program_text, colors
 
 
 # DEBUG = True means you're testing.
-DEBUG = True
+DEBUG = False
 # Set this to True if you want to see the questions again on the welcome screen.
-always_show_questions = False
-# Change this to 5 or something to see the weekly text rotate every 5 seconds instead.
-week_interval = 7 * 24 * 60 * 60
+always_show_questions = True
 
 sm: ScreenManager
 plt.rcParams.update({'font.size': 8})
