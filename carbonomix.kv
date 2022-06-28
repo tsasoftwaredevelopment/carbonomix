@@ -210,6 +210,7 @@
         orientation: 'vertical'
 
         MDToolbar:
+            id: toolbar
             title: "Carbonomix"
             md_bg_color: 108/255, 168/255, 124/255, 1
             right_action_items: [["menu", lambda x: app.open_menu(x)]]
@@ -551,6 +552,32 @@
             pos_hint: {'center_x': .5}
             size_hint: 0.8, 0.35
             pos_hint: {"center_x": 0.5, "center_y": 0.25}
+
+
+<ModePopup>
+    size_hint: 0.75, 0.25
+    halign: "center"
+    title: "Toggle Mode:"
+    title_align: "center"
+    title_size: 30
+    separator_height: 3
+    separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
+    background: ""
+    radius: [20]
+    FloatLayout:
+        MDCard:
+            size: self.size
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            radius: [20]
+        MDLabel:
+            text: "Dark Mode:"
+            pos_hint: {'center_x': .775, 'center_y': .8}
+            font_size: 24
+        MDSwitch:
+            on_active: root.toggle_mode(self.active)
+            pos_hint: {'center_x': .5, 'center_y': .35}
+            width: dp(64)
 
 
 <EditListItem>
