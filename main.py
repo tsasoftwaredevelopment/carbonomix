@@ -773,12 +773,16 @@ class CarbonomixApp(MDApp):
             sm.current_screen.ids.toolbar.md_bg_color = color
             sm.current_screen.ids.toolbar.new_value = color
             sm.current_screen.ids.tabs.panel_color = color
-            sm.current_screen.ids.tabs.text_color_active = color # darken the color value somehow
+            for i in range(3):
+                color[i] *= 0.35
+            sm.current_screen.ids.tabs.text_color_active = color 
+
+            self.color_picker.dismiss()
 
         def open_color_picker():
-            color_picker = MDColorPicker(size_hint=(0.85, 0.85))
-            color_picker.open()
-            color_picker.bind(
+            self.color_picker = MDColorPicker(size_hint=(0.85, 0.85))
+            self.color_picker.open()
+            self.color_picker.bind(
                 on_select_color=on_select_color,
                 on_release=get_selected_color,
             )
