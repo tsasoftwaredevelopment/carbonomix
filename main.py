@@ -11,11 +11,12 @@ from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.list import OneLineAvatarIconListItem
+from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem, TwoLineAvatarIconListItem, ThreeLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton, MDRaisedButton
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.uix.pickers import MDColorPicker
 from typing import Union
 
@@ -62,19 +63,26 @@ class WelcomeScreen(Screen):
                 return
             values.append(value.children[3].state == 'down')
 
-        # TODO: Add some loading indicator here so the user knows something is happening.
         update_footprint(values=values)
         FootprintPopup().open()
         sm.transition = SlideTransition(direction='left')
 
 
 class CarbonCarousel(MDCard):
-    challenge_button = BooleanProperty(False)
-    program_one_text = BooleanProperty(False)
-    program_card_label = BooleanProperty(False)
+    program_number = NumericProperty(0)
 
-    def open_p1(self):
+    def open_p1(self, program):
         sm.current = "p1"
+        sm.current_screen.set_program(program)
+        if query(
+                """
+                SELECT COUNT(program_id)
+                FROM completed_tasks
+                WHERE program_id = %s
+                """,
+                (program,)
+        ).fetchone()[0] == 5 * 4:
+            ProgramCompletePopup().open()
 
     def open_explanations(self):
         sm.current = 'explanation'
@@ -87,6 +95,92 @@ class ChallengePopup(Popup):
 class FootprintPopup(Popup):
     def display_footprint(self):
         return "{:,.2f}".format(get_footprint())
+
+
+class InfoPopup(Popup):
+    def to_main(self):
+        sm.current = "main"
+
+
+class ProgramCompletePopup(Popup):
+    def to_main(self):
+        sm.current = "main"
+
+
+class TaskScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def set_program(self, program):
+        self.program = program
+
+    def set_week(self, week):
+        self.week = week
+        self.add_task_list()
+
+    def add_task_list(self):
+        self.ids.screen_of_tasks.clear_widgets()
+        self.checked = query(
+            """
+            SELECT task_id
+            FROM completed_tasks
+            WHERE user_id = %s
+            AND program_id = %s
+            AND week_id = %s
+            """,
+            (1, self.program, self.week)
+        )
+        self.checked = list(c[0] for c in self.checked)
+        if len(self.checked) == 5:
+            WeekCompletePopup().open()
+        for task in range(5):
+            task_item = TaskListItem(task=task + 1, text="[size=13]" + program_text[self.program][self.week][task + 1] + "[/size]", is_checked=task + 1 in self.checked)
+            self.ids.screen_of_tasks.add_widget(task_item)
+
+    def to_p1(self):
+        sm.current = 'p1'
+
+
+class TaskListItem(ThreeLineAvatarIconListItem):
+    is_checked = BooleanProperty(False)
+
+    def __init__(self, task, **kwargs):
+        super().__init__(**kwargs)
+        self.task = task
+
+    def if_active(self, state):
+        if state:
+            self.parent.parent.checked.append(self.task)
+            command = """
+                    INSERT INTO completed_tasks (user_id, program_id, week_id, task_id)
+                    VALUES (%s, %s, %s, %s)
+                    """
+            if len(self.parent.parent.checked) == 5:
+                WeekCompletePopup().open()
+                if query(
+                        """
+                        SELECT COUNT(program_id)
+                        FROM completed_tasks
+                        WHERE program_id = %s
+                        """,
+                        (self.parent.parent.program,)
+                ).fetchone()[0] == 5 * 4:
+                    ProgramCompletePopup().open()
+        else:
+            self.parent.parent.checked.remove(self.task)
+            command = """
+                DELETE FROM completed_tasks
+                WHERE user_id = %s
+                AND program_id = %s
+                AND week_id = %s
+                AND task_id = %s
+                """
+
+        update(command, (1, self.parent.parent.program, self.parent.parent.week, self.task))
+
+
+class RightCheckbox(IRightBodyTouch, MDCheckbox):
+    pass
 
 
 class ThemePopup(Popup):
@@ -102,10 +196,18 @@ class ModePopup(Popup):
 
 
 class P1ListItem(OneLineAvatarIconListItem):
-    def popup_open(self):
-        program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = "sdfkljdsfkljlkdsfj"
-        program_popup.open()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.program = None
+
+    def screen_select(self):
+        sm.current = 'task'
+        sm.current_screen.set_program(self.program)
+        sm.current_screen.set_week(int(self.text.split(" ")[-1]))
+
+
+class WeekCompletePopup(Popup):
+    pass
 
 
 class EditListItem(OneLineAvatarIconListItem):
@@ -163,26 +265,22 @@ class EditPopupCheckbox(Popup):
 class ProgramOneScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.week_items = []
         self.add_list()
 
     def add_list(self):
-        for i in range(1, 10):
-            self.ids.p1_list.add_widget(P1ListItem(text="Day " + str(i)))
+        self.ids.p1_list.add_widget(OneLineAvatarIconListItem())
+        for i in range(1, 5):
+            self.week_items.append(P1ListItem(text="[size=20]" + "Week " + str(i)))
+            self.ids.p1_list.add_widget(self.week_items[-1])
+
+    def set_program(self, program):
+        self.ids.program_screen_title.text = ("Environmental Philantrophy", "Destination Clean Drip", "Redefine Recycling")[program - 1]
+        for item in self.week_items:
+            item.program = program
 
     def to_main(self):
         sm.current = "main"
-
-
-class ChallengeExplanationScreen(Screen):
-    def popup_open(self):
-        program_popup = P1Popup(title=self.text)
-        program_popup.ids.p1_popup_label.text = "sklfjkjlsffkdl"
-        program_popup.open()
-
-
-class P1Popup(Popup):
-    def popup_close(self):
-        self.dismiss()
 
 
 class ExitScreen(Screen):
@@ -232,7 +330,7 @@ class MainScreen(Screen):
         pop_up.open()
 
     def update_values(self):
-        self.ids.footprint_label.text = "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint())
+        self.ids.footprint_label.text = "Carbon Footprint: {:,.2f} lbs CO2 per year".format(get_footprint() or 0)
         values = get_current_values()
         format = tuple(category_names[i] + ": " +
                        category_value_formats[i] for i in
@@ -595,6 +693,9 @@ class MainScreen(Screen):
             date_dialog.bind(on_save=on_save)
             date_dialog.open()
 
+    def info_popup_open(self):
+        InfoPopup().open()
+
 
 class TableButton(MDRaisedButton):
     pass
@@ -649,12 +750,12 @@ class CarbonomixApp(MDApp):
         welcome_screen = WelcomeScreen(name='welcome')
         main_screen = MainScreen(name='main')
         program_one = ProgramOneScreen(name='p1')
-        challenge_screen = ChallengeExplanationScreen(name='explanation')
+        task_screen = TaskScreen(name="task")
         sm.add_widget(starting_screen)
         sm.add_widget(welcome_screen)
         sm.add_widget(main_screen)
         sm.add_widget(program_one)
-        sm.add_widget(challenge_screen)
+        sm.add_widget(task_screen)
 
         menu_items = [
             {

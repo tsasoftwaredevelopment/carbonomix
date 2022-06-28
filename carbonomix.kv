@@ -225,47 +225,25 @@
             MDBottomNavigationItem:
                 name: 'home'
                 text: "Carbon"
-                icon: 'earth' 
-                Label: 
-                    text: "Weekly Tips"
-                    pos_hint: {'left': 0.15, 'center_y':.95 }
-                Label: 
-                    text: "Weekly Challenges"
-                    pos_hint: {'left': 0.15, 'center_y':.625 }
+                icon: 'earth'
+
                 Label: 
                     text: "Programs"
                     pos_hint: {'left': 0.15, 'center_y':.3 }
 
                 MDCarousel:
-                    id: tips
-                    size_hint: 0.85, 0.25 
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.8}
-                    opacity: 1
-                    direction: 'right'
-
-                MDCarousel:
-                    id: challenges
-                    size_hint: 0.85, 0.25 
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.475}
-                    opacity: 1
-                    direction: 'right'
-
-                MDCarousel:
                     id: programs
-                    size_hint: 0.85, 0.25 
-                    pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+                    size_hint: 0.85, 0.95
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     opacity: 1
                     direction: 'right'
 
                     CarbonCarousel:
-                        program_one_text: True
-                        program_card_label: True
+                        program_number: 1
                     CarbonCarousel: 
-                        program_one_text: False
-                        #program_card_label: True
+                        program_number: 2
                     CarbonCarousel:
-                        program_one_text: False
-                        #program_card_label: True
+                        program_number: 3
 
             MDBottomNavigationItem:
                 name: 'edit'
@@ -278,19 +256,25 @@
                 ScrollView: 
                     do_scroll_x: False
                     do_scroll_y: True
-                    FloatLayout: 
+                    FloatLayout:
                         size_hint_y: 1.2
-                        MDCard: 
-                            size_hint: 0.6, 0.17
-                            md_bg_color: 177/255, 156/255, 217/255, 1
-                            pos_hint: {'center_x': 0.5, 'center_y': 0.885}
-                            border_radius: 20
-                            radius: [15]
-                            MDLabel:
-                                id: footprint_label
-                                halign: "center"
-                                font_size: "20sp"
-    
+                        MDIconButton:
+                            icon: 'help-circle'
+                            pos_hint: {'center_x': 0.06, 'center_y': 0.95}
+                            on_press:
+                                root.info_popup_open()
+
+                        MDCard:
+                            Image:
+                                source: "images/Your Carbon Footprint.png"
+                                pos_hint: {'center_x': 0.08, 'center_y': .91}
+
+                        MDLabel:
+                            id: footprint_label
+                            halign: "center"
+                            font_size: "12sp"
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.89}
+
                         MDList:
                             id: info_list
                             EditListItem:
@@ -385,31 +369,33 @@
 <CarbonCarousel>
     MDCard:
         id: carousel_card
-        md_bg_color: 177/255, 156/255, 217/255, 1
-        radius: [20]
+        background: ("images/Environmental Philanthropy.png", "images/Destination Clean Drip.png", "images/Redefine Recycling.png")[root.program_number - 1]
+        radius: [10]
         FloatLayout:
-            MDLabel: 
+            MDLabel:
                 id: card_label
-                text: "Environmental Philantrophy" if root.program_one_text else "Coming Soon"
+                #text: ("Environmental Philanthropy", "Destination Clean Drip", "Redefine Recycling")[root.program_number - 1]
                 halign: "center"
-            MDIconButton: 
+            MDFloatingActionButton:
+                #TODO: Coloring of buttons (Afshaal)
                 icon: "arrow-left"
-                pos_hint: {'center_x': 0.1, 'center_y': 0.2}
+                pos_hint: {'center_x': 0.1, 'center_y': 0.4}
                 on_release: 
                     root.parent.parent.load_previous()
-            MDIconButton: 
+            MDFloatingActionButton:
+                #TODO: Coloring of buttons (Afshaal)
                 icon: "arrow-right"
-                pos_hint: {'center_x': 0.9, 'center_y': 0.2}
+                pos_hint: {'center_x': 0.9, 'center_y': 0.4}
                 on_release: 
                     root.parent.parent.load_next() 
                     print(root.parent)
-            MDRaisedButton:
-                opacity: 1 if root.program_card_label else 0
+            MDFillRoundFlatButton:
                 text: "View"
                 text_color: 0, 0, 0, 1
                 md_bg_color: 1, 150/255,79/255, 1
-                pos_hint: {'center_x': 0.5, 'center_y': 0.2}
-                on_release: root.open_p1()
+                pos_hint: {'center_x': 0.5, 'center_y': 0.06}
+                size: self.size
+                on_release: root.open_p1(root.program_number)
 
 
 <GraphItem>
@@ -639,66 +625,150 @@
 
 
 <ProgramOneScreen>
-    canvas: 
+    canvas:
         Color:
-            rgba: 1, 1, 1, 1 
-        Rectangle: 
+            rgba: 1, 1, 1, 1
+        Rectangle:
             pos: self.pos
-            size: self.size 
-    MDLabel: 
-        text: "Environmental Philantrophy"
+            size: self.size
+    MDLabel:
+        id: program_screen_title
         font_size: 22
         pos_hint: {'center_y': 0.92}
         halign: "center"
-    MDList: 
+    MDList:
         id: p1_list
-    MDIconButton: 
+        size_hint: 1, 1
+    MDIconButton:
         icon: "arrow-left-circle"
         on_release: root.to_main()
         pos_hint: {'center_x': 0.075, 'center_y': 0.95}
 
 
 <P1ListItem>
-    IconRightWidget: 
+    size_hint: 1, 0.25
+    text_size: self.width, None
+    IconRightWidget:
         icon: "card-text"
-        on_release: 
-            root.popup_open()
+        on_release: root.screen_select()
 
 
-<P1Popup>
-    size_hint: 0.9, 0.9
+<TaskScreen>
+    MDList:
+        size_hint: 1, 1
+        id: screen_of_tasks
+    MDIconButton:
+        icon: "arrow-left-circle"
+        on_release: root.to_p1()
+        pos_hint: {'center_x': 0.075, 'center_y': 0.95}
+
+
+<TaskListItem>
+    size_hint: 1, 0.2
+    text_size: self.width, None
+    secondary_text: " "
+    tertiary_text: " "
+    RightCheckbox:
+        id: task_checkbox
+        on_active:
+            root.if_active(self.active)
+        active: root.is_checked
+
+
+<WeekCompletePopup>
+    size_hint: 0.7, 0.4
     halign: "center"
+    valign: "center"
+    title: "Congrats!"
     title_align: "center"
-    title_size: 40
-    title_color: 0, 0, 0, 1
+    title_size: 30
     separator_height: 3
     separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
     background: ""
-    FloatLayout:
+
+    BoxLayout:
         orientation: "vertical"
         size: root.width, root.height
-        MDCard: 
-            size_hint: 0.7, 0.55
-            pos_hint: {'center_x': 0.5,'center_y':0.6}
-            md_bg_color: 1, 150/255,79/255, 1 
-            radius: [15]
-            MDLabel: 
-                id: p1_popup_label
-                font_size: 28
-                halign: "center"
-
-        MDRaisedButton: 
-            text: "Exit"
-            on_release: root.popup_close()
-            size_hint: 0.7, 0.1
-            pos_hint: {'center_x':0.5, 'center_y':0.15}
+        MDLabel:
+            text: "You have completed this week!"
+            font_size: 26
+            halign: "center"
+            text_color_active: 5, 5, 5, 5
+        MDFillRoundFlatButton:
+            text: "Back to Program!"
+            font_size: 14
             md_bg_color: 1, 150/255,79/255, 1
-            text_color: 0, 0, 0, 0.99
+            size_hint: .825, .275
+            pos_hint: {'center_x': 0.5}
+            on_release:
+                root.dismiss()
 
-        #MDRaisedButton:
-            #text: "Complete"
-            #on_release: root.popup_close()
-            #size_hint: 0.425, 0.1
-            #pos_hint: {'center_x':0.225, 'center_y':0.15}
-            #md_bg_color: 1, 150/255,79/255, 1
-            #text_color: 0, 0, 0, 0.99
+
+<InfoPopup>
+    size_hint: 0.6, 0.4
+    halign: "center"
+    valign: "center"
+    title: "Info"
+    title_align: "center"
+    title_size: 30
+    separator_height: 3
+    separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
+    background: ""
+
+    RelativeLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        MDLabel:
+            text: "add reccomended and average"
+            font_size: 20
+            halign: "center"
+            pos_hint: {'center_y': 0.65}
+            text_color_active: 5, 5, 5, 5
+        MDFillRoundFlatButton:
+            text: "Exit"
+            text_color: 0, 0, 0, 1
+            md_bg_color: 1, 150/255,79/255, 1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.06}
+            size_hint: 0.2, 0.1
+            on_release: root.dismiss()
+
+
+<ProgramCompletePopup>
+    size_hint: 0.7, 0.4
+    halign: "center"
+    valign: "center"
+    title: "Congrats!"
+    title_align: "center"
+    title_size: 30
+    separator_height: 3
+    separator_color: 0, 0, 0, 1
+    title_color: 0, 0, 0, 1
+    background: ""
+
+    RelativeLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        MDLabel:
+            text: "You have completed this program!"
+            font_size: 20
+            halign: "center"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.65}
+            text_color: 1, 1, 1, 1
+        MDRaisedButton:
+            text: "Back to Main"
+            font_size: 14
+            md_bg_color: 1, 150/255,79/255, 1
+            pos_hint: {'center_x': 0.25, 'center_y': 0.2}
+            on_release:
+                root.to_main()
+                root.dismiss()
+        MDRaisedButton:
+            text: "View Program"
+            font_size: 14
+            md_bg_color: 1, 150/255,79/255, 1
+            pos_hint: {'center_x': 0.75, 'center_y': 0.2}
+            on_release:
+                root.dismiss()
+
