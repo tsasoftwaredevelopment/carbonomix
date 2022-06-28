@@ -377,19 +377,22 @@
                 #text: ("Environmental Philanthropy", "Destination Clean Drip", "Redefine Recycling")[root.program_number - 1]
                 halign: "center"
             MDFloatingActionButton:
-                #TODO: Coloring of buttons (Afshaal)
+                id: apple1
+                md_bg_color: 40/255, 170/255, 120/255, 1
                 icon: "arrow-left"
                 pos_hint: {'center_x': 0.1, 'center_y': 0.4}
                 on_release: 
                     root.parent.parent.load_previous()
             MDFloatingActionButton:
-                #TODO: Coloring of buttons (Afshaal)
+                id: apple2
+                md_bg_color: 40/255, 170/255, 120/255, 1
                 icon: "arrow-right"
                 pos_hint: {'center_x': 0.9, 'center_y': 0.4}
                 on_release: 
                     root.parent.parent.load_next() 
                     print(root.parent)
             MDFillRoundFlatButton:
+                id: apple3
                 text: "View"
                 text_color: 0, 0, 0, 1
                 md_bg_color: 1, 150/255,79/255, 1
