@@ -364,4 +364,11 @@ def _generate_data(user_id=1):
     print("Complete.")
 
 
-# _generate_data()
+def _reset_database():
+    print("Resetting.")
+    update("""DELETE FROM completed_tasks""")
+    _generate_data()
+    print("Reset complete.")
+
+
+# _reset_database()
