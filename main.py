@@ -739,7 +739,6 @@ class CarbonomixApp(MDApp):
         fade = FadeTransition()
         fade.duration = 0 if DEBUG else 1.5
 
-        # some color shit here lo
         self.theme_cls.primary_palette = "Green"
         self.theme_cls.primary_hue = "500"
 
