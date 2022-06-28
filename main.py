@@ -910,6 +910,7 @@ class CarbonomixApp(MDApp):
         self.snackbar.text = text_item
         self.snackbar.open()
 
+
 if __name__ == '__main__':
     create_tables()
     CarbonomixApp().run()
