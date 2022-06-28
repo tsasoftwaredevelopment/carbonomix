@@ -873,10 +873,18 @@ class CarbonomixApp(MDApp):
         def update_color(color: list) -> None:
             sm.current_screen.ids.toolbar.md_bg_color = color
             sm.current_screen.ids.toolbar.new_value = color
-            sm.current_screen.ids.tabs.panel_color = color
+            sm.current_screen.ids.apple1.md_bg_color = color
+            sm.current_screen.ids.apple2.md_bg_color = color
+            sm.current_screen.ids.apple3.md_bg_color = color
+
+            darker_color = []
             for i in range(3):
-                color[i] *= 0.35
-            sm.current_screen.ids.tabs.text_color_active = color 
+                darker_color.append(color[i] * 0.35)
+            sm.current_screen.ids.tabs.text_color_active = darker_color + [1,]
+
+            for i in range(3):
+                color[i] = 1 - (1 - color[i]) * 0.7
+            sm.current_screen.ids.tabs.panel_color = color
 
             self.color_picker.dismiss()
 
